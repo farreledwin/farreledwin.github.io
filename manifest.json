@@ -1,0 +1,22 @@
+{
+	"name": "FC Barcelona",
+	"gcm_sender_id": "560335508474",
+	"short_name": "Farrel PWA",
+	"description": "Farrel First App",
+	"start_url": "/index.html",
+	"display": "standalone",
+	"background_color": "#0000FF",
+	"theme_color": "#808080",
+	"icons": [
+		{
+			"src": "img/soccer512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		},
+		{
+			"src": "img/soccer192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		}
+	]
+}
