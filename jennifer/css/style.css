@@ -1,0 +1,252 @@
+body {
+    margin: 0;
+}
+.search {
+    position: absolute;
+    width: auto !important;
+    float: right;
+    margin-right: 20px;
+    margin-left: 20px;
+    right: 5px;
+    top: 20px;
+}
+
+.search .search-bar {
+    display: inline-block;
+    position: relative;
+    top: -3px;
+    left: -5px; 
+}
+
+.search .search-input {
+    border: 2px solid #000000;
+    font-weight: 300;
+    display: inline-block;
+    margin-bottom: 0;
+    padding: 2px 4px;
+    width: 170px;
+    min-width: 0;
+    font-size: 14px;
+}
+
+.search i {
+    font-size: 20px;
+    padding: 4px;
+    color:#000000;
+}
+
+.menu {
+    text-align: center;
+    padding-top: 50px;
+}
+
+.menu ul {
+    display: block;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.menu ul li {
+    display: inline-block;
+    list-style: none;
+    color: black;
+    padding: 10px;
+    text-align: center;
+    font-family: menufont;
+    font-size: 20px;
+    position: relative;
+    font-size: 1.28rem !important;
+}
+
+.title {
+    font-family: titlebold;
+    font-size: 25px;
+}
+
+a {
+    text-decoration: none;
+    color:black;
+}
+
+::placeholder {
+    color:#000000;
+}
+
+.flex-content {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 15px;
+}
+
+.flex-content .image {
+    width: 50%;
+}
+
+.flex-content .content {
+    width: 50%;
+    text-align: center;
+    padding-top: 15%;
+    background-color: #319D5C;
+}
+
+.flex-content .image img {
+    max-width: 100%;  
+    display:block;
+}
+
+.content .content-title {
+    font-family: menuFont;
+    font-size:30px;
+}
+
+.flex-content .content .content-fill {
+    font-family: menuFont;
+    font-size: 20px;
+    padding-bottom: 20px;
+}
+
+a.read-more {
+    padding: 1.1em 0;
+    font-family: menuFont;
+    font-size:20px;
+}
+
+a.read-more:hover {
+    color:red;
+}
+
+
+
+.content-aboutus {
+    text-align: center !important;
+    padding-top: 64px;
+    padding-bottom: 64px;
+}
+
+.content-aboutus h2 {
+    font-size: 28pt;
+    line-height: 28pt;
+    font-size: menuFont;
+    font-weight: 300 !important;
+}
+
+.content-aboutus p {
+    max-width: 750px;
+    margin-left:auto;
+    margin-right:auto;
+    font-size: menuFont;
+    font-size: 20px;
+    font-weight: 300;
+}
+
+.container-fluid {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.container-fluid .content-fluid {
+    display:flex;
+    margin-right: -15px;
+    margin-left: -15px;
+    width: 100%;
+}
+
+.panel-tile {
+    background-color: #ED9C9D !important;
+    max-height: 642px !important;
+    /*! max-width: 50%; */
+    max-width: 50%;
+    flex: 50%;
+}
+
+.central-content {
+    width: 100%;
+    text-align: center;
+    padding-top: 120px;
+    padding-bottom: 120px;
+    position: relative;
+    top: 10%;
+}
+
+.central-content .eyes {
+    width: 120px;
+    padding-bottom: 10px;
+    max-width: 18vw;
+}
+
+.central-content h2 {
+    color: white;
+    font-size: 40pt;
+    line-height: 40pt;
+    margin-top: 0px;
+    font-family: menuFont;
+    font-weight:50 !important;
+}
+
+.footer {
+    box-shadow: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.footer-content {
+    padding-left: 0px;
+    padding-right: 0px;
+    background-color: #F3E5D2;
+    font-family: menuFont;
+}
+
+.footer .footer-content .container-footer {
+    padding-top: 42px;
+    padding-bottom: 42px;
+    font-family: menuFont;
+}
+
+.footer .footer-content .container-footer .row {
+    display:flex;
+    padding-bottom:40pt;
+}
+
+.row-footer {
+    flex: 0 0 25%;
+}
+
+.footerh1 {
+    margin-top: 7px !important;
+    font-size: 25pt;
+    line-height: 40pt;
+}
+
+.footerHeader {
+    font-size: 20pt;
+    line-height: 22pt;
+    margin-bottom: 7px;
+    margin-top: 7px !important;
+    font-family: titleBold;
+}
+
+a.footerLink {
+    display:block;
+    text-align: left;
+    font-size:15pt;
+}
+
+.copyright-content {
+    display:block;
+    text-align: center;
+    margin:0;
+}
+
+@font-face {
+    font-family: menufont;
+    src: url(../font/gt-walsheim-regular.ttf);
+    font-weight: 500;
+    }
+@font-face {
+    font-family: titlebold;
+    src: url(../font/Clearface-Bold.ttf);
+    }
