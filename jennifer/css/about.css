@@ -1,0 +1,50 @@
+.flex-about {
+	display: flex;
+	justify-content: space-between;
+	padding-top: 15px;
+}
+
+.flex-about .image-about {
+	width: 50%;
+	background-color: #f5fffa;
+}
+
+.flex-about .content-about {
+	width: 50%;
+	text-align: left;
+	padding-top: 15%;
+	background-color: #f5fffa;
+	padding-left: 50px;
+}
+
+.flex-about .image-about img {
+	max-width: 100%;
+	display: block;
+	padding-top: 100px;
+	padding-left: 100px;
+	padding-right: 100px;
+}
+.flex-about .content-about .content-fill {
+	font-family: menuFont;
+	font-size: 20px;
+	padding-bottom: 20px;
+}
+.content-about .content-title {
+	font-family: menuFont;
+	font-size: 30px;
+}
+
+.read-more-about {
+	background-color: rgb(56, 105, 149);
+	font-family: menuFont;
+	line-height: 14px;
+	font-size: 14px;
+	color: white;
+	font-weight: 500;
+	border-radius: 30px;
+	padding: 10px 30px;
+}
+
+.read-more-about:hover {
+	background-color: #00fa9a;
+}
