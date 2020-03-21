@@ -18,11 +18,13 @@
 }
 
 .flex-about .image-about img {
-	max-width: 100%;
 	display: block;
-	padding-top: 100px;
+	padding-top: 400px;
 	padding-left: 100px;
 	padding-right: 100px;
+	max-width: 400px;
+	height: 600px;
+	padding-bottom: 200px;
 }
 .flex-about .content-about .content-fill {
 	font-family: menuFont;
@@ -47,4 +49,15 @@
 
 .read-more-about:hover {
 	background-color: #00fa9a;
+}
+
+.section-team {
+	text-align: center;
+	padding-top: 42px;
+	padding-bottom: 42px;
+}
+
+.section-team h1 {
+	font-family: titleBold;
+	font-size: 58pt;
 }
