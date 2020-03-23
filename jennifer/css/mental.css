@@ -1,10 +1,7 @@
 .magazine-health {
 	display: grid;
-	  grid-template-columns: 200px 200px;
-  grid-row: auto auto;
-  grid-column-gap: 20px;
-  grid-row-gap: 20px;
-	/*! background-color: #2196f3; */
+	grid-template-columns: auto auto auto;
+	grid-row: auto auto;
 	padding-top: 10px;
 }
 
@@ -28,16 +25,16 @@
 	opacity: 0;
 }
 
-.grid-item:hover {
+/* .grid-item:hover {
 	background-size: 100%;
-}
+} */
 
-.grid-item:hover p {
+/* .grid-item:hover p {
 	background-color: rgba(0, 0, 0, 0.6);
 	color: #fff;
 	opacity: 1;
 	transition: 0.5s;
-}
+} */
 
 .more-stories {
 	display: block;
@@ -60,4 +57,10 @@
 
 .button-stories:hover {
 	color: #00fa9a;
+}
+
+@media screen and (max-width: 480px) {
+	.grid-item p {
+		padding: 20px;
+	}
 }

@@ -32,13 +32,18 @@
             <div class="title">
                 <a href="#"><h2>The Mind Map</h2></a> 
              </div>
-            <ul>
+             <div class="menu-content">
+            <ul class="topnav">
                 <li> <a href="home.html">Home </a></li>
                 <li> <a href="about.html">About</a></li>
                 <li> <a href="stories.html">Stories</a></li>
                 <li> <a href="mental.html">Mental Health Issues</a></li>
                 <li> <a href="findhelp.html">Find Help</a></li>
+                <li class="icon">
+                    <a href="javascript:void(0);" onclick="myFunction()">☰ Menu</a>
+                </li>
             </ul>
+            </div>
         </div>
     </div>
         <div class="flex-about">
@@ -59,22 +64,22 @@
             <h1>Meet The Team</h1>
             <div class="magazine-health">
                 <div class="grid-item">
-                    <p>test</p>
+                    <p id="text-desc">test</p>
                 </div>
                 <div class="grid-item item2">
-                    <p>test</p>
+                    <p id="text-desc">test</p>
                 </div>
                 <div class="grid-item item3">
-                    <p>test</p>
+                    <p id="text-desc">test</p>
                 </div>
                 <div class="grid-item item4">
-                    <p>test</p>
+                    <p id="text-desc">test</p>
                 </div>
                 <div class="grid-item item5">
-                    <p>test</p>
+                    <p id="text-desc">test</p>
                 </div>
                 <div class="grid-item item6">
-                    <p>test</p>
+                    <p id="text-desc">test</p>
                 </div>
             </div>
         </div>
@@ -151,3 +156,10 @@
                 </div>
             </div>
         </div>
+    </body>
+    <script src="js/show.js"></script>
+    <script>
+        function myFunction() {
+        document.getElementsByClassName("topnav")[0].classList.toggle("responsive");
+    }
+    </script>

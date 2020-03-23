@@ -61,3 +61,13 @@
 	font-family: titleBold;
 	font-size: 58pt;
 }
+
+@media screen and (max-width: 480px) {
+	.flex-about .content-about {
+		padding-bottom: 10%;
+	}
+	.flex-about .image-about img {
+		padding-left: 0px;
+		padding-bottom: 0px;
+	}
+}
