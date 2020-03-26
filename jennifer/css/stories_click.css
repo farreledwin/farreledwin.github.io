@@ -1,0 +1,84 @@
+.page-content {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.stories-image {
+	position: relative;
+	width: 100%;
+	flex: 0 0 50%;
+	max-width: 50%;
+	background-color: #319d5c;
+	color: white !important;
+	max-height: 642px;
+	height: 50vw;
+	background-repeat: no-repeat;
+	background-size: cover !important;
+	background-image: url('https://themindmap.co.uk/wp-content/uploads/2019/07/Ezra-Mind-Map.jpeg');
+}
+
+.stories-text {
+	position: absolute;
+	bottom: 0;
+}
+
+.stories-text h1 {
+	font-size: 40pt;
+	line-height: 42pt;
+	font-family: titlebold;
+}
+
+.stories-container {
+	max-width: 1140px;
+	width: 100%;
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.page-container {
+	padding-top: 40px;
+	padding-bottom: 40px;
+	margin-left: 8.333333%;
+	flex: 0 0 83.333333%;
+	max-width: 83.333333%;
+	position: relative;
+	width: 100%;
+	min-height: 1px;
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+.page-container p {
+	color: #000000;
+	font-family: menuFont, Arial, Helvetica, sans-serif;
+	font-size: 20px;
+	font-weight: 300;
+}
+
+.page-container h6 {
+	font-family: titlebold, serif;
+	font-size: 35pt;
+	line-height: 50pt;
+	width: 92%;
+	display: block;
+	margin: 0 auto;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	font-weight: 300 !important;
+	color: #319d5c !important;
+	margin-bottom: 40px;
+	margin-top: 20px;
+}
+
+@font-face {
+	font-family: titlebold;
+	src: url(../font/Clearface-Bold.ttf);
+}
+
+@font-face {
+	font-family: menufont;
+	src: url(../font/gt-walsheim-regular.ttf);
+	font-weight: 500;
+}
