@@ -383,4 +383,18 @@ ul.topnav li.icon {
 		padding-top: 0%;
 		padding-bottom: 10%;
 	}
+	.subscribe-btn {
+		padding-top: 3px;
+	}
+	.copyright {
+		flex-direction: column;
+	}
+	.copyright-content {
+		padding: 10px;
+		align-items: center;
+	}
+	.icon-social div {
+		display: flex;
+		padding: 5px;
+	}
 }

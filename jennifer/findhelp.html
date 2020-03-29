@@ -33,13 +33,18 @@
             <div class="title">
                 <a href="#"><h2>The Mind Map</h2></a> 
              </div>
-            <ul>
+             <div class="menu-content">
+            <ul class="topnav">
                 <li> <a href="home.html">Home </a></li>
                 <li> <a href="about.html">About</a></li>
                 <li> <a href="stories.html">Stories</a></li>
                 <li> <a href="mental.html">Mental Health Issues</a></li>
                 <li> <a href="findhelp.html">Find Help</a></li>
+                <li class="icon">
+                    <a href="javascript:void(0);" onclick="myFunction()">☰ Menu</a>
+                </li>
             </ul>
+            </div>
         </div>
     </div>
     <div class="header-content">
@@ -52,17 +57,17 @@
         <div class="content-text">
             <div><h1>Find a theraphist who <br>gets you</br></h1></div>
         </div>
-        <div>
+        <div class="test-image-help">
             <img src="https://themindmap.co.uk/wp-content/uploads/2019/04/DSCF8535.jpg">
         </div>
-    <div class="content-gallery">
-            <div>
+        <div class="test-image-help">
                 <img src="https://themindmap.co.uk/wp-content/uploads/2018/05/KingFast-by-Darina-Mohammed-for-The-Mind-Map.jpg">
             </div>
             <div class="content-text">
                 <div><h1>Find free mental<br>health services below...</br></h1></div>
             </div>
-    </div>
+        </div>
+
     <div class="search-container">
         <div class="search-box">
             <div class="search-label">
@@ -152,3 +157,9 @@
             </div>
         </div>
     </div>
+</body>
+<script>
+    function myFunction() {
+    document.getElementsByClassName("topnav")[0].classList.toggle("responsive");
+}
+</script>

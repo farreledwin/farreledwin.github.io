@@ -1,3 +1,12 @@
+html,
+body {
+	width: 100%;
+	overflow-x: hidden;
+}
+
+.test-image-help {
+	width: 50%;
+}
 .header-content {
 	width: 100%;
 	/*! padding-right: 15px; */
@@ -31,13 +40,13 @@
 }
 
 .content-gallery img {
-	width: 631.3px;
+	max-width: 100%;
 	display: block;
 }
 
 .content-text {
 	background-color: #ffc107;
-	width: 631.3px;
+	width: 50%;
 	position: relative;
 }
 
@@ -103,4 +112,30 @@ iframe {
 @font-face {
 	font-family: headerContent;
 	src: url(../font/itc-clearface-lt-regular.ttf);
+}
+
+@media screen and (max-width: 480px) {
+	.content-text {
+		width: 100%;
+	}
+	.test-image-help {
+		width: 100%;
+	}
+	.content-text div h1 {
+		position: relative;
+	}
+	.section-content h1 {
+		font-size: 25pt;
+	}
+
+	.responsive480 {
+		position: relative;
+	}
+
+	.address-content {
+		width: 50vw;
+	}
+	.address-map-google {
+		width: 50%;
+	}
 }

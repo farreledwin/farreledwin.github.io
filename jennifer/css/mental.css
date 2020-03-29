@@ -63,4 +63,7 @@
 	.grid-item p {
 		padding: 20px;
 	}
+	.subscribe-btn {
+		padding-top: 2.5px !important;
+	}
 }

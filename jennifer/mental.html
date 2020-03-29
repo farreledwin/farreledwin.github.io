@@ -31,13 +31,18 @@
             <div class="title">
                 <a href="#"><h2>The Mind Map</h2></a> 
              </div>
-            <ul>
+             <div class="menu-content">
+            <ul class="topnav">
                 <li> <a href="home.html">Home </a></li>
                 <li> <a href="about.html">About</a></li>
                 <li> <a href="stories.html">Stories</a></li>
                 <li> <a href="mental.html">Mental Health Issues</a></li>
                 <li> <a href="findhelp.html">Find Help</a></li>
+                <li class="icon">
+                    <a href="javascript:void(0);" onclick="myFunction()">☰ Menu</a>
+                </li>
             </ul>
+            </div>
         </div>
     </div>
     <div class="magazine-health">
@@ -136,3 +141,9 @@
     </div>
 </body>
 <script src="js/show.js"></script>
+<script>
+    function myFunction() {
+    document.getElementsByClassName("topnav")[0].classList.toggle("responsive");
+}
+</script>
+</html>
