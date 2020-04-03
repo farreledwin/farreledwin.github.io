@@ -2,19 +2,20 @@
 	display: flex;
 	justify-content: space-between;
 	padding-top: 15px;
+	flex-direction: column;
 }
 
 .flex-about .image-about {
-	width: 50%;
+	/*! width: 50%; */
 	background-color: #f5fffa;
 }
 
 .flex-about .content-about {
-	width: 50%;
+	/*! width: 50%; */
 	text-align: left;
-	padding-top: 15%;
+	/*! padding-top: 15%; */
 	background-color: #f5fffa;
-	padding-left: 50px;
+	/*! padding-left: 50px; */
 }
 
 .flex-about .image-about img {
@@ -30,10 +31,13 @@
 	font-family: menuFont;
 	font-size: 20px;
 	padding-bottom: 20px;
+	padding-left: 50px;
 }
 .content-about .content-title {
 	font-family: menuFont;
 	font-size: 30px;
+	text-align: center;
+	display: block;
 }
 
 .read-more-about {
@@ -60,6 +64,11 @@
 .section-team h1 {
 	font-family: titleBold;
 	font-size: 58pt;
+}
+
+.content-about img {
+	display: block;
+	margin: auto auto;
 }
 
 @media screen and (max-width: 480px) {

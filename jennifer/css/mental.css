@@ -1,6 +1,6 @@
 .magazine-health {
 	display: grid;
-	grid-template-columns: auto auto auto;
+	grid-template-columns: 1fr 1fr;
 	grid-row: auto auto;
 	padding-top: 10px;
 }
@@ -13,6 +13,27 @@
 	height: 20vw;
 	background-position: center;
 	text-align: center;
+}
+
+.text-grid-content {
+	margin: 0;
+
+	padding: 100px;
+}
+
+.text-grid {
+	border: 1px solid rgba(0, 0, 0, 0.8);
+	padding-top: 20px;
+	padding-bottom: 20px;
+	font-size: 30px;
+	height: 20vw;
+	background-position: center;
+	text-align: center;
+	background-color: #ed9c9d;
+}
+.text-grid p {
+	margin: 0;
+	padding: 100px;
 }
 
 .item2 {
@@ -57,6 +78,32 @@
 
 .button-stories:hover {
 	color: #00fa9a;
+}
+
+.magazine-3-3 {
+	display: grid;
+	grid-template-columns: auto auto auto;
+	grid-row: auto auto;
+}
+.magazine-health {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-row: auto auto;
+	padding: 0;
+}
+.grid-immediate {
+	background-color: #ed9c9d;
+	border: 1px solid black;
+	padding: 20px;
+	font-size: 30px;
+	height: 20vw;
+	background-position: center;
+	text-align: center;
+	font-family: menuFont;
+}
+
+.eyes {
+	width: 25%;
 }
 
 @media screen and (max-width: 480px) {

@@ -1,0 +1,20 @@
+.content {
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+.content p {
+	display: block;
+	text-align: center;
+	font-family: menuFont;
+	font-size: 30px;
+	margin: 0;
+}
+
+.more-button {
+	display: flex;
+	justify-content: center;
+}
+
+.more-button div {
+	padding: 50px;
+}
