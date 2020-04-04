@@ -1,20 +1,9 @@
-.page-content {
-	display: flex;
-	flex-wrap: wrap;
+.stories-image {
+	display: block;
 }
 
-.stories-image {
-	position: relative;
+.stories-image img {
 	width: 100%;
-	flex: 0 0 50%;
-	max-width: 50%;
-	background-color: #319d5c;
-	color: white !important;
-	max-height: 642px;
-	height: 50vw;
-	background-repeat: no-repeat;
-	background-size: cover !important;
-	background-image: url('https://themindmap.co.uk/wp-content/uploads/2019/07/Ezra-Mind-Map.jpeg');
 }
 
 .stories-text {
@@ -50,6 +39,12 @@
 	padding-left: 15px;
 }
 
+.page-container h2 {
+	font-family: titleBold;
+	/*! display: block; */
+	text-align: center;
+}
+
 .page-container p {
 	color: #000000;
 	font-family: menuFont, Arial, Helvetica, sans-serif;
@@ -70,6 +65,10 @@
 	color: #319d5c !important;
 	margin-bottom: 40px;
 	margin-top: 20px;
+}
+
+.button-stories {
+	font-family: titleBold;
 }
 
 @font-face {

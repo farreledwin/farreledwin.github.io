@@ -35,9 +35,15 @@
                 <li> <a href="mental.html">Mental Health Disorders</a></li>
                 <li> <a href="findhelp.html">Find Help</a></li>
                 <li class="icon">
-                    <a href="javascript:void(0);" onclick="myFunction()">☰</a>
+                    <a href="javascript:void(0);" onclick="myFunction()">☰</a>   
                 </li>
             </ul>
+                <li class="icon-next">
+                    <input type="text" style="display:none; width:60%;" class="search-input" id="search-input-responsive" placeholder="search">
+                    <a href="javascript:void(0);" onclick="showSearch()"> <i class="fas fa-search fa-xs"></i>
+                    </a>
+                </li>
+
             </div>
         </div>
         <div class="menu">
@@ -97,7 +103,7 @@
                     <div class="container-footer">
                         <div class="row">
                             <div class="row-footer">
-                                <h1 class="footerh1">The Mind Map</h1>
+                                <h1 class="footerh1">Ikigai</h1>
                             </div>
                             <div class="row-footer" style="padding-left:25px !important;">
                                 <p>sign up for regular news and wellbeing tips!</p>
@@ -161,5 +167,13 @@
     function myFunction() {
     document.getElementsByClassName("topnav")[0].classList.toggle("responsive");
 }
+    function showSearch() {
+        if(document.getElementById("search-input-responsive").style.display == 'inline-block') {
+            document.getElementById("search-input-responsive").style.display = 'none';
+        }
+        else {
+        document.getElementById("search-input-responsive").style.display = "inline-block";
+        }
+    }
 </script>
 </html>
