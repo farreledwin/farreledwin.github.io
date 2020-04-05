@@ -26,18 +26,24 @@
             <a href="https://www.youtube.com/">
                 <i class="fab fa-youtube"></i>
             </a>
-        </div>
+        </div>  
         <div class="menu menu-responsive">
             <div class="menu-content">
                 <ul class="topnav">
                 <li> <a href="about.html">About</a></li>
                 <li> <a href="stories.html">Stories</a></li>
-                <li> <a href="mental.html">Mental Health Issues</a></li>
+                <li> <a href="mental.html">Mental Health Disorders</a></li>
                 <li> <a href="findhelp.html">Find Help</a></li>
                 <li class="icon">
-                    <a href="javascript:void(0);" onclick="myFunction()">☰</a>
+                    <a href="javascript:void(0);" onclick="myFunction()">☰</a>   
                 </li>
             </ul>
+                <li class="icon-next">
+                    <input type="text" style="display:none; width:60%;" class="search-input" id="search-input-responsive" placeholder="search">
+                    <a href="javascript:void(0);" onclick="showSearch()"> <i class="fas fa-search fa-xs"></i>
+                    </a>
+                </li>
+
             </div>
         </div>
         <div class="menu">
@@ -86,8 +92,13 @@
         <div class="grid-item" id="grid-item">
             <p id="text-desc">test</p>
         </div>
-        <div class="grid-item item2" id="grid-item2">
-            <p id="text-desc">test</p>
+        <div class="text-grid" id="grid-item" style="background-color:#7851A9;">
+            <p style="padding:5vh;">Read Stories</p>
+            <div class="more-stories">
+                <button class="button-stories" style="margin-top:0;">
+                    Learn More
+                </button>
+            </div>
         </div>
     </div>
     <div class="more-stories">
@@ -167,6 +178,14 @@
 <script>
     function myFunction() {
     document.getElementsByClassName("topnav")[0].classList.toggle("responsive");
+}
+    function showSearch() {
+        if(document.getElementById("search-input-responsive").style.display == 'inline-block') {
+            document.getElementById("search-input-responsive").style.display = 'none';
+        }
+        else {
+        document.getElementById("search-input-responsive").style.display = "inline-block";
+        }
 }
 </script>
 </html>

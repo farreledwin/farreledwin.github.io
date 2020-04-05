@@ -81,3 +81,12 @@
 	src: url(../font/gt-walsheim-regular.ttf);
 	font-weight: 500;
 }
+
+@media screen and (max-width: 480px) {
+	.stories-image {
+		padding-top: 20%;
+	}
+	.page-container {
+		margin-left: 0;
+	}
+}

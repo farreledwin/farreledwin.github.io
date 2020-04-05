@@ -79,4 +79,11 @@
 		padding-left: 0px;
 		padding-bottom: 0px;
 	}
+	.content-about img {
+		width: 100vw;
+	}
+
+	.flex-about {
+		padding-top: 10%;
+	}
 }

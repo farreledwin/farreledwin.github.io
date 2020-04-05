@@ -18,3 +18,13 @@
 .more-button div {
 	padding: 50px;
 }
+
+@media screen and (max-width: 480px) {
+	.content {
+		padding-top: 20%;
+	}
+	.magazine-3-3 {
+		display: block;
+		padding-top: 0;
+	}
+}

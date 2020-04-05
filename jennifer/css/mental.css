@@ -31,9 +31,12 @@
 	text-align: center;
 	background-color: #ed9c9d;
 }
+
 .text-grid p {
 	margin: 0;
 	padding: 100px;
+	font-family: menufont;
+	font-size: 40px;
 }
 
 .item2 {
@@ -112,5 +115,18 @@
 	}
 	.subscribe-btn {
 		padding-top: 2.5px !important;
+	}
+	.magazine-3-3 {
+		display: block;
+		padding-top: 10vh;
+	}
+
+	.magazine-health {
+		display: block;
+		padding-top: 0;
+	}
+
+	.text-grid {
+		height: 40vw;
 	}
 }

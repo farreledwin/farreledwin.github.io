@@ -97,4 +97,20 @@
 	.subscribe-btn {
 		padding-top: 2.5px !important;
 	}
+	.magazine-health {
+		display: block;
+		padding-top: 10vh;
+	}
+	.magazine-3-3 {
+		display: block;
+	}
+
+	.grid-immediate {
+		height: 25vh;
+	}
+
+	.grid-immediate p {
+		font-size: 30px !important;
+		margin: 0;
+	}
 }
