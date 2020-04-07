@@ -85,13 +85,13 @@ a {
 
 .flex-content .image {
 	width: 100%;
-	background-image: url('https://shine.snugdesigns.co.uk/wp-content/uploads/2019/08/annie-spratt-1365775-unsplash-1000x1000.jpg');
+	background-image: url('../images/pjimage.jpg');
 	background-size: 100%;
 	/*! height: 800px; */
 	height: 45vw;
 	background-repeat: no-repeat;
 	background-position: center;
-	animation: slideshow 10s linear infinite;
+	/* animation: slideshow 10s linear infinite; */
 	position: relative;
 }
 .more-stories {
@@ -114,14 +114,14 @@ a {
 	margin-left: 40%;
 }
 
-@keyframes slideshow {
+/* @keyframes slideshow {
 	0% {
 		background-image: url('../images/border.png');
 	}
 	100% {
 		background-image: url('https://shine.snugdesigns.co.uk/wp-content/uploads/2019/08/annie-spratt-1365775-unsplash-1000x1000.jpg');
 	}
-}
+} */
 
 .flex-content .content {
 	width: 50%;
@@ -413,8 +413,9 @@ ul.topnav li.icon {
 }
 
 .image .up-breath {
+	color: white;
 	position: absolute;
-	bottom: -10vh;
+	bottom: -5vh;
 	right: 50px;
 	font-size: 50px;
 }
@@ -585,7 +586,18 @@ ul.topnav li.icon {
 	.icon-next {
 		position: absolute;
 		top: 2vh;
-		left: 6%;
+		left: 8%;
 		list-style-type: none;
+	}
+	.image .up-breath {
+		position: static;
+		padding-top: 5%;
+		text-align: center;
+		font-size: 10vw;
+	}
+
+	.button-responsive {
+		margin-left: 0;
+		margin: auto;
 	}
 }
