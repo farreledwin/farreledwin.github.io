@@ -1,3 +1,7 @@
+html {
+	scroll-behavior: smooth;
+}
+
 html,
 body {
 	width: 100%;
@@ -109,6 +113,9 @@ iframe {
 	display: block;
 }
 
+.content-text h1:hover {
+	text-decoration: underline;
+}
 @font-face {
 	font-family: headerContent;
 	src: url(../font/itc-clearface-lt-regular.ttf);
@@ -133,9 +140,18 @@ iframe {
 	}
 
 	.address-content {
-		width: 50vw;
+		width: 100%;
+		height: 50vw;
+	}
+
+	.address-content p {
+		margin: 0;
+		text-align: center;
 	}
 	.address-map-google {
 		width: 50%;
+	}
+	.address-map {
+		display: block;
 	}
 }

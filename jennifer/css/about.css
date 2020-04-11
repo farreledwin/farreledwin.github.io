@@ -18,6 +18,16 @@
 	/*! padding-left: 50px; */
 }
 
+.content-about .image {
+	width: 100%;
+	background-image: url('https://cdn-prod.medicalnewstoday.com/content/images/hero/321/321593/321593_1100.jpg');
+	background-size: 100%;
+	height: 800px;
+	height: 45vw;
+	background-repeat: no-repeat;
+	background-position: left;
+}
+
 .flex-about .image-about img {
 	display: block;
 	padding-top: 400px;
@@ -27,12 +37,15 @@
 	height: 600px;
 	padding-bottom: 200px;
 }
+
 .flex-about .content-about .content-fill {
 	font-family: menuFont;
 	font-size: 20px;
 	padding-bottom: 20px;
-	padding-left: 50px;
+	padding-left: 10%;
+	padding-right: 10%;
 }
+
 .content-about .content-title {
 	font-family: menuFont;
 	font-size: 30px;
@@ -68,7 +81,7 @@
 
 .content-about img {
 	display: block;
-	margin: auto auto;
+	width: 100%;
 }
 
 @media screen and (max-width: 480px) {

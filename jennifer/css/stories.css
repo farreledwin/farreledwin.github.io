@@ -1,6 +1,6 @@
 .magazine-health {
 	display: grid;
-	grid-template-columns: auto auto;
+	grid-template-columns: 1fr 1fr;
 	grid-row: auto auto;
 	padding-top: 10px;
 }
@@ -13,12 +13,15 @@
 
 .grid-item {
 	background-image: url('https://themindmap.co.uk/wp-content/uploads/2020/01/DSC06391-1.jpg');
-	border: 1px solid rgba(0, 0, 0, 0.8);
 	padding: 20px;
 	font-size: 30px;
 	height: 20vw;
 	background-position: center;
 	text-align: center;
+}
+
+.grid-item:hover p {
+	opacity: 1;
 }
 
 .item2 {
@@ -51,12 +54,11 @@
 	display: block;
 	font-family: serif;
 	padding: 15px 30px;
-	color: black;
+	color: white;
 	cursor: pointer;
 	transition: all 0.4s ease;
 	background: transparent;
-	border: 12px solid black;
-	border-image: url('../images/border.png') 30 round;
+	border: 2px solid white;
 	font-family: menuFont;
 	font-size: 15px;
 }
@@ -67,7 +69,6 @@
 
 .grid-immediate {
 	background-color: #ed9c9d;
-	border: 1px solid black;
 	padding: 20px;
 	font-size: 30px;
 	height: 20vw;
@@ -78,6 +79,7 @@
 
 .grid-immediate p {
 	padding-top: 10px;
+	color: white;
 }
 
 .grid-immediate img {
@@ -91,6 +93,12 @@
 }
 
 @media screen and (max-width: 480px) {
+	.grid-item {
+		height: 50vw;
+	}
+	#text-desc {
+		opacity: 1;
+	}
 	.grid-item p {
 		padding: 20px;
 	}

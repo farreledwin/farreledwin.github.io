@@ -19,6 +19,18 @@
 	padding: 50px;
 }
 
+#text-desc {
+	opacity: 0;
+}
+
+.grid-item:hover #text-desc {
+	opacity: 1;
+}
+
+.grid-item:hover p {
+	opacity: 1;
+}
+
 @media screen and (max-width: 480px) {
 	.content {
 		padding-top: 20%;
