@@ -10,7 +10,33 @@
     <script src="https://kit.fontawesome.com/b8e6120963.js" crossorigin="anonymous"></script>
     <title>Document</title>
 </head>
+<style>
+    .text-grid {
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    padding-top: 20vh;
+    padding-bottom: 20px;
+    font-size: 30px;
+    height: 20;
+    background-position: center;
+    text-align: center;
+    background-color: #ed9c9d;
+}
+    #text-desc {
+        position: absolute;
+        width: 100%;
+        text-align: left;
+        bottom: 0;
+        left: 0;
+        font-family: titleBold;
+    }
 
+    .grid-item p {
+        padding: 0;
+    }
+    .grid-item:hover p {
+	opacity: 1;
+}
+</style>
 <body>
     <div class="header">
         <div class="search">
@@ -93,20 +119,20 @@
             </div>
         </div>
     </div>
-    <div class="more-stories">
-        <button class="button-stories">
-            Other Stories
+    <div class="more-stories more-stories-click">
+        <button class="button-stories button-stories-click">
+            Other Disorders
         </button>
     </div>
     <div class="magazine-3-3">
-        <div class="grid-item" id="grid-item" style="background-image: url('images/stories-click-image2.jpg'); background-size: cover;">
-            <p id="text-desc">test</p>
+        <div class="grid-item" id="grid-item" style="background-image: url('images/stories-click-image2.jpg'); background-size: cover;padding-right: 0; padding-left: 0; position: relative;">
+            <p id="text-desc" style="width: 100%; background-color: #008000; padding:0;">Students dont feel they are getting appropriate help online</p>
         </div>
-        <div class="grid-item item2" id="grid-item2" style="background-image: url('images/stories-click-image3.jpg'); background-size: cover;">
-            <p id="text-desc">test</p>
+        <div class="grid-item item2" id="grid-item2" style="background-image: url('images/stories-click-image3.jpg'); background-size: cover; padding-right: 0; padding-left: 0; position: relative;">
+             <p id="text-desc" style="width: 100%; background-color: #FFA500; padding:0;">Going Through the emotions</p>
         </div>
-        <div class="grid-item item2" id="grid-item2" style="background-image: url('images/stories-click-image4.jpg'); background-size: cover;">
-            <p id="text-desc">test</p>
+        <div class="grid-item item2" id="grid-item2" style="background-image: url('images/stories-click-image4.jpg'); background-size: cover; padding-right: 0; padding-left: 0; position: relative;">
+            <p id="text-desc" style="width: 100%; background-color: #008000; padding:0;">test</p>
         </div>
     </div>
     <div class="magazine-health" style="grid-template-columns: 1.5fr 1.5fr; height:25vw;">

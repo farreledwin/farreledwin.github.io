@@ -18,6 +18,8 @@
         left: 0;
         display:flex;
         justify-content: space-between;
+        padding-top: 2%;
+        padding-bottom: 2%;
     }
     .grid-item p {
         padding: 0;
@@ -131,41 +133,41 @@
             <p style="font-size:20px;">We Understand, We Care, We Heal</p>
         </div>
         <div class="magazine-3-3" style="padding-top:10px;">
-            <div class="grid-item" id="grid-item" style="padding-right: 0; padding-left: 0; position: relative;">
+            <div class="grid-item" id="grid-item" style="padding-right: 0; padding-left: 0; position: relative; background-image: url('images/robert.jpg');">
                 <div id="text-desc" style="width: 100%; background-color: yellow;">
-                    <p>test</p>
+                    <p>Robert Trivers</p>
                     <button class="more-stories button-stories booknow" style="margin:0;">Book Now</button>
                 </div>
             </div>
-            <div class="grid-item item2" id="grid-item2" style="padding-right: 0; padding-left: 0; position: relative;">
+            <div class="grid-item item2" id="grid-item2" style="padding-right: 0; padding-left: 0; position: relative; background-image: url('images/elizabeth.jpg');">
                 <div id="text-desc" style="width: 100%; background-color: yellow;">
-                    <p>test</p>
+                    <p>Elizabeth Loftus</p>
                     <button class="more-stories button-stories booknow" style="margin:0;" class="booknow">Book Now</button>
                 </div>
             </div>
-            <div class="grid-item item2" id="grid-item2" style="padding-right: 0; padding-left: 0; position: relative;">
+            <div class="grid-item item2" id="grid-item2" style="padding-right: 0; padding-left: 0; position: relative; background-image: url('images/robert-cial.jpg');">
                 <div id="text-desc" style="width: 100%; background-color: yellow;">
-                    <p>test</p>
+                    <p>Robert Cialdini</p>
                     <button class="more-stories button-stories booknow" style="margin:0;" class="booknow">Book Now</button>
                 </div>
             </div>
         </div>
         <div class="magazine-3-3">
-            <div class="grid-item" id="grid-item" style="padding-right: 0; padding-left: 0; position: relative;">
+            <div class="grid-item" id="grid-item" style="padding-right: 0; padding-left: 0; position: relative; background-image: url('images/thalia.jpg');">
                 <div id="text-desc" style="width: 100%; background-color: yellow;">
-                    <p>test</p>
+                    <p>Thalia Eley</p>
                     <button class="more-stories button-stories booknow" style="margin:0;" class="booknow">Book Now</button>
                 </div>
             </div>
-            <div class="grid-item item2" id="grid-item2" style="padding-right: 0; padding-left: 0; position: relative;">
+            <div class="grid-item item2" id="grid-item2" style="padding-right: 0; padding-left: 0; position: relative; background-image: url('images/stephen.jpg');">
                 <div id="text-desc" style="width: 100%; background-color: yellow;">
-                    <p>test</p>
+                    <p>Stephen Kosslyn</p>
                     <button class="more-stories button-stories booknow" style="margin:0;" class="booknow">Book Now</button>
                 </div>
             </div>
-            <div class="grid-item item2" id="grid-item2" style="padding-right: 0; padding-left: 0; position: relative;">
+            <div class="grid-item item2" id="grid-item2" style="padding-right: 0; padding-left: 0; position: relative; background-image: url('images/barbara.jpg');">
                 <div id="text-desc" style="width: 100%; background-color: yellow;">
-                    <p>test</p>
+                    <p>Barbara Fredrickson</p>
                     <button class="more-stories button-stories booknow" style="margin:0;" class="booknow">Book Now</button>
                 </div>
             </div>
@@ -175,8 +177,8 @@
             <!-- Modal content -->
             <div class="modal-content">
               <span class="close">&times;</span>
-              <p style="font-family:titleBold; text-align:center;">Awesome</p>
-              <p style="text-align:center;">Your Online Theraphy session booked!</p>
+              <p style="font-family:titleBold; text-align:center; font-size: 25px;">Awesome</p>
+              <p style="text-align:center; font-size: 18px;">Your Online Theraphy session booked!</p>
             </div>
           
           </div>
@@ -184,16 +186,14 @@
             <div class="content-fluid">
                 <div class="panel-tile" style="background-color:#20B2AA !important;">
                     <div class="central-content">
-                        <a href="mental.html" style="text-decoration:none;  "><h2>Read Stories</br></h2></a>
-                        <div style="padding-top:8vh;">
-                        <button class="more-stories button-stories" style="margin:auto !important;">Learn More</button>
-                        </div>
+                        <a href="mental.html" style="text-decoration:none;  "><h2 style="margin:0">Read Stories<br><h2 style="margin:0; visibility: hidden;">Disorders</h2></br></h2></a>
+                        <div><a href="stories.html"><button class="more-stories button-stories" style="margin:auto !important;">Learn More</button></a></div>
                     </div>
                 </div>
                 <div class="panel-tile" style="background-color:#4B0082 !important;">
                     <div class="central-content">
                         <a href="mental.html" style="text-decoration:none;"><h2>Mental Health <br>Disorders</br></h2></a>
-                        <button class="more-stories button-stories" style="margin:auto !important;">Learn More</button>
+                        <a href="mental.html"><button class="more-stories button-stories" style="">Learn More</button></a>
                     </div>
                 </div>
             </div>
@@ -266,7 +266,7 @@
     }
         var modal = document.getElementById("myModal");
 
-        // Get the button that opens the modal
+       
         var btn = document.querySelectorAll('.booknow');
         console.log(btn.length);
         for (i = 0; i < btn.length; i++) {

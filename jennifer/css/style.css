@@ -85,7 +85,7 @@ a {
 
 .flex-content .image {
 	width: 100%;
-	background-image: url('../images/pjimage.jpg');
+	background-image: url('../images/home.jpg');
 	background-size: 100%;
 	/*! height: 800px; */
 	height: 45vw;
@@ -169,6 +169,8 @@ a.read-more:hover {
 	text-align: center !important;
 	padding-top: 64px;
 	padding-bottom: 64px;
+	margin-left: 5%;
+	margin-right: 5%;
 }
 
 .content-aboutus h2 {
@@ -246,6 +248,7 @@ a.read-more:hover {
 	padding-right: 0px;
 	background-color: #f3e5d2;
 	font-family: menuFont;
+	padding-bottom: 2%;
 }
 
 .footer .footer-content .container-footer {
@@ -576,7 +579,7 @@ ul.topnav li.icon {
 	.title h2 {
 		margin: 0;
 		position: absolute;
-		top: 0;
+		top: 0.5vh;
 		left: 40vw;
 	}
 	.icon a {
@@ -590,7 +593,7 @@ ul.topnav li.icon {
 
 	.icon-next {
 		position: absolute;
-		top: 2vh;
+		top: 1.5vh;
 		left: 8%;
 		list-style-type: none;
 	}

@@ -20,7 +20,7 @@
 
 .content-about .image {
 	width: 100%;
-	background-image: url('https://cdn-prod.medicalnewstoday.com/content/images/hero/321/321593/321593_1100.jpg');
+	background-image: url('../images/about.jpg');
 	background-size: 100%;
 	height: 800px;
 	height: 45vw;
@@ -42,8 +42,8 @@
 	font-family: menuFont;
 	font-size: 20px;
 	padding-bottom: 20px;
-	padding-left: 10%;
-	padding-right: 10%;
+	padding-left: 15%;
+	padding-right: 15%;
 }
 
 .content-about .content-title {
