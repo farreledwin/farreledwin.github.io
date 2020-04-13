@@ -577,8 +577,7 @@ ul.topnav li.icon {
 		margin: 0;
 		position: absolute;
 		top: 0;
-		width: 100%;
-		text-align: center;
+		left: 40vw;
 	}
 	.icon a {
 		position: absolute;

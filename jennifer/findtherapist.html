@@ -101,19 +101,30 @@
 
         </div>
     </div>
-        <div class="menu">
-            <div class="title">
-                <a href="home.html"><h2>Ikigai</h2></a> 
-             </div>
-             <div class="menu-content">
-                <ul class="topnav">
-                <li> <a href="findtherapist.html">Find A Therapist</a></li>
-                <li class="icon">
-                    <a href="javascript:void(0);" onclick="myFunction()">☰ Menu</a>
-                </li>
-            </ul>
-            </div>
+    <div class="menu">
+        <div class="title">
+            <a href="home.html"><h2>Ikigai</h2></a> 
+         </div>
+         <div class="menu-content">
+            <ul class="topnav">
+            <li> <a href="about.html">About</a></li>
+            <li> <a href="stories.html">Stories</a></li>
+            <li> <a href="mental.html">Mental Health Disorders</a>
+                <ul>
+                    <li> <a href="mentaldisorderclick-2.html">Anxiety</a> </li>
+                    <li> <a href="mentaldisorderclick-3.html">Stress</a></li>
+                    <li> <a href="mentaldisorderclick-5.html">Anger Management</a></li>
+                    <li> <a href="mentaldisorderclick-4.html">Sleep Disorder</a></li>
+                    <li> <a href="mentaldisorderclick-6.html">Depression</a></li>
+                </ul>
+            </li>
+            <li> <a href="findhelp.html">Find Help</a></li>
+            <li class="icon">
+                <a href="javascript:void(0);" onclick="myFunction()">☰ Menu</a>
+            </li>
+        </ul>
         </div>
+    </div>
         <div class="content">
             <p>Connect with the most trusted</p>
             <p style="margin-bottom:5px;">Psychologist & Counsellors in the World</p>
@@ -213,20 +224,6 @@
                         <div class="copyright-content">
                             <p>&copy; 2020 Ikigai. All rights Reserved</p>
                         </div>
-                            <div class="copyright-menu">
-                                <div class="copyright-menu-content">
-                                    <p>Privacy and policy</p>
-                                </div>
-                                <div class="copyright-menu-content">
-                                    <p>Terms of Use</p>
-                                </div>
-                                <div class="copyright-menu-content">
-                                    <p>Accessibility</p>
-                                </div>
-                                <div class="copyright-menu-content">
-                                    <p>Supply Chain Transparency</p>
-                                </div>
-                            </div>  
                     </div>
                     <div class="social-media">
                         <div>
@@ -267,7 +264,6 @@
         document.getElementById("search-input-responsive").style.display = "inline-block";
         }
     }
-            // Get the modal
         var modal = document.getElementById("myModal");
 
         // Get the button that opens the modal
@@ -279,20 +275,13 @@
                 console.log("fff");
             };
         }
-        // Get the <span> element that closes the modal
+
         var span = document.getElementsByClassName("close")[0];
 
-        // When the user clicks the button, open the modal 
-        // btn.onclick = function() {
-        // modal.style.display = "block";
-        // }
-
-        // When the user clicks on <span> (x), close the modal
         span.onclick = function() {
         modal.style.display = "none";
         }
 
-        // When the user clicks anywhere outside of the modal, close it
         window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";
