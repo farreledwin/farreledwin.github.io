@@ -44,8 +44,32 @@
 .grid-item p {
         padding: 0;
     }
-    .grid-item:hover p {
+.grid-item:hover p {
 	opacity: 1;
+    }
+.more-stories-click {
+    padding-left:6vw;
+}
+@media screen and (max-width: 480px) {
+    .text-grid {
+        padding-top:0 !important;
+        padding-bottom: 100px !important;
+      
+    }
+
+    .magazine-health {
+        height: 100% !important;
+    }
+    #grid-item a h2 {
+    margin:0;
+    padding-top: 20%;
+    }
+    .eyes {
+        padding-top: 15%;
+    }
+    .grid-item {
+        height:30vh;
+    }
 }
 </style>
 <body>
@@ -126,12 +150,12 @@
 <p style="font-family:titleBold;">Types & Symptoms</p>
 <p>Depending on the number and severity of symptoms, a depressive episode can be categorized as mild, moderate or severe.</p>
 <ul>
-    <li style="font-size:20px;">Recurrent depressive disorder</li>
+    <li style="font-size:20px; font-family: menuFont, Arial, Helvetica, sans-serif;">Recurrent depressive disorder</li>
 </ul>
 <p>This disorder involves repeated depressive episodes. During these episodes, the person experiences depressed mood, loss of interest and enjoyment, and reduced energy leading to diminished activity for at least two weeks. Many people with depression also suffer from anxiety symptoms, disturbed sleep and appetite, and may have feelings of guilt or low self-worth, poor concentration and even symptoms that cannot be explained by a medical diagnosis.</p>
 <p>Depending on the number and severity of symptoms, a depressive episode can be categorized as mild, moderate or severe. An individual with a mild depressive episode will have some difficulty in continuing with ordinary work and social activities but will probably not cease to function completely. During a severe depressive episode, it is unlikely that the sufferer will be able to continue with social, work or domestic activities, except to a limited extent.</p>
 <ul>
-    <li style="font-size:20px;">Bipolar affective disorder</li>
+    <li style="font-size:20px; font-family: menuFont, Arial, Helvetica, sans-serif;">Bipolar affective disorder</li>
 </ul>
 <p>This type of depression typically consists of both manic and depressive episodes separated by periods of normal mood. Manic episodes involve elevated or irritable mood, over-activity, pressure of speech, inflated self-esteem and a decreased need for sleep.</p>
 <p style="font-family:titleBold;">Diagnosis & Treatment</p>
@@ -146,24 +170,24 @@
     </div>
     </div>
     <div class="magazine-3-3">
-        <div class="grid-item" id="grid-item" style="background-image: url('images/stories-click-image2.jpg'); background-size: cover;padding-right: 0; padding-left: 0; position: relative;">
-            <p id="text-desc" style="width: 100%; background-color: #008000; padding:0;">Students dont feel they are getting appropriate help online</p>
+        <div class="grid-item" id="grid-item" style="background-image: url('images/anxiety.jpg'); background-size: cover;padding-right: 0; padding-left: 0; position: relative;">
+            <a href="mentaldisorderclick-2.html"><p id="text-desc" style="width: 100%; background-color: #008000; padding:0;">ANXIETY</p></a>
         </div>
-        <div class="grid-item item2" id="grid-item2" style="background-image: url('images/stories-click-image3.jpg'); background-size: cover; padding-right: 0; padding-left: 0; position: relative;">
-             <p id="text-desc" style="width: 100%; background-color: #FFA500; padding:0;">Going Through the emotions</p>
+        <div class="grid-item item2" id="grid-item2" style="background-image: url('images/stress.jpg'); background-size: cover; padding-right: 0; padding-left: 0; position: relative;">
+             <a href="mentaldisorderclick-3.html"><p id="text-desc" style="width: 100%; background-color: #FFA500; padding:0;">STRESS</p></a>
         </div>
-        <div class="grid-item item2" id="grid-item2" style="background-image: url('images/stories-click-image4.jpg'); background-size: cover; padding-right: 0; padding-left: 0; position: relative;">
-            <p id="text-desc" style="width: 100%; background-color: #008000; padding:0;">test</p>
+        <div class="grid-item item2" id="grid-item2" style="background-image: url('images/sleeping_disorder.jpg'); background-size: cover; padding-right: 0; padding-left: 0; position: relative;">
+            <a href="mentaldisorderclick-4.html"><p id="text-desc" style="width: 100%; background-color: #008000; padding:0;">SLEEP DISORDER</p></a>
         </div>
     </div>
     <div class="magazine-health" style="grid-template-columns: 1.5fr 1.5fr; height:25vw;">
         <div class="text-grid" id="grid-item">
             <img src="images/help.png" class="eyes">
-            <p style="padding:0;">Get Immediate Help</p>
+            <a href="findhelp.html"><p style="padding:0;">Get Immediate Help</p></a>
         </div>
         <div class="text-grid mentalclick" id="grid-item" style="background-color:#2b45ba;">
             <a href="findtherapist.html"><h2>Find A Therapist</h2></a>
-            <button class="more-stories button-stories" style="margin:auto !important;">Connect</button>
+            <a href="findtherapist.html"><button class="more-stories button-stories" style="margin:auto !important;">Connect</button></a>
         </div>
     </div>
     <div class="footer">

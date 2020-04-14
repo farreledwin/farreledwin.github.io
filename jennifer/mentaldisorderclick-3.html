@@ -48,6 +48,30 @@
 .grid-item:hover p {
 	opacity: 1;
 }
+.more-stories-click {
+    padding-left: 10vw;
+}
+@media screen and (max-width: 480px) {
+    .text-grid {
+        padding-top:0 !important;
+        padding-bottom: 100px !important;
+      
+    }
+
+    .magazine-health {
+        height: 100% !important;
+    }
+    #grid-item a h2 {
+    margin:0;
+    padding-top: 20%;
+    }
+    .eyes {
+        padding-top: 15%;
+    }
+    .grid-item {
+        height:30vh;
+    }
+}
 </style>
 <body>
     <div class="header">
@@ -154,24 +178,24 @@
         </button>
     </div>
     <div class="magazine-3-3">
-        <div class="grid-item" id="grid-item" style="background-image: url('images/stories-click-image2.jpg'); background-size: cover;padding-right: 0; padding-left: 0; position: relative;">
-            <p id="text-desc" style="width: 100%; background-color: #008000; padding:0;">Students dont feel they are getting appropriate help online</p>
+        <div class="grid-item" id="grid-item" style="background-image: url('images/anxiety.jpg'); background-size: cover;padding-right: 0; padding-left: 0; position: relative;">
+            <a href="mentaldisorderclick-2.html"><p id="text-desc" style="width: 100%; background-color: #008000; padding:0;">ANXIETY</p></a>
         </div>
-        <div class="grid-item item2" id="grid-item2" style="background-image: url('images/stories-click-image3.jpg'); background-size: cover; padding-right: 0; padding-left: 0; position: relative;">
-             <p id="text-desc" style="width: 100%; background-color: #FFA500; padding:0;">Going Through the emotions</p>
+        <div class="grid-item item2" id="grid-item2" style="background-image: url('images/stress.jpg'); background-size: cover; padding-right: 0; padding-left: 0; position: relative;">
+             <a href="mentaldisorderclick-3.html"><p id="text-desc" style="width: 100%; background-color: #FFA500; padding:0;">STRESS</p></a>
         </div>
-        <div class="grid-item item2" id="grid-item2" style="background-image: url('images/stories-click-image4.jpg'); background-size: cover; padding-right: 0; padding-left: 0; position: relative;">
-            <p id="text-desc" style="width: 100%; background-color: #008000; padding:0;">test</p>
+        <div class="grid-item item2" id="grid-item2" style="background-image: url('images/sleeping_disorder.jpg'); background-size: cover; padding-right: 0; padding-left: 0; position: relative;">
+            <a href="mentaldisorderclick-4.html"><p id="text-desc" style="width: 100%; background-color: #008000; padding:0;">SLEEP DISORDER</p></a>
         </div>
     </div>
     <div class="magazine-health" style="grid-template-columns: 1.5fr 1.5fr; height:25vw;">
         <div class="text-grid" id="grid-item">
             <img src="images/help.png" class="eyes">
-            <p style="padding:0;">Get Immediate Help</p>
+            <a href="findhelp.html"><p style="padding:0;">Get Immediate Help</p></a>
         </div>
         <div class="text-grid mentalclick" id="grid-item" style="background-color:#2b45ba;">
             <a href="findtherapist.html"><h2>Find A Therapist</h2></a>
-            <button class="more-stories button-stories" style="margin:auto !important;">Connect</button>
+            <a href="findtherapist.html"><button class="more-stories button-stories" style="margin:auto !important;">Connect</button></a>
         </div>
     </div>
     <div class="footer">

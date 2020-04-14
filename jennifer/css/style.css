@@ -500,7 +500,7 @@ ul.topnav li.icon {
 
 	.flex-content .image {
 		background-size: cover;
-		height: 30vh;
+		height: 20vh;
 		width: 100%;
 	}
 	.container-fluid .content-fluid {
@@ -601,11 +601,26 @@ ul.topnav li.icon {
 		position: static;
 		padding-top: 5%;
 		text-align: center;
-		font-size: 10vw;
+		font-size: 7vw;
+		display: none;
 	}
 
 	.button-responsive {
 		margin-left: 0;
 		margin: auto;
+		margin-top: 30px;
+	}
+	.flex-content.responsive-breath {
+		padding: 0;
+	}
+	.image.responsive-breath {
+		display: block !important;
+		background-image: none;
+		background-color: pink;
+	}
+	.up-breath.responsive-breath {
+		display: block;
+		margin: 0;
+		padding-top: 50px;
 	}
 }
