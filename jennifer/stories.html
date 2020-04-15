@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/stories.css">
     <script src="https://kit.fontawesome.com/b8e6120963.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <title>Document</title>
 </head>
 <style>
@@ -18,6 +19,7 @@
         left: 0;
         font-family: titleBold;
         color:white;
+        padding-top: 2%;
     }
 
     .grid-item p {
@@ -93,16 +95,15 @@
     </div>
     <div class="magazine-health">
         <div class="grid-item" id="grid-item" style="padding-right: 0; padding-left: 0; position: relative; background-image: url('images/stories-click-image1.jpg'); background-size: cover;" >
-            <a href="stories-click.html"><p id="text-desc" style="width: 100%; background-color: #3CB371; height: 30%;">Navigating people to better mental health</p></a>
-            <img src="http://your-image.jpg" style="visibility: hidden;" />
+            <br><a href="stories-click.html"><p id="text-desc" class="text-desc-edit" style="width: 100%; background-color: #3CB371; height: 30%;">&nbsp;Navigating people to better mental health</p></a></br>
         </div>
         <div class="grid-item item2" id="grid-item2" style="padding-right: 0; padding-left: 0; position: relative; background-image: url('images/FOTO1.jpg'); background-size: cover;">
-            <a href="stories-click-2.html"><p id="text-desc" style="width: 100%; background-color: #FFA500; height: 30%;">Going Through the emotions</p></a>
+            <a href="stories-click-2.html"><p id="text-desc" style="width: 100%; background-color: #FFA500; height: 30%;">&nbsp;Going Through the emotions</p></a>
         </div>
     </div>
     <div class="magazine-3-3" style="grid-template-columns: 1fr 1fr 1fr;">
         <div class="grid-item" id="grid-item" style="padding-right: 0; padding-left: 0; position: relative; background-image: url('images/FOTO2.jpeg'); background-size: cover;">
-            <a href="stories-click-3.html"><p id="text-desc" style="width: 100%; background-color: #0000A0; height: 30%;">Hope and Help</p></a>
+            <a href="stories-click-3.html"><p id="text-desc" style="width: 100%; background-color: #0000A0; height: 30%;">&nbsp;Hope and Help</p></a>
             
         </div>
         <div class="grid-immediate" id="grid-item2">
@@ -110,12 +111,12 @@
             <a href="findhelp.html"><p>Get Immediate Help</p></a>
         </div>
         <div class="grid-item item2" id="grid-item2" style="padding-right: 0; padding-left: 0; position: relative; background-image: url('images/stories-4-atas.jpg'); background-size: cover;">
-            <a href="stories-click-5.html"><p id="text-desc" style="width: 100%; background-color: yellow; height: 30%;">Cornerstone of recovery</p></a>
+            <a href="stories-click-5.html"><p id="text-desc" style="width: 100%; background-color: yellow; height: 30%;">&nbsp;Cornerstone of recovery</p></a>
         </div>
     </div>
     <div class="magazine-health" style="padding-top:0px;">
         <div class="grid-item" id="grid-item" style="padding-right: 0; padding-left: 0; position: relative; background-image: url('images/stories-5-atas.jpg'); background-size: cover;">
-            <a href="stories-click-4.html"><p id="text-desc" style="width: 100%; background-color: #008000;">Students dont feel they are getting appropriate help online</p></a>
+            <a href="stories-click-4.html"><p id="text-desc" class="text-desc-edit" style="width: 100%; background-color: #008000;">&nbsp;Students dont feel they are getting &nbsp;appropriate help online</p></a>
         </div>
         <div class="grid-immediate" id="grid-item2" style="background-color:#7851A9;">
             <p style="font-size:40px;">Mental Health <br>Disorders</br></p>
@@ -180,6 +181,10 @@
 </body>
 <script src="js/show.js"></script>
 <script>
+        if($(window).width() <= 480) {
+        document.getElementsByClassName("text-desc-edit")[0].innerHTML = "&nbsp;Navigating people to better &nbsp;mental health";
+        document.getElementsByClassName("text-desc-edit")[1].innerHTML = "&nbsp;Students dont feel they are &nbsp;getting appropriate help online";
+    }
     function myFunction() {
         document.getElementsByClassName("topnav")[0].classList.toggle("responsive");
     }

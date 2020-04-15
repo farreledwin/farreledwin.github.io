@@ -111,11 +111,16 @@ body {
 
 iframe {
 	display: block;
+	width: 100%;
 }
 
 .content-text h1:hover {
 	text-decoration: underline;
 }
+.address-map-google {
+	width: 100%;
+}
+
 @font-face {
 	font-family: headerContent;
 	src: url(../font/itc-clearface-lt-regular.ttf);
@@ -127,6 +132,7 @@ iframe {
 	}
 	.test-image-help {
 		width: 100%;
+		height: 30vh !important;
 	}
 	.content-text div h1 {
 		position: relative;
