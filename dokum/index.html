@@ -34,23 +34,26 @@
                     <li class="scroll-to-link active" data-target="get-started">
                         <a>GET STARTED</a>
                     </li>
-                    <li class="scroll-to-link" data-target="login-account">
+                    <li class="scroll-to-link active" data-target="login-account">
                         <a>Login Account</a>
                     </li>
-                    <li class="scroll-to-link" data-target="get-quiz">
+                    <li class="scroll-to-link active" data-target="get-quiz">
                         <a>Quiz</a>
                     </li>
-                    <li class="scroll-to-link" data-target="get-question-quiz">
+                    <li class="scroll-to-link active" data-target="get-question-quiz">
                         <a>Question Quiz</a>
                     </li>
-                    <li class="scroll-to-link" data-target="get-key-answers">
+                    <li class="scroll-to-link active" data-target="get-key-answers">
                         <a>Key Answers</a>
                     </li>
-                    <li class="scroll-to-link" data-target="get-answer-correction">
+                    <li class="scroll-to-link active" data-target="get-answer-correction">
                         <a>Answer Correction</a>
                     </li>
-                    <li class="scroll-to-link" data-target="get-student-answer">
+                    <li class="scroll-to-link active" data-target="get-student-answer">
                         <a>Student Answers</a>
+                    </li>
+                    <li class="scroll-to-link" data-target="get-course">
+                        <a>Courses</a>
                     </li>
                     <li class="scroll-to-link" data-target="errors">
                         <a>Errors</a>
@@ -1065,7 +1068,211 @@ Result example :
                         </tbody>
                     </table>                    
                 </div>
+
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-course">Insert Quiz Course</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To insert quiz course you need to make a POST call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/course/insert</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": {
+            "message": "insert new course success",
+            "status": 1
+        },
+        "status": true
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>course_name</td>
+                                <td>String</td>
+                                <td>Your course name you want to insert</td>
+                            </tr>   
+                        </tbody>
+                    </table>                    
+                </div>
                 
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-course">Update Quiz Course</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To update quiz course you need to make a POST call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/course/update</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": {
+            "message": "update course success",
+            "status": 1
+        },
+        "status": true
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>course_id</td>
+                                <td>Integer</td>
+                                <td>Your course id you want to update</td>
+                            </tr>                              
+                            <tr>
+                                <td>course_name</td>
+                                <td>String</td>
+                                <td>Your new course name you want to update</td>
+                            </tr>   
+                        </tbody>
+                    </table>                    
+                </div>
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-course">Delete Quiz Course</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To delete quiz course you need to make a GET call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/course/delete/{id}</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": {
+            "message": "delete course success",
+            "status": 1
+        },
+        "status": true
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>id</td>
+                                <td>Integer</td>
+                                <td>Your course id you want to delete</td>
+                            </tr>                              
+                        </tbody>
+                    </table>                    
+                </div>
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-course">Get Quiz Course</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To get quiz course you need to make a GET call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/course/all</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": [
+            {
+                "id": 1,
+                "course_name": "Web Programming",
+                "created_at": null,
+                "updated_at": "2020-04-17 16:11:51"
+            },
+            {
+                "id": 2,
+                "course_name": "test2",
+                "created_at": null,
+                "updated_at": null
+            }
+        ],
+        "status": true
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>null</td>
+                                <td>null</td>
+                                <td>null</td>
+                            </tr>                              
+                        </tbody>
+                    </table>                    
+                </div>
                 <div class="overflow-hidden content-section" id="content-errors">
                     <h2 id="errors">Errors</h2>
                     <p>
