@@ -1,0 +1,1118 @@
+<!--
+ API Documentation HTML Template  - 1.0.0
+ Copyright © 2016 Florian Nicolas
+ Licensed under the MIT license.
+ https://github.com/ticlekiwi/API-Documentation-HTML-Template
+ !-->
+<!DOCTYPE html>
+<html class="no-js" lang="en"> 
+    <head>
+        <meta charset="utf-8">
+        <title>API - Documentation</title>
+        <meta name="description" content="">
+        <meta name="author" content="ticlekiwi">
+
+        <meta http-equiv="cleartype" content="on">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="css/hightlightjs-dark.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,500|Source+Code+Pro:300" rel="stylesheet">
+        <link rel="stylesheet" href="css/style.css" media="all">
+        <script>hljs.initHighlightingOnLoad();</script>
+    </head>
+
+    <body>
+        <div class="left-menu">
+            <div class="content-logo">
+                <img alt="platform by Emily van den Heever from the Noun Project" title="platform by Emily van den Heever from the Noun Project" src="images/logo.png" height="32" />
+                <span>API Documentation</span>
+            </div>
+            <div class="content-menu">
+                <ul>
+                    <li class="scroll-to-link active" data-target="get-started">
+                        <a>GET STARTED</a>
+                    </li>
+                    <li class="scroll-to-link" data-target="login-account">
+                        <a>Login Account</a>
+                    </li>
+                    <li class="scroll-to-link" data-target="get-quiz">
+                        <a>Quiz</a>
+                    </li>
+                    <li class="scroll-to-link" data-target="get-question-quiz">
+                        <a>Question Quiz</a>
+                    </li>
+                    <li class="scroll-to-link" data-target="get-key-answers">
+                        <a>Key Answers</a>
+                    </li>
+                    <li class="scroll-to-link" data-target="get-answer-correction">
+                        <a>Answer Correction</a>
+                    </li>
+                    <li class="scroll-to-link" data-target="get-student-answer">
+                        <a>Student Answers</a>
+                    </li>
+                    <li class="scroll-to-link" data-target="errors">
+                        <a>Errors</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="content-page">
+            <div class="content-code"></div>
+            <div class="content">
+                <div class="overflow-hidden content-section" id="content-get-started">
+                    <h1 id="get-started">Get started</h1>
+                    <pre>
+    API Endpoint
+
+        http://10.35.148.54:8080/api/
+                </pre>
+                    <p>
+                        Documentation For Backend API Quiz/Tryout Online By FR19-1 
+                    </p>
+                    <p>
+                        To use this API, you need an <strong>API key</strong>. Please contact me at <a href="mailto:edwin.juniawan@binus.edu">edwin.juniawan@binus.edu</a> to get your own API key. 
+                    </p>
+                </div>
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="login-account">Login Account Staff (Not Messier) Or Student</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To login with your account you need to make a POST call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/login</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": "eyJpdiI6IkVwNkdLM2xVeFlzdHhRc1k0eU4vQnc9PSIsInZhbHVlIjoiclZ6Y3VmOWlFWjVLTlYxRVBZSy9zRkdTR3l5NllMek0weWtMbUJTTS9ZbzNOZm1BUVAvQlo5RW51SGtXRXluNUdjMm5Ga0xLR1JJUitQeWdiM2FlcmJoaUdSc1d2aTIzelRuK2srQlJUWk01U3c2Y251b3o1M0g0VmJ0eTREYjVzVjdrTVo1azlKbkMrSnlDV2lRVUNERXR6Z0ZNdGtNaW1vTVEzb201K1BzPSIsIm1hYyI6IjYwNDgxOWE1ZjQxNzJhMWE3MDlhYjNiZTZjZjdmZjRkMTdhY2I4MWUyOTE4YzUwNjA4OWM3ZjRjN2UzOTNmYjQifQ==",
+        "status": true
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>username</td>
+                                <td>String</td>
+                                <td>Your Initial Username Or Student Email</td>
+                            </tr>
+                            <tr>
+                                <td>password</td>
+                                <td>String</td>
+                                <td>Your Account Password</td>
+                            </tr>
+                        </tbody>
+                    </table>                    
+                </div>
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-quiz">View All Quiz</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To get all quiz data you need to make a GET call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/quiz/all</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": [
+            {
+                "id": 1,
+                "user_id": 41,
+                "course_id": 1,
+                "quiz_duration": 0,
+                "created_at": "2020-04-07 12:02:24",
+                "updated_at": "2020-04-07 13:13:23",
+                "users": {
+                    "id": 41,
+                    "user_initial": "FO19-1",
+                    "user_name": "Frandi",
+                    "user_email": "frandi.rianto@binus.edu",
+                    "role_id": 1,
+                    "status": "0",
+                    "deleted_at": null,
+                    "created_at": null,
+                    "updated_at": null
+                },
+                "courses": {
+                    "id": 1,
+                    "course_name": "Web Programming",
+                    "created_at": null,
+                    "updated_at": "2020-04-17 16:11:51"
+                }
+            }
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>null</td>
+                                <td>null</td>
+                                <td>null</td>
+                            </tr>
+                        </thead>                     
+                    </table>                    
+                </div>
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-quiz">Insert Quiz</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To insert a new quiz you need to make a POST call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/quiz/insert</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": {
+            "message": "insert new quiz success",
+            "status": 1
+        },
+        "status": true
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>user_id</td>
+                                <td>Integer</td>
+                                <td>Your User ID</td>
+                            </tr>
+                            <tr>
+                                <td>course_id</td>
+                                <td>Integer</td>
+                                <td>Your Course ID</td>
+                            </tr>
+                            <tr>
+                                <td>quiz_duration</td>
+                                <td>Integer</td>
+                                <td>Your quiz duration</td>
+                            </tr>
+                        </tbody>
+                    </table>                    
+                </div>
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-quiz">Update Quiz</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To update quiz you need to make a POST call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/quiz/update</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": {
+            "message": "update quiz success",
+            "status": 1
+        },
+        "status": true
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>user_id</td>
+                                <td>Integer</td>
+                                <td>Your User ID</td>
+                            </tr>
+                            <tr>
+                                <td>course_id</td>
+                                <td>Integer</td>
+                                <td>Your Course ID</td>
+                            </tr>
+                            <tr>
+                                <td>quiz_duration</td>
+                                <td>Integer</td>
+                                <td>Your quiz duration</td>
+                            </tr>
+                        </tbody>
+                    </table>                    
+                </div>
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-quiz">Delete Quiz</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To delete quiz you need to make a GET call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/quiz/delete</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": {
+            "message": "delete quiz success",
+            "status": 1
+        },
+        "status": true
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>id</td>
+                                <td>Integer</td>
+                                <td>Your Quiz ID want to be deleted</td>
+                            </tr>   
+                        </tbody>
+                    </table>                    
+                </div>
+
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-question-quiz">Get Question By Quiz</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To get question quiz you need to make a GET call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/questionquiz/getQuestion/{id}</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": [
+            {
+                "question_quiz_id": 1,
+                "quiz_id": 1,
+                "question_type_id": 1,
+                "question_number": 1,
+                "question_quiz": "zzcfefef",
+                "weight_score": 2,
+                "created_at": "2020-04-07 15:56:08",
+                "updated_at": "2020-04-09 18:26:44"
+            }
+            ]
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>id</td>
+                                <td>Integer</td>
+                                <td>Your Quiz ID want to load questions</td>
+                            </tr>   
+                        </tbody>
+                    </table>                    
+                </div>
+
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-question-quiz">Insert Question Quiz</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To insert question quiz you need to make a POST call (can be array) to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/questionquiz/insert</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": [
+            {
+                message: "insert all data success",
+                status: "true"
+            }
+            ]
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>quiz_id</td>
+                                <td>Integer</td>
+                                <td>Your Quiz ID want to insert question</td>
+                            </tr>   
+                            <tr>
+                                <td>question_type_id</td>
+                                <td>Integer</td>
+                                <td>Your Question Type ID (1 or 2) Single Answer or Multiple Answer</td>
+                            </tr>   
+                             <tr>
+                                <td>question_number</td>
+                                <td>Integer</td>
+                                <td>Your question number for this quiz</td>
+                            </tr>
+                            <tr>
+                                <td>question_quiz</td>
+                                <td>String</td>
+                                <td>Your question for this question number</td>
+                            </tr>     
+                            <tr>
+                                <td>weight_score</td>
+                                <td>Integer</td>
+                                <td>Your weight score for this question</td>
+                            </tr>   
+                        </tbody>
+                    </table>                    
+                </div>
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-question-quiz">Update Question Quiz</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To update question quiz you need to make a POST call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/questionquiz/update</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": [
+            {
+                message: "update question quiz success",
+                status: "true"
+            }
+            ]
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>question_number</td>
+                                <td>Integer</td>
+                                <td>Your Question Number want to update</td>
+                            </tr>   
+                            <tr>
+                                <td>quiz_id</td>
+                                <td>Integer</td>
+                                <td>Your Quiz ID want to update</td>
+                            </tr>   
+                             <tr>
+                                <td>question_type_id</td>
+                                <td>Integer</td>
+                                <td>Your new question type id</td>
+                            </tr>
+                            <tr>
+                                <td>question_quiz</td>
+                                <td>String</td>
+                                <td>Your new question quiz for this question number</td>
+                            </tr>     
+                            <tr>
+                                <td>weight_score</td>
+                                <td>Integer</td>
+                                <td>Your new weight score for this question</td>
+                            </tr>   
+                        </tbody>
+                    </table>                    
+                </div>
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-question-quiz">Delete Question Quiz</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To delete question quiz you need to make a POST call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/questionquiz/delete</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": [
+            {
+                message: "delete question quiz success",
+                status: "true"
+            }
+            ]
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>question_number</td>
+                                <td>Integer</td>
+                                <td>Your Question Number want to delete</td>
+                            </tr>   
+                            <tr>
+                                <td>quiz_id</td>
+                                <td>Integer</td>
+                                <td>Your Quiz ID want to delete</td>
+                            </tr>   
+                        </tbody>
+                    </table>                    
+                </div>
+
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-key-answers">Insert Key Answers</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To insert key answer quiz you need to make a POST call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/keyanswer/insert</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": [
+            {
+                message: "insert key answer quiz success",
+                status: "true"
+            }
+            ]
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>quiz_id</td>
+                                <td>Integer</td>
+                                <td>Your Quiz ID you want to insert key answer</td>
+                            </tr>   
+                            <tr>
+                                <td>quiz_question_number</td>
+                                <td>Integer</td>
+                                <td>Your question number want to insert key answer</td>
+                            </tr>   
+                            <tr>
+                                <td>quiz_answer</td>
+                                <td>String</td>
+                                <td>Your key answer for this question quiz</td>
+                            </tr>   
+                        </tbody>
+                    </table>                    
+                </div>
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-key-answers">Update Key Answers</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To update key answer quiz you need to make a POST call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/keyanswer/update</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": [
+            {
+                message: "update key answer quiz success",
+                status: "true"
+            }
+            ]
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>quiz_question_id</td>
+                                <td>Integer</td>
+                                <td>Your question number want to update key answer</td>
+                            </tr>   
+                            <tr>
+                                <td>quiz_id</td>
+                                <td>Integer</td>
+                                <td>Your quiz id want to update key answer</td>
+                            </tr>   
+                            <tr>
+                                <td>quiz_answer</td>
+                                <td>String</td>
+                                <td>Your new quiz answer for this question quiz</td>
+                            </tr>   
+                        </tbody>
+                    </table>                    
+                </div>
+
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-key-answers">Delete Key Answers</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To delete key answer quiz you need to make a POST call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/keyanswer/delete</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": [
+            {
+                message: "delete key answer quiz success",
+                status: "true"
+            }
+            ]
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>quiz_question_id</td>
+                                <td>Integer</td>
+                                <td>Your Question number you want to delete key answer</td>
+                            </tr>   
+                            <tr>
+                                <td>quiz_id</td>
+                                <td>Integer</td>
+                                <td>Your quiz id want to delete key answer</td>
+                            </tr>   
+                        </tbody>
+                    </table>                    
+                </div>
+
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-answer-correction">Get Student Quiz Score</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To get student quiz score you need to make a POST call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/answercorrection/getScorePerStudent</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": {
+            "score": 2
+        },
+        "status": true
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>quiz_id</td>
+                                <td>Integer</td>
+                                <td>Your quiz id you want to get quiz score</td>
+                            </tr>   
+                            <tr>
+                                <td>student_nim</td>
+                                <td>String</td>
+                                <td>Your student nim want to get quiz score</td>
+                            </tr>   
+                        </tbody>
+                    </table>                    
+                </div>
+
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-student-answer">Get Student Answer</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To get student answer you need to make a POST call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/studentanswer/getByNIM</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": [
+            {
+                "student_answers_id": 2,
+                "quiz_id": 1,
+                "quiz_question_id": 2,
+                "nim_student": "2101633033",
+                "student_answer_choice": "D",
+                "created_at": null,
+                "updated_at": "2020-04-09 17:47:28"
+            },
+            {
+                "student_answers_id": 4,
+                "quiz_id": 1,
+                "quiz_question_id": 1,
+                "nim_student": "2101633033",
+                "student_answer_choice": "A",
+                "created_at": null,
+                "updated_at": null
+            }
+        ],
+        "status": true
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>quiz_id</td>
+                                <td>Integer</td>
+                                <td>Your quiz id you want to get student answer</td>
+                            </tr>   
+                            <tr>
+                                <td>student_nim</td>
+                                <td>String</td>
+                                <td>Your student nim want to get student answer</td>
+                            </tr>   
+                        </tbody>
+                    </table>                    
+                </div>
+
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-student-answer">Insert Student Answer</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To insert student answer you need to make a POST call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/studentanswer/insert</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": {
+            "message": "insert new student answer success",
+            "status": 1
+        },
+        "status": true
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>quiz_id</td>
+                                <td>Integer</td>
+                                <td>Your quiz id you want to insert student answer</td>
+                            </tr>   
+                            <tr>
+                                <td>student_nim</td>
+                                <td>String</td>
+                                <td>Your student nim want to insert student answer</td>
+                            </tr>   
+                            <tr>
+                                <td>quiz_question_id</td>
+                                <td>Integer</td>
+                                <td>Your question number want to insert student answer</td>
+                            </tr>
+                            <tr>
+                                <td>student_choice</td>
+                                <td>String</td>
+                                <td>Your student choice want to insert student answer</td>
+                            </tr>      
+                        </tbody>
+                    </table>                    
+                </div>
+                
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-student-answer">Update Student Answer</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To update student answer you need to make a POST call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/studentanswer/update</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": {
+            "message": "update student answer success",
+            "status": 1
+        },
+        "status": true
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>quiz_question_id</td>
+                                <td>Integer</td>
+                                <td>Your question number you want to update student answer</td>
+                            </tr>   
+                            <tr>
+                                <td>quiz_id</td>
+                                <td>Integer</td>
+                                <td>Your quiz id want to update student answer</td>
+                            </tr>   
+                            <tr>
+                                <td>student_nim</td>
+                                <td>String</td>
+                                <td>Your student nim want to update student answer</td>
+                            </tr>
+                            <tr>
+                                <td>student_choice</td>
+                                <td>String</td>
+                                <td>Your new student choice want to update student answer</td>
+                            </tr>      
+                        </tbody>
+                    </table>                    
+                </div>
+
+                <div class="overflow-hidden content-section" id="content-get-characters">
+                    <h2 id="get-student-answer">Delete Student Answer</h2>
+                    <!-- <pre><code class="bash">
+# Here is a curl example
+curl \
+-X POST http://api.westeros.com/character/get \
+-F 'secret_key=your_api_key' \
+-F 'house=Stark,Bolton' \
+-F 'offset=0' \
+-F 'limit=50'
+                </code></pre> -->
+                    <p>
+                        To delete student answer you need to make a POST call to the following url:<br>
+                        <code class="higlighted">http://10.35.148.54:8080/api/studentanswer/delete</code>
+                    </p>
+                    <br>
+                    <pre><code class="json">
+Result example :
+
+{
+    "payload": {
+        "data": {
+            "message": "delete student answer success",
+            "status": 1
+        },
+        "status": true
+    }
+}
+                </code></pre>
+                    <h4>QUERY PARAMETERS</h4>
+                    <table>
+                    <thead>
+                        <tr>
+                                <th>Field</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>quiz_question_id</td>
+                                <td>Integer</td>
+                                <td>Your question number you want to delete student answer</td>
+                            </tr>   
+                            <tr>
+                                <td>student_nim</td>
+                                <td>String</td>
+                                <td>Your student nim want to delete student answer</td>
+                            </tr>   
+                            <tr>
+                                <td>quiz_id</td>
+                                <td>Integer</td>
+                                <td>Your quiz id want to delete student answer</td>
+                            </tr>    
+                        </tbody>
+                    </table>                    
+                </div>
+                
+                <div class="overflow-hidden content-section" id="content-errors">
+                    <h2 id="errors">Errors</h2>
+                    <p>
+                        The Westeros API uses the following error codes:
+                    </p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Error Code</th>
+                                <th>Meaning</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>X000</td>
+                                <td>
+                                    Some parameters are missing. This error appears when you don't pass every mandatory parameters.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>X001</td>
+                                <td>
+                                    Unknown or unvalid <code class="higlighted">secret_key</code>. This error appears if you use an unknow API key or if your API key expired.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>X002</td>
+                                <td>
+                                    Unvalid <code class="higlighted">secret_key</code> for this domain. This error appears if you use an  API key non specified for your domain. Developper or Universal API keys doesn't have domain checker.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>X003</td>
+                                <td>
+                                    Unknown or unvalid user <code class="higlighted">token</code>. This error appears if you use an unknow user <code class="higlighted">token</code> or if the user <code class="higlighted">token</code> expired.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="content-code"></div>
+        </div>
+        <!-- Github Corner Ribbon - to remove (Ribbon created with : http://tholman.com/github-corners/ )-->
+        <a href="https://github.com/ticlekiwi/API-Documentation-HTML-Template" class="github-corner" aria-label="View source on Github" title="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="z-index:99999; fill:#70B7FD; color:#fff; position: fixed; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+        <!-- END Github Corner Ribbon - to remove -->
+        <script src="js/libs/jquery.js"></script>
+        <script src="js/script.js"></script>
+    </body>
+</html>
