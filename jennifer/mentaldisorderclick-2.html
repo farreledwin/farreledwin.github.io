@@ -29,6 +29,7 @@
     background-position: center;
     text-align: center;
     background-color: #ed9c9d;
+    padding-top: 10vh;
 }
 #grid-item a h2 {
     color:white;
@@ -49,7 +50,11 @@
 	opacity: 1;
 }
 .more-stories-click {
-    padding-left: 11vw;
+    padding: 0;
+}
+.button-stories {
+    padding:0;
+    font-family: titleBold;
 }
 @media screen and (max-width: 480px) {
     .text-grid {
@@ -70,6 +75,10 @@
     }
     .grid-item {
         height:30vh;
+        
+    }
+    .grid-item p {
+    opacity: 1;
     }
 }
 </style>
@@ -165,14 +174,15 @@
 <ul>
     <li style="font-size:20px; font-family: menuFont, Arial, Helvetica, sans-serif; letter-spacing: 1px;">Psychotherapy: This is a type of counseling that addresses the emotional response to mental illness. A mental health specialist helps you by talking about how to understand and deal with your anxiety disorder.</li>
 </ul>
+<div class="more-stories more-stories-click">
+    <button class="button-stories button-stories-click">
+        Other Disorders
+    </button>
+</div>
             </div>
         </div>
     </div>
-    <div class="more-stories more-stories-click">
-        <button class="button-stories button-stories-click">
-            Other Disorders
-        </button>
-    </div>
+
     <div class="magazine-3-3">
         <div class="grid-item" id="grid-item" style="background-image: url('images/anxiety.jpg'); background-size: cover;padding-right: 0; padding-left: 0; position: relative;">
             <a href="mentaldisorderclick-2.html"><p id="text-desc" style="width: 100%; background-color: #008000; padding:0;">ANXIETY</p></a>
@@ -191,7 +201,7 @@
         </div>
         <div class="text-grid mentalclick" id="grid-item" style="background-color:#2b45ba;">
             <a href="findtherapist.html"><h2>Find A Therapist</h2></a>
-            <a href="findtherapist.html"><button class="more-stories button-stories" style="margin:auto !important;">Connect</button></a>
+            <a href="findtherapist.html"><button class="more-stories button-stories" style="margin:auto !important; padding-left:30px; padding-top:15px; padding-bottom:15px; padding-right: 30px;">Connect</button></a>
         </div>
     </div>
     <div class="footer">

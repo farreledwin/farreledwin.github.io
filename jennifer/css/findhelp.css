@@ -57,7 +57,7 @@ body {
 .content-text div h1 {
 	position: absolute;
 	bottom: 0;
-	right: 0;
+	left: 2vw;
 	color: white;
 	font-family: headerContent;
 	font-size: 50px;
@@ -133,7 +133,9 @@ iframe {
 	.test-image-help {
 		width: 100%;
 		height: 30vh !important;
+		display: none;
 	}
+
 	.content-text div h1 {
 		position: relative;
 	}
@@ -155,7 +157,7 @@ iframe {
 		text-align: center;
 	}
 	.address-map-google {
-		width: 50%;
+		width: 100%;
 	}
 	.address-map {
 		display: block;

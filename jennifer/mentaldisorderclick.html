@@ -11,8 +11,7 @@
     <title>Document</title>
 </head>
 <style>
-    .text-grid {
-    border: 1px solid rgba(0, 0, 0, 0.8);
+.text-grid {
     padding-top: 20vh;
     padding-bottom: 20px;
     font-size: 30px;
@@ -20,6 +19,7 @@
     background-position: center;
     text-align: center;
     background-color: #ed9c9d;
+    padding-top: 10vh;
 }
     #text-desc {
         position: absolute;
@@ -37,7 +37,11 @@
 	opacity: 1;
     }
     .more-stories-click {
-        padding-left: 14vw;
+    padding: 0;
+    }
+    .button-stories {
+    padding:0;
+    font-family: titleBold;
     }
 @media screen and (max-width: 480px) {
     .text-grid {
@@ -58,6 +62,9 @@
     }
     .grid-item {
         height:30vh;
+    }
+    .grid-item p {
+    opacity: 1;
     }
 }
 </style>
@@ -140,13 +147,13 @@
 <p>Out of that was born our ‘World of Wellbeing’ concept. A holistic approach where in our resources section exercise, nutrition, employment and money support is provided alongside a map with all the free mental health services in your locality.</p>
 <p>By aligning action with awareness, we’re promoting a New Normal, where people can talk openly about their emotions, as comfortably as they’d talk about last night’s game or the latest TV series.</p>
 <p>In these fractured times, our expert writers and photographers are exploring stories around the thing that unites us all – mental health. Good or bad, we all have it.</p>
-            </div>
+<div class="more-stories more-stories-click">
+    <button class="button-stories button-stories-click">
+        Other Disorders
+    </button>
+</div>
+           </div>
         </div>
-    </div>
-    <div class="more-stories more-stories-click">
-        <button class="button-stories button-stories-click">
-            Other Disorders
-        </button>
     </div>
     <div class="magazine-3-3">
         <div class="grid-item" id="grid-item" style="background-image: url('images/anxiety.jpg'); background-size: cover;padding-right: 0; padding-left: 0; position: relative;">
@@ -166,7 +173,7 @@
         </div>
         <div class="text-grid mentalclick" id="grid-item" style="background-color:#2b45ba;">
             <a href="findtherapist.html"><h2>Find A Therapist</h2></a>
-            <a href="findtherapist.html"><button class="more-stories button-stories" style="margin:auto !important;">Connect</button></a>
+            <a href="findtherapist.html"><button class="more-stories button-stories" style="margin:auto !important; padding-left:30px; padding-top:15px; padding-bottom:15px; padding-right: 30px;">Connect</button></a>
         </div>
     </div>
     <div class="footer">

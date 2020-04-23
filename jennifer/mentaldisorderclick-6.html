@@ -28,6 +28,7 @@
     background-position: center;
     text-align: center;
     background-color: #ed9c9d;
+    padding-top: 10vh;
 }
 #grid-item a h2 {
     color:white;
@@ -47,9 +48,13 @@
 .grid-item:hover p {
 	opacity: 1;
     }
-.more-stories-click {
-    padding-left:6vw;
-}
+    .more-stories-click {
+    padding: 0;
+    }
+    .button-stories {
+    padding:0;
+    font-family: titleBold;
+    }
 @media screen and (max-width: 480px) {
     .text-grid {
         padding-top:0 !important;
@@ -69,6 +74,9 @@
     }
     .grid-item {
         height:30vh;
+    }
+    .grid-item p {
+    opacity: 1;
     }
 }
 </style>
@@ -161,13 +169,14 @@
 <p style="font-family:titleBold;">Diagnosis & Treatment</p>
 <p>There are effective treatments for moderate and severe depression. Health-care providers may offer psychological treatments such as behavioral activation, cognitive behavioral therapy (CBT) and interpersonal psychotherapy (IPT), or antidepressant medication such as selective serotonin re-uptake inhibitors (SSRIs) and tricyclic antidepressants (TCAs). Health-care providers should keep in mind the possible adverse effects associated with antidepressant medication, the ability to deliver either intervention (in terms of expertise, and/or treatment availability), and individual preferences. Different psychological treatment formats for consideration include individual and/or group face-to-face psychological treatments delivered by professionals and supervised lay therapists.</p>
 <p>Psychosocial treatments are also effective for mild depression. Antidepressants can be an effective form of treatment for moderate-severe depression but are not the first line of treatment for cases of mild depression. They should not be used for treating depression in children and are not the first line of treatment in adolescents, among whom they should be used with extra caution.</p>
-       </div>
-    </div>
     <div class="more-stories more-stories-click">
         <button class="button-stories button-stories-click">
             Other Disorders
         </button>
     </div>
+</div>
+    </div>
+
     </div>
     <div class="magazine-3-3">
         <div class="grid-item" id="grid-item" style="background-image: url('images/anxiety.jpg'); background-size: cover;padding-right: 0; padding-left: 0; position: relative;">
@@ -187,8 +196,7 @@
         </div>
         <div class="text-grid mentalclick" id="grid-item" style="background-color:#2b45ba;">
             <a href="findtherapist.html"><h2>Find A Therapist</h2></a>
-            <a href="findtherapist.html"><button class="more-stories button-stories" style="margin:auto !important;">Connect</button></a>
-        </div>
+            <a href="findtherapist.html"><button class="more-stories button-stories" style="margin:auto !important; padding-left:30px; padding-top:15px; padding-bottom:15px; padding-right: 30px;">Connect</button></a>        </div>
     </div>
     <div class="footer">
         <div class="footer-content">

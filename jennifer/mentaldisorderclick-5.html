@@ -28,6 +28,7 @@
     background-position: center;
     text-align: center;
     background-color: #ed9c9d;
+    padding-top: 10vh;
 }
 #grid-item a h2 {
     color:white;
@@ -48,8 +49,12 @@
 	opacity: 1;
 }
 .more-stories-click {
-    padding-left: 6vw;
+    padding: 0;
 }
+.button-stories {
+    padding:0;
+    font-family: titleBold;
+    }
 @media screen and (max-width: 480px) {
     .text-grid {
         padding-top:0 !important;
@@ -69,6 +74,9 @@
     }
     .grid-item {
         height:30vh;
+    }
+    .grid-item p {
+    opacity: 1;
     }
 }
 </style>
@@ -164,13 +172,14 @@
 </ul>
 <p style="font-family:titleBold;">What If I Can't Control My Anger?</p>
 <p>If you believe that your anger is out of control and is having a negative effect on your life and relationships, seek the help of a mental health professional. A psychologist or other licensed mental health professional can work with you to learn techniques for changing your thinking and your behavior. A mental health professional can help you deal with your anger in an appropriate way. Ask your doctor if medicines could be helpful. Sometimes, antidepressants, certain anticonvulsants, and low-dose antipsychotics can help manage sudden attacks of rage or anger. Avoid alcohol, short-acting benzodiazepines like Xanax, or street drugs that can make you say or do things more impulsively. Choose your therapist carefully, and make sure to talk to a professional who is trained to teach anger management and assertiveness skills.</p>
-       </div>
+<div class="more-stories more-stories-click">
+    <button class="button-stories button-stories-click">
+        Other Disorders
+    </button>
+</div>       
+</div>
     </div>
-    <div class="more-stories more-stories-click">
-        <button class="button-stories button-stories-click">
-            Other Disorders
-        </button>
-    </div>
+
 </div>
     <div class="magazine-3-3">
         <div class="grid-item" id="grid-item" style="background-image: url('images/anxiety.jpg'); background-size: cover;padding-right: 0; padding-left: 0; position: relative;">
@@ -190,7 +199,7 @@
         </div>
         <div class="text-grid mentalclick" id="grid-item" style="background-color:#2b45ba;">
             <a href="findtherapist.html"><h2>Find A Therapist</h2></a>
-            <a href="findtherapist.html"><button class="more-stories button-stories" style="margin:auto !important;">Connect</button></a>
+            <a href="findtherapist.html"><button class="more-stories button-stories" style="margin:auto !important; padding-left:30px; padding-top:15px; padding-bottom:15px; padding-right: 30px;">Connect</button></a>
         </div>
     </div>
     <div class="footer">

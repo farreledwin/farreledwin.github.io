@@ -34,7 +34,7 @@
 
 .page-container {
 	padding-top: 40px;
-	padding-bottom: 40px;
+	padding-bottom: 0;
 	margin-left: 8.333333%;
 	flex: 0 0 83.333333%;
 	max-width: 83.333333%;
