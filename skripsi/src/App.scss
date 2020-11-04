@@ -1,0 +1,34 @@
+body {
+  font-family: "Montserrat";
+  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url("../src/assets/images/background-2.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+  height: 100%;
+
+  .purple-color-change {
+    background-color: #413e8b;
+  }
+  .width-change-button {
+    width: 10em;
+  }
+  .modify-padding {
+    padding-top: 10em;
+  }
+
+  .scroll-to-view {
+    opacity: 0;
+    transition: 500ms;
+  }
+
+  .is-visible {
+    opacity: 1;
+  }
+  #tsparticles {
+    position: fixed;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+  }
+}

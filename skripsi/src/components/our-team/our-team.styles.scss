@@ -1,0 +1,19 @@
+@font-face {
+    font-family: PoppinsThin;
+    src: url("../../assets/font/Poppins-Regular.ttf");
+}
+
+@font-face {
+    font-family: PoppinsItalic;
+    src: url("../../assets/font/Poppins-ThinItalic.ttf")
+}
+
+
+.our-team {
+  font-family: "Poppins", sans-serif;
+
+  .image-leader {
+    //   flex-direction: column;
+    // justify-content: center;
+  }
+}

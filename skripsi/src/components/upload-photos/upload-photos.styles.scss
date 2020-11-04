@@ -1,0 +1,17 @@
+.icon-upload {
+  font-size: 10em;
+  border: 3px dashed white;
+  width: 400px;
+  height: 300px;
+  font-size: 10em;
+  margin: auto;
+  flex-direction: column;
+
+  svg {
+    margin: auto;
+  }
+
+  .display-gone {
+    display: none;
+  }
+}
