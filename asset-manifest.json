@@ -1,0 +1,30 @@
+{
+  "files": {
+    "main.css": "/skripsi/static/css/main.c37ae81b.chunk.css",
+    "main.js": "/skripsi/static/js/main.0abfaf1d.chunk.js",
+    "main.js.map": "/skripsi/static/js/main.0abfaf1d.chunk.js.map",
+    "runtime-main.js": "/skripsi/static/js/runtime-main.c0e9ed82.js",
+    "runtime-main.js.map": "/skripsi/static/js/runtime-main.c0e9ed82.js.map",
+    "static/css/2.50a5f423.chunk.css": "/skripsi/static/css/2.50a5f423.chunk.css",
+    "static/js/2.4c618a48.chunk.js": "/skripsi/static/js/2.4c618a48.chunk.js",
+    "static/js/2.4c618a48.chunk.js.map": "/skripsi/static/js/2.4c618a48.chunk.js.map",
+    "index.html": "/skripsi/index.html",
+    "precache-manifest.0f8cf8173a6b06f5c09e8cbc274f0750.js": "/skripsi/precache-manifest.0f8cf8173a6b06f5c09e8cbc274f0750.js",
+    "service-worker.js": "/skripsi/service-worker.js",
+    "static/css/2.50a5f423.chunk.css.map": "/skripsi/static/css/2.50a5f423.chunk.css.map",
+    "static/css/main.c37ae81b.chunk.css.map": "/skripsi/static/css/main.c37ae81b.chunk.css.map",
+    "static/js/2.4c618a48.chunk.js.LICENSE.txt": "/skripsi/static/js/2.4c618a48.chunk.js.LICENSE.txt",
+    "static/media/our-team.styles.scss": "/skripsi/static/media/Poppins-ThinItalic.c93e22e9.ttf",
+    "static/media/ardiant.jpg": "/skripsi/static/media/ardiant.7866b00d.jpg",
+    "static/media/App.scss": "/skripsi/static/media/background-2.f79abc98.jpg",
+    "static/media/farrel.jpg": "/skripsi/static/media/farrel.56dffdc3.jpg",
+    "static/media/vincent.jpg": "/skripsi/static/media/vincent.a55f0f26.jpg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.c0e9ed82.js",
+    "static/css/2.50a5f423.chunk.css",
+    "static/js/2.4c618a48.chunk.js",
+    "static/css/main.c37ae81b.chunk.css",
+    "static/js/main.0abfaf1d.chunk.js"
+  ]
+}
