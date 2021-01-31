@@ -1,0 +1,131 @@
+html, body {
+    font-family: FontAwesome;
+}
+
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    src: url('../fonts/Montserrat-Medium.ttf');
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/Poppins-Light.ttf');
+}
+
+.font-family--montserrat {
+    font-family: 'Montserrat';
+}
+
+.font-family--poppins {
+    font-family: 'Poppins';
+}
+
+.font-weight-800 {
+    font-weight: 800;
+}
+
+.width-500 {
+    width: 500px;
+}
+
+.width-25 {
+    width: 25%;
+}
+
+.background-color-black {
+    background-color: black;
+    height: 2px;
+}
+
+.title-education::after {
+    content: "";
+    display: block;
+    width: 50%;
+    border: 2px solid black;
+    margin: auto;
+    margin-top: 10px;
+}
+
+.university-icon-modify {
+    font-size: 2.5em;
+    border-radius: 20px;
+    background-color: black;
+    color: white;
+    padding: 0.2em;
+}
+
+.color-brown {
+    color : #999999;
+}
+
+.margin-0 {
+    margin: 0;
+}
+
+.height-width-100 img {
+    height: 100px;
+    width: 100px;
+}
+
+.width-5em img {
+    width: 5em !important;
+}
+
+.width-8em img {
+    width: 8em !important;
+}
+
+.width-10em img {
+    width: 10em !important;
+}
+
+.font-size-25em {
+    font-size: 2.5em;
+}
+
+.height-300px {
+    height: 300px;
+}
+
+.width-400px {
+    width: 400px;
+}
+
+.overlay-image {
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    position: absolute;
+}
+
+.my-project:hover > .overlay-image {
+    width: 25em;
+    height: 300px;
+    position: absolute;
+    opacity: 1;
+    top: 0;
+    left: 5em;
+    display: flex;
+}
+
+.my-project img {
+    transition: transform 1s, filter 2s;
+    filter: blur(0);
+    transform: scale(1.02);
+}
+
+.my-project:hover img {
+    filter: blur(2px) brightness(50%);
+    transform: scale(1);
+}
+
+.width-40px {
+    width: 40px;
+}
