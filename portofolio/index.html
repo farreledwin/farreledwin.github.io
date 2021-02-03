@@ -8,140 +8,179 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="css/styles.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="js/script.js"></script>
     <script src="https://kit.fontawesome.com/b8e6120963.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <header>
+    <header class="header-position bg-dark">
         <div class="header pt-3 margin-0">
             <div class="row">
-                <div class="col-sm-7">
+                <div class="col-sm-7 col-md-7">
                     <div class="d-flex justify-content-center font-family--montserrat">
-                        <h6><i class="fas fa-address-book"></i>&nbsp; +62 82213815980</h6>
+                        <h6 class="text-white"><i class="fas fa-address-book"></i>&nbsp; +62 82213815980</h6>
                     </div>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-5 col-md-4">
                     <div class="d-flex justify-content-center font-family--montserrat">
-                        <h6><i class="fas fa-envelope"></i>&nbsp; farrel206@gmail.com</h6>
+                        <h6 class="text-white"><i class="fas fa-envelope"></i>&nbsp; farrel206@gmail.com</h6>
                     </div>
                 </div>
             </div>
         </div>
     </header>
     <div class="container">
-        <div class="row">
-            <div class="col-sm-6 pt-5 mt-5 pl-5 font-family--montserrat">
+        <div class="row pt-5" data-aos="fade-right" data-aos-duration="1500" data-aos-offset="300"
+            data-aos-easing="ease-in-sine">
+            <div class="col-sm-12 col-lg-6 col-md-5 pt-5 mt-5 font-family--montserrat">
                 <h1 class="font-weight-800">Edwin Farrel Juniawan</h1>
                 <hr class="background-color-black" />
                 <br />
-                <h4>Software Engineer</h4>
+                <h4 class="txt-software">Software Engineer</h4>
                 <br />
-                <input class="btn btn-dark" type="button" value="Let's Go!" />
+                <input class="btn btn-dark" type="button" value="My Projects" />
             </div>
-            <div class="col-sm-6">
-                <img class="width-500" src="images/people-computer.png" />
+            <div class="col-sm-12 col-lg-6 col-md-7">
+                <img class="w-100" style="height:100%;" src="images/people-computer.png" />
             </div>
         </div>
-        <div class="row justify-content-center">
-            <h1 class="title-education text-center font-family--poppins">
+        <div class="row justify-content-center padding-top-10em" data-aos="fade-right" data-aos-duration="1500">
+            <div class="col-lg-6 col-md-12 col-sm-12 text-center padding-bottom-2em">
+                <img class="border-radius-50 width-20em width-100 padding-bottom-2em" src="images/farrel.jpg" />
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12">
+                <h1 class="title-education text-center font-family--poppins pb-3 about" data-aos="fade-right"
+                    data-aos-duration="1500"> About
+                </h1>
+                <h5 class="font-family--montserrat" data-aos="fade-right" data-aos-duration="1500">Lorem ipsum dolor sit
+                    amet consectetur adipisicing elit. Ex
+                    excepturi repellendus dolores assumenda
+                    corporis laborum fugiat id est nostrum, aperiam beatae explicabo. Dolorum modi perspiciatis iusto
+                    aut tenetur laboriosam amet!</h5>
+                <h5 class="font-family--montserrat" data-aos="fade-right" data-aos-duration="1500">Lorem ipsum dolor sit
+                    amet consectetur adipisicing elit. Ex
+                    excepturi repellendus dolores assumenda
+                    corporis laborum fugiat id est nostrum, aperiam beatae explicabo. Dolorum modi perspiciatis iusto
+                    aut tenetur laboriosam amet!</h5>
+            </div>
+        </div>
+        <div class="row justify-content-center padding-top-10em">
+            <h1 class="title-education text-center font-family--poppins" data-aos="zoom-in-up" data-aos-duration="1500">
                 Education
             </h1>
         </div>
-        <div class="row justify-content-center mt-5">
-            <div class="col-sm-2 text-right">
+        <div class="row justify-content-center mt-5" data-aos="zoom-in-up" data-aos-duration="1500">
+            <div class="col-12 col-sm-12 text-align-responsive col-md-2 text-right padding-bottom-2em">
                 <i class="fas fa-university university-icon-modify"></i>
             </div>
-            <div class="col-sm-5 font-family--montserrat">
+            <div class="col-12 col-sm-12 text-align-responsive col-md-5 font-family--montserrat">
                 <h4><strong>2017 - 2021 (Expected)</strong></h4>
                 <h5><strong>Binus University</strong></h5>
                 <h6>Bachelor of Computer Science</h6>
                 <h6 class="color-brown">Majoring in Software Engineering</h6>
             </div>
         </div>
-        <div class="row justify-content-center mt-5">
-            <div class="col-sm-2 text-right">
+        <div class="row justify-content-center mt-5" data-aos="zoom-in-up" data-aos-duration="1500">
+            <div class="col-sm-12 col-md-2 text-align-responsive text-right padding-bottom-2em">
                 <i class="fas fa-university university-icon-modify"></i>
             </div>
-            <div class="col-sm-5 font-family--montserrat">
+            <div class="col-sm-12 col-md-5 text-align-responsive font-family--montserrat">
                 <h4><strong>2014 - 2017</strong></h4>
                 <h5><strong>SMK Telkom Jakarta</strong></h5>
                 <h6>Vocational High School</h6>
                 <h6 class="color-brown">Majoring in Computer Network Engineering</h6>
             </div>
         </div>
-        <div class="row justify-content-center pb-5 pt-5">
-            <h1 class="title-education text-center font-family--poppins">
+        <div class="row justify-content-center pb-5 padding-top-10em">
+            <h1 class="title-education text-center font-family--poppins" data-aos="zoom-in-down"
+                data-aos-duration="1500">
                 My Skills
             </h1>
         </div>
         <div class="row justify-content-center">
-            <div class="col-sm-3 height-width-100 text-center pt-4">
+            <div class="icon col-md-3 col-sm-6 height-width-100 text-center pt-4" data-aos="zoom-in-down"
+                data-aos-duration="1500">
                 <img class="image-icon-resize" src="images/html.png" />
                 <h3 class="font-family--montserrat">HTML</h3>
             </div>
-            <div class="col-sm-3 height-width-100 text-center pt-4">
+            <div class="icon col-md-3 col-sm-6 height-width-100 text-center pt-4" data-aos="zoom-in-down"
+                data-aos-duration="1500">
                 <img class="image-icon-resize" src="images/scss.png" />
                 <h3 class="font-family--montserrat">CSS/SCSS</h3>
             </div>
-            <div class="col-sm-3 height-width-100 text-center pt-4">
+            <div class="icon col-md-3 col-sm-6 height-width-100 text-center pt-4" data-aos="zoom-in-down"
+                data-aos-duration="1500">
                 <img class="image-icon-resize" src="images/js.png" />
                 <h3 class="font-family--montserrat">Javascript</h3>
             </div>
-            <div class="col-sm-3 height-width-100 text-center pt-4">
+            <div class="icon col-md-3 col-sm-6 height-width-100 text-center pt-4" data-aos="zoom-in-down"
+                data-aos-duration="1500">
                 <img class="image-icon-resize" src="images/python.png" />
                 <h3 class="font-family--montserrat">Python</h3>
             </div>
-            <div class="col-sm-3 height-width-100 width-5em text-center pt-4">
+            <div class="icon col-md-3 col-sm-6 height-width-100 width-5em text-center pt-4" data-aos="zoom-in-down"
+                data-aos-duration="1500">
                 <img class="image-icon-resize" src="images/java.png" />
                 <h3 class="font-family--montserrat">Java</h3>
             </div>
-            <div class="col-sm-3 height-width-100 width-8em text-center pt-4">
+            <div class="icon col-md-3 col-sm-6 height-width-100 width-8em text-center pt-4" data-aos="zoom-in-down"
+                data-aos-duration="1500">
                 <img class="image-icon-resize" src="images/react.png" />
                 <h3 class="font-family--montserrat">React.js</h3>
             </div>
-            <div class="col-sm-3 height-width-100 text-center pt-4">
+            <div class="icon col-md-3 col-sm-6 height-width-100 text-center pt-4" data-aos="zoom-in-down"
+                data-aos-duration="1500">
                 <img class="image-icon-resize" src="images/laravel.png" />
                 <h3 class="font-family--montserrat">Laravel</h3>
             </div>
-            <div class="col-sm-3 height-width-100 width-10em text-center pt-4">
+            <div class="icon col-md-3 col-sm-6 height-width-100 width-10em text-center pt-4" data-aos="zoom-in-down"
+                data-aos-duration="1500">
                 <img class="image-icon-resize" src="images/Expressjs.png" />
                 <h3 class="font-family--montserrat">Express.js</h3>
             </div>
-            <div class="col-sm-3 height-width-100 text-center pt-4">
+            <div class="icon col-md-3 col-sm-6 height-width-100 text-center pt-4" data-aos="zoom-in-down"
+                data-aos-duration="1500">
                 <img class="image-icon-resize" src="images/flask.png" />
                 <h3 class="font-family--montserrat">Flask</h3>
             </div>
-            <div class="col-sm-3 height-width-100 text-center pt-4">
+            <div class="icon col-md-3 col-sm-6 height-width-100 text-center pt-4" data-aos="zoom-in-down"
+                data-aos-duration="1500">
                 <img class="image-icon-resize" src="images/android-studio.png" />
                 <h3 class="font-family--montserrat">Android Studio</h3>
             </div>
-            <div class="col-sm-3 height-width-100 text-center pt-4">
+            <div class="icon col-md-3 col-sm-6 height-width-100 text-center pt-4" data-aos="zoom-in-down"
+                data-aos-duration="1500">
                 <img class="image-icon-resize" src="images/mysql.png" />
                 <h3 class="font-family--montserrat">MySQL</h3>
             </div>
-            <div class="col-sm-3 height-width-100 text-center pt-4">
+            <div class="icon col-md-3 col-sm-6 height-width-100 text-center pt-4" data-aos="zoom-in-down"
+                data-aos-duration="1500">
                 <img class="image-icon-resize" src="images/mongodb.png" />
                 <h3 class="font-family--montserrat">MongoDB</h3>
             </div>
-            <div class="col-sm-3 height-width-100 text-center pt-4">
+            <div class="icon col-md-3 col-sm-6 height-width-100 text-center pt-4" data-aos="zoom-in-down"
+                data-aos-duration="1500">
                 <img class="image-icon-resize" src="images/postgre.png" />
                 <h3 class="font-family--montserrat">PostgreSQL</h3>
             </div>
-            <div class="col-sm-3 height-width-100 text-center pt-4">
+            <div class="icon col-md-3 col-sm-6 height-width-100 text-center pt-4" data-aos="zoom-in-down"
+                data-aos-duration="1500">
                 <img class="image-icon-resize" src="images/git.png" />
                 <h3 class="font-family--montserrat">Git</h3>
             </div>
         </div>
-        <div class="row justify-content-center pb-5 pt-5">
-            <h1 class="title-education text-center font-family--poppins">
+        <div class="row justify-content-center pb-5 padding-top-10em">
+            <h1 class="title-education text-center font-family--poppins" data-aos="zoom-in-up" data-aos-duration="1500">
                 Job Experiences
             </h1>
         </div>
-        <div class="row justify-content-start mt-5">
-            <div class="col-sm-2 text-right">
+        <div class="row justify-content-start mt-5" data-aos="zoom-in-up" data-aos-duration="1500">
+            <div class="col-md-2 col-sm-12 text-align-responsive text-right">
                 <i class="fas fa-chalkboard-teacher university-icon-modify"></i>
             </div>
-            <div class="col-sm-4 font-family--montserrat">
+            <div class="col-md-4 col-sm-12 text-align-responsive font-family--montserrat">
                 <h4><strong>Feb 2019 - Feb 2020</strong></h4>
                 <h5><strong>Binus University</strong></h5>
                 <h5>Laboratory Instructor (Fulltime)</h5>
@@ -153,10 +192,10 @@
                 </h6>
                 <h6 class="color-brown">- TPA (Test Progressive Assistant).</h6>
             </div>
-            <div class="col-sm-2 text-right">
+            <div class="col-md-2 col-sm-12 text-align-responsive text-right">
                 <i class="fas fa-laptop-code university-icon-modify"></i>
             </div>
-            <div class="col-sm-4 font-family--montserrat">
+            <div class="col-md-4 col-sm-12 text-align-responsive font-family--montserrat">
                 <h4><strong>Feb 2020 - Present</strong></h4>
                 <h5><strong>Binus University</strong></h5>
                 <h5>Operation & System Development</h5>
@@ -173,123 +212,175 @@
                     arrangement, PC installation and setup, and LCD Projector Setup.</h6>
             </div>
         </div>
-        <div class="row justify-content-center pb-5 pt-5">
-            <h1 class="title-education text-center font-family--poppins">
+        <div class="row justify-content-center pb-5 padding-top-10em">
+            <h1 class="title-education text-center font-family--poppins" data-aos="zoom-in-down"
+                data-aos-duration="1500">
                 My Projects
             </h1>
         </div>
         <div class="row justify-content-center pb-5 pt-5">
-            <div class="col-sm-6 my-project text-center">
-                <img class="height-300px width-400px" src="images/quiz.png" />
-                <div class="overlay-image">
-                    <div class="row pb-4">
+            <div class="col-sm-12 col-lg-6 my-project text-center pb-5" data-aos="zoom-in-down"
+                data-aos-duration="1500">
+                <img class="w-100" src="images/quiz.png" />
+                <div class="d-sm-none d-md-none d-lg-flex overlay-image position-left-9em">
+                    <div class="d-sm-none d-md-none d-lg-flex row pb-4">
                         <h5 class="text-white font-family--montserrat">LCAS E-Learning Web App</h5>
                     </div>
-                    <div class="row">
-                        <h5 class="text-white font-family--montserrat">View Details</h5>
+                    <div class="d-sm-none d-md-none d-none d-lg-flex row">
+                        <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
                     </div>
                 </div>
+                <div class="d-lg-none row pb-4 pt-4 justify-content-center">
+                    <h5 class="text-black font-family--montserrat">LCAS E-Learning Web App</h5>
+                </div>
+                <div class="d-lg-none row justify-content-center">
+                    <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                </div>
             </div>
-            <div class="col-sm-6 my-project text-center">
-                <img class="height-300px width-400px" src="images/school.png" />
-                <div class="overlay-image">
-                    <div class="row pb-4">
+            <div class="col-sm-12 col-lg-6 my-project text-center" data-aos="zoom-in-down" data-aos-duration="1500">
+                <img class="w-100" src="images/school.png" />
+                <div class="d-sm-none d-md-none d-lg-flex overlay-image position-left-9em">
+                    <div class="d-sm-none d-md-none d-lg-flex row pb-4">
                         <h5 class="text-white font-family--montserrat">SMA Negeri 1 Tangerang Web App</h5>
                     </div>
-                    <div class="row">
-                        <h5 class="text-white font-family--montserrat">View Details</h5>
+                    <div class="d-lg-none d-md-none d-none d-lg-flex row">
+                        <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
                     </div>
                 </div>
+                <div class="d-lg-none row pb-4 pt-4 justify-content-center">
+                    <h5 class="text-black font-family--montserrat">SMA Negeri 1 Tangerang Web App</h5>
+                </div>
+                <div class="d-lg-none row justify-content-center">
+                    <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                </div>
             </div>
-            <div class="col-sm-6 my-project text-center mt-5">
-                <img class="height-300px width-400px" src="images/natasia-lam.jpg" />
-                <div class="overlay-image">
-                    <div class="row pb-4">
+            <div class="col-sm-12 col-lg-6 my-project text-center mt-5" data-aos="zoom-in-down"
+                data-aos-duration="1500">
+                <img class="w-100" src="images/natasia-lam.jpg" />
+                <div class="d-sm-none d-md-none d-lg-flex overlay-image position-left-9em">
+                    <div class="d-sm-none d-md-none d-lg-flex row pb-4">
                         <h5 class="text-white font-family--montserrat">Natasia Lam E-Commerce Web App</h5>
                     </div>
-                    <div class="row">
-                        <h5 class="text-white font-family--montserrat">View Details</h5>
+                    <div class="d-lg-none d-md-none d-none row justify-content-center">
+                        <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
                     </div>
                 </div>
+                <div class="d-lg-none row pb-4 pt-4 justify-content-center">
+                    <h5 class="text-black font-family--montserrat">Natasia Lam E-Commerce Web App</h5>
+                </div>
+                <div class="d-lg-none row justify-content-center">
+                    <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                </div>
             </div>
-            <div class="col-sm-6 my-project text-center mt-5">
-                <img class="height-300px width-400px" src="images/pasarkerja.png" />
-                <div class="overlay-image">
-                    <div class="row pb-4">
+            <div class="col-sm-12 col-lg-6 my-project text-center mt-5" data-aos="zoom-in-down"
+                data-aos-duration="1500">
+                <img class="w-100" src="images/pasarkerja.png" />
+                <div class="d-sm-none d-md-none d-lg-flex overlay-image position-left-9em">
+                    <div class="d-sm-none d-md-none d-lg-flex d-none row pb-4">
                         <h5 class="text-white font-family--montserrat">PasarKerja Web App</h5>
                     </div>
-                    <div class="row">
-                        <h5 class="text-white font-family--montserrat">View Details</h5>
+                    <div class="d-sm-none d-md-none d-none d-lg-flex row">
+                        <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
                     </div>
                 </div>
+                <div class="d-lg-none row pb-4 pt-4 justify-content-center">
+                    <h5 class="text-black font-family--montserrat">PasarKerja Web App</h5>
+                </div>
+                <div class="d-lg-none row justify-content-center">
+                    <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                </div>
             </div>
-            <div class="col-sm-6 my-project text-center mt-5">
-                <img class="height-300px width-400px" src="images/ikigai.png" />
-                <div class="overlay-image">
-                    <div class="row pb-4">
+            <div class="col-sm-12 col-lg-6 my-project text-center mt-5" data-aos="zoom-in-down"
+                data-aos-duration="1500">
+                <img class="w-100" src="images/ikigai.png" />
+                <div class="d-sm-none d-md-none d-lg-flex overlay-image position-left-9em">
+                    <div class="d-sm-none d-md-none d-lg-flex row pb-4">
                         <h5 class="text-white font-family--montserrat">Mental Health Information Website</h5>
                     </div>
-                    <div class="row">
-                        <h5 class="text-white font-family--montserrat">View Details</h5>
+                    <div class="d-sm-none d-md-none d-none d-lg-flex row">
+                        <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
                     </div>
                 </div>
+                <div class="d-lg-none row pb-4 pt-4 justify-content-center">
+                    <h5 class="text-black font-family--montserrat">Mental Health Information Website</h5>
+                </div>
+                <div class="d-lg-none row justify-content-center">
+                    <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                </div>
             </div>
-            <div class="col-sm-6 my-project text-center mt-5">
-                <img class="height-300px width-400px" src="images/bloodfor.png" />
-                <div class="overlay-image">
-                    <div class="row pb-4">
+            <div class="col-sm-12 col-lg-6 my-project text-center mt-5" data-aos="zoom-in-down"
+                data-aos-duration="1500">
+                <img class="w-100 height-300px" src="images/bloodfor.png" />
+                <div class="d-sm-none d-md-none d-lg-flex overlay-image position-left-9em">
+                    <div class="d-sm-none d-md-none d-lg-flex row pb-4">
                         <h5 class="text-white font-family--montserrat">Blood Donor Info Mobile App</h5>
                     </div>
-                    <div class="row">
-                        <h5 class="text-white font-family--montserrat">View Details</h5>
+                    <div class="d-sm-none d-md-none d-none d-lg-flex row">
+                        <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
                     </div>
                 </div>
+                <div class="d-lg-none row pb-4 pt-4 justify-content-center">
+                    <h5 class="text-black font-family--montserrat">Blood Donor Info Mobile App</h5>
+                </div>
+                <div class="d-lg-none row justify-content-center">
+                    <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                </div>
             </div>
-            <div class="col-sm-6 my-project text-center mt-5">
-                <img class="height-300px width-400px" src="images/blog.png" />
-                <div class="overlay-image">
+            <div class="col-sm-12 col-lg-6 my-project text-center mt-5" data-aos="zoom-in-down"
+                data-aos-duration="1500">
+                <img class="w-100" src="images/blog.png" />
+                <div class="d-sm-none d-md-none d-lg-flex overlay-image position-left-9em">
                     <div class="row pb-4">
                         <h5 class="text-white font-family--montserrat">Private Blog Web App</h5>
                     </div>
-                    <div class="row">
-                        <h5 class="text-white font-family--montserrat">View Details</h5>
+                    <div class="d-sm-none d-md-none d-none d-lg-flex row">
+                        <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
                     </div>
+                </div>
+                <div class="d-lg-none row pb-4 pt-4 justify-content-center">
+                    <h5 class="text-black font-family--montserrat">Private Blog Web App</h5>
+                </div>
+                <div class="d-lg-none row justify-content-center">
+                    <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
                 </div>
             </div>
         </div>
-        <div class="row justify-content-center pb-2 pt-5">
+        <div class="row justify-content-center pb-2 pt-5" data-aos="zoom-in-up" data-aos-duration="1500">
             <h3 class="text-center font-family--poppins">
                 Reach me by:
             </h3>
         </div>
-        <div class="row justify-content-center">
+        <div class="row justify-content-center" data-aos="zoom-in-up" data-aos-duration="1500">
             <a href="https://www.linkedin.com/in/edwin-farrel/">
-                <div class="col-sm-1 text-center">
+                <div class="icon col-sm-1 text-center">
                     <img class="width-40px" src="images/linkedin.png" />
                 </div>
             </a>
             <a href="https://wa.me/6282213815980">
-                <div class="col-sm-1 text-center">
+                <div class="icon col-sm-1 text-center">
                     <img class="width-40px" src="images/wa.png" />
                 </div>
             </a>
             <a href="mailto:farrel206@gmail.com">
-                <div class="col-sm-1 text-center">
+                <div class="icon col-sm-1 text-center">
                     <img class="width-40px" src="images/gmail.png" />
                 </div>
             </a>
             <a href="https://github.com/farreledwin/">
-                <div class="col-sm-1 text-center">
+                <div class="icon col-sm-1 text-center">
                     <img class="width-40px" src="images/git.png" />
                 </div>
             </a>
         </div>
     </div>
     <footer>
-        <div class="row justify-content-center font-family--montserrat pt-5 mt-5 mb-4">
+        <div class="text-center row justify-content-center font-family--montserrat pt-5 mt-5 mb-4">
             Copyright &copy; 2021 Edwin Farrel Juniawan.
         </div>
     </footer>
 </body>
 
 </html>
+<script>
+    AOS.init();
+</script>

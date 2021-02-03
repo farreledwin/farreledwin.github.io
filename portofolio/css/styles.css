@@ -1,10 +1,18 @@
 html, body {
     font-family: FontAwesome;
+    scroll-behavior: smooth;
 }
 
 .row {
     margin-left: 0;
     margin-right: 0;
+}
+
+.header-position {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 99;
 }
 
 @font-face {
@@ -46,6 +54,15 @@ html, body {
     content: "";
     display: block;
     width: 50%;
+    border: 2px solid black;
+    margin: auto;
+    margin-top: 10px;
+}
+
+.about::after {
+    content: "";
+    display: block;
+    width: 10%;
     border: 2px solid black;
     margin: auto;
     margin-top: 10px;
@@ -96,36 +113,99 @@ html, body {
     width: 400px;
 }
 
-.overlay-image {
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-    position: absolute;
-}
-
-.my-project:hover > .overlay-image {
-    width: 25em;
-    height: 300px;
-    position: absolute;
-    opacity: 1;
-    top: 0;
-    left: 5em;
-    display: flex;
-}
-
-.my-project img {
-    transition: transform 1s, filter 2s;
-    filter: blur(0);
-    transform: scale(1.02);
-}
-
-.my-project:hover img {
-    filter: blur(2px) brightness(50%);
-    transform: scale(1);
-}
-
 .width-40px {
     width: 40px;
+}
+
+.padding-top-10em {
+    padding-top: 10em;
+}
+
+.txt-software::after {
+    content: '';
+    border: 2px solid black;
+}
+
+.border-radius-50 {
+    border-radius: 50%;
+}
+
+.width-20em {
+    width: 20em;
+}
+
+.width-10 {
+    width: 10%;
+}
+
+.color-blue--modify {
+    color: rgb(56, 225, 255);
+}
+
+.icon {
+    transition: transform .2s;
+}
+
+.icon:hover {
+    transform: scale(1.5) !important;
+}
+
+@media screen and (min-width: 572px) and (max-width: 768px) {
+    .padding-bottom-2em {
+        padding-bottom: 2em;
+    }
+    .text-align-responsive {
+        text-align: center !important;
+    }
+
+}
+
+@media screen and (min-width: 991px) {
+    .overlay-image {
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+        position: absolute;
+        display: none !important;
+    }    
+    .my-project:hover > .overlay-image {
+        width: 25em;
+        height: 300px;
+        position: absolute;
+        opacity: 1;
+        top: 0;
+        left: 5em;
+        display: flex !important;
+    }
+    
+    .my-project img {
+        transition: transform 1s, filter 2s;
+        filter: blur(0);
+        transform: scale(1.02);
+    }
+    
+    .my-project:hover img {
+        filter: blur(2px) brightness(50%);
+        transform: scale(1);
+    }
+}
+
+@media screen and (min-width: 769px) and (max-width: 992px) {
+    .padding-bottom-2em {
+        padding-bottom: 2em;
+    }
+}
+
+@media screen and (max-width:572px) {
+    .text-align-responsive {
+        text-align: center !important;
+    }
+}
+
+@media screen and (max-width: 381px) {
+    .width-100 {
+        width: 100%;
+    }
 }
