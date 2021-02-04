@@ -5,8 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edwin Farrel Juniawan</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+        </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+        </script>
     <link rel="stylesheet" href="css/styles.css" />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -218,7 +226,7 @@
                 My Projects
             </h1>
         </div>
-        <div class="row justify-content-center pb-5 pt-5">
+        <div class="row justify-content-center pt-5">
             <div class="col-sm-12 col-lg-6 my-project text-center pb-5" data-aos="zoom-in-down"
                 data-aos-duration="1500">
                 <img class="w-100" src="images/quiz.png" />
@@ -227,14 +235,22 @@
                         <h5 class="text-white font-family--montserrat">LCAS E-Learning Web App</h5>
                     </div>
                     <div class="d-sm-none d-md-none d-none d-lg-flex row">
-                        <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                        <button type="button"
+                            class="font-family--montserrat color-blue--modify border-none background-none cursor-pointer"
+                            data-toggle="modal" data-target="#lcas-elearning-modal">
+                            View Details
+                        </button>
                     </div>
                 </div>
                 <div class="d-lg-none row pb-4 pt-4 justify-content-center">
                     <h5 class="text-black font-family--montserrat">LCAS E-Learning Web App</h5>
                 </div>
                 <div class="d-lg-none row justify-content-center">
-                    <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                    <button type="button"
+                        class="font-family--montserrat color-blue--modify border-none background-none cursor-pointer"
+                        data-toggle="modal" data-target="#lcas-elearning-modal">
+                        View Details
+                    </button>
                 </div>
             </div>
             <div class="col-sm-12 col-lg-6 my-project text-center" data-aos="zoom-in-down" data-aos-duration="1500">
@@ -244,14 +260,22 @@
                         <h5 class="text-white font-family--montserrat">SMA Negeri 1 Tangerang Web App</h5>
                     </div>
                     <div class="d-lg-none d-md-none d-none d-lg-flex row">
-                        <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                        <button type="button"
+                            class="font-family--montserrat color-blue--modify border-none background-none cursor-pointer"
+                            data-toggle="modal" data-target="#sma-negeri-modal">
+                            View Details
+                        </button>
                     </div>
                 </div>
                 <div class="d-lg-none row pb-4 pt-4 justify-content-center">
                     <h5 class="text-black font-family--montserrat">SMA Negeri 1 Tangerang Web App</h5>
                 </div>
                 <div class="d-lg-none row justify-content-center">
-                    <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                    <button type="button"
+                        class="font-family--montserrat color-blue--modify border-none background-none cursor-pointer"
+                        data-toggle="modal" data-target="#sma-negeri-modal">
+                        View Details
+                    </button>
                 </div>
             </div>
             <div class="col-sm-12 col-lg-6 my-project text-center mt-5" data-aos="zoom-in-down"
@@ -261,33 +285,49 @@
                     <div class="d-sm-none d-md-none d-lg-flex row pb-4">
                         <h5 class="text-white font-family--montserrat">Natasia Lam E-Commerce Web App</h5>
                     </div>
-                    <div class="d-lg-none d-md-none d-none row justify-content-center">
-                        <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                    <div class="d-lg-none d-md-none d-none d-lg-flex row justify-content-center">
+                        <button type="button"
+                            class="font-family--montserrat color-blue--modify border-none background-none cursor-pointer"
+                            data-toggle="modal" data-target="#natasia-lam-modal">
+                            View Details
+                        </button>
                     </div>
                 </div>
                 <div class="d-lg-none row pb-4 pt-4 justify-content-center">
                     <h5 class="text-black font-family--montserrat">Natasia Lam E-Commerce Web App</h5>
                 </div>
                 <div class="d-lg-none row justify-content-center">
-                    <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                    <button type="button"
+                        class="font-family--montserrat color-blue--modify border-none background-none cursor-pointer"
+                        data-toggle="modal" data-target="#natasia-lam-modal">
+                        View Details
+                    </button>
                 </div>
             </div>
             <div class="col-sm-12 col-lg-6 my-project text-center mt-5" data-aos="zoom-in-down"
                 data-aos-duration="1500">
-                <img class="w-100" src="images/pasarkerja.png" />
+                <img class="w-100 height-100 height-auto" src="images/pasarkerja.png" />
                 <div class="d-sm-none d-md-none d-lg-flex overlay-image position-left-9em">
-                    <div class="d-sm-none d-md-none d-lg-flex d-none row pb-4">
+                    <div class="d-sm-none d-md-none d-lg-flex row pb-4">
                         <h5 class="text-white font-family--montserrat">PasarKerja Web App</h5>
                     </div>
-                    <div class="d-sm-none d-md-none d-none d-lg-flex row">
-                        <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                    <div class="d-lg-none d-md-none d-none d-lg-flex row justify-content-center">
+                        <button type="button"
+                            class="font-family--montserrat color-blue--modify border-none background-none cursor-pointer"
+                            data-toggle="modal" data-target="#pasar-kerja-modal">
+                            View Details
+                        </button>
                     </div>
                 </div>
                 <div class="d-lg-none row pb-4 pt-4 justify-content-center">
                     <h5 class="text-black font-family--montserrat">PasarKerja Web App</h5>
                 </div>
                 <div class="d-lg-none row justify-content-center">
-                    <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                    <button type="button"
+                        class="font-family--montserrat color-blue--modify border-none background-none cursor-pointer"
+                        data-toggle="modal" data-target="#pasar-kerja-modal">
+                        View Details
+                    </button>
                 </div>
             </div>
             <div class="col-sm-12 col-lg-6 my-project text-center mt-5" data-aos="zoom-in-down"
@@ -298,14 +338,22 @@
                         <h5 class="text-white font-family--montserrat">Mental Health Information Website</h5>
                     </div>
                     <div class="d-sm-none d-md-none d-none d-lg-flex row">
-                        <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                        <button type="button"
+                            class="font-family--montserrat color-blue--modify border-none background-none cursor-pointer"
+                            data-toggle="modal" data-target="#mental-health-modal">
+                            View Details
+                        </button>
                     </div>
                 </div>
                 <div class="d-lg-none row pb-4 pt-4 justify-content-center">
                     <h5 class="text-black font-family--montserrat">Mental Health Information Website</h5>
                 </div>
                 <div class="d-lg-none row justify-content-center">
-                    <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                    <button type="button"
+                        class="font-family--montserrat color-blue--modify border-none background-none cursor-pointer"
+                        data-toggle="modal" data-target="#mental-health-modal">
+                        View Details
+                    </button>
                 </div>
             </div>
             <div class="col-sm-12 col-lg-6 my-project text-center mt-5" data-aos="zoom-in-down"
@@ -316,14 +364,22 @@
                         <h5 class="text-white font-family--montserrat">Blood Donor Info Mobile App</h5>
                     </div>
                     <div class="d-sm-none d-md-none d-none d-lg-flex row">
-                        <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                        <button type="button"
+                            class="font-family--montserrat color-blue--modify border-none background-none cursor-pointer"
+                            data-toggle="modal" data-target="#blood-donor-modal">
+                            View Details
+                        </button>
                     </div>
                 </div>
                 <div class="d-lg-none row pb-4 pt-4 justify-content-center">
                     <h5 class="text-black font-family--montserrat">Blood Donor Info Mobile App</h5>
                 </div>
                 <div class="d-lg-none row justify-content-center">
-                    <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                    <button type="button"
+                        class="font-family--montserrat color-blue--modify border-none background-none cursor-pointer"
+                        data-toggle="modal" data-target="#blood-donor-modal">
+                        View Details
+                    </button>
                 </div>
             </div>
             <div class="col-sm-12 col-lg-6 my-project text-center mt-5" data-aos="zoom-in-down"
@@ -334,17 +390,24 @@
                         <h5 class="text-white font-family--montserrat">Private Blog Web App</h5>
                     </div>
                     <div class="d-sm-none d-md-none d-none d-lg-flex row">
-                        <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                        <button type="button"
+                            class="font-family--montserrat color-blue--modify border-none background-none cursor-pointer"
+                            data-toggle="modal" data-target="#blogmodal">
+                            View Details
+                        </button>
                     </div>
                 </div>
                 <div class="d-lg-none row pb-4 pt-4 justify-content-center">
                     <h5 class="text-black font-family--montserrat">Private Blog Web App</h5>
                 </div>
                 <div class="d-lg-none row justify-content-center">
-                    <h5 class="font-family--montserrat color-blue--modify">View Details</h5>
+                    <button type="button" data-toggle="modal" data-target="#blogmodal"
+                        class="font-family--montserrat color-blue--modify border-none background-none cursor-pointer">View
+                        Details</button>
                 </div>
             </div>
         </div>
+
         <div class="row justify-content-center pb-2 pt-5" data-aos="zoom-in-up" data-aos-duration="1500">
             <h3 class="text-center font-family--poppins">
                 Reach me by:
@@ -378,6 +441,226 @@
             Copyright &copy; 2021 Edwin Farrel Juniawan.
         </div>
     </footer>
+    <!-- Blog Modal -->
+    <div class="modal fade" id="blogmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <h5 class="modal-title text-center" id="exampleModalLabel">Details Application</h5>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span class="text-justify">In this application, all users can post stories and comment others
+                        stories. Made for me to learning.</span>
+                    <br>
+                    <br>
+                    <span class="text-justify">Tech Stack : <br>- React.js
+                        <br>- Express.js
+                        <br>- CSS Framework (Bootstrap)
+                        <br>- MongoDB
+                    </span>
+                    <br>
+                    <br><span class="text-justify">You can see the code here : <a
+                            href="https://github.com/farreledwin/custom-blog-private" target="_blank">Click
+                            Here!</a></span>
+                </div>
+                <div class=" modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Blood Donor Modal -->
+    <div class="modal fade" id="blood-donor-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <h5 class="modal-title text-center" id="exampleModalLabel">Details Application</h5>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span class="text-justify">BloodFOR is application to help people in living a healthy lifestyle and
+                        save the lives of others through blood donation. BloodFOR gives you the power to save lives in
+                        the palm of your hand, you can find nearby blood donor. BloodFOR offers a simpler and faster
+                        registration process at your fingertips.</span>
+                    <br>
+                    <br>
+                    <span class="text-justify">Tech Stack : <br>- Java (Android Studio)
+                        <br>- Firebase
+                    </span>
+                    <br>
+                    <br><span class="text-justify">You can see the application here : <a
+                            href="https://play.google.com/store/apps/details?id=edu.bluejack19_1.BloodFOR"
+                            target="_blank">Click
+                            Here!</a></span>
+                </div>
+                <div class=" modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Mental Health Modal -->
+    <div class="modal fade" id="mental-health-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <h5 class="modal-title text-center" id="exampleModalLabel">Details Application</h5>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span class="text-justify">This website includes stories of mental health, information about mental
+                        health, and information about therapist.</span>
+                    <br>
+                    <br>
+                    <span class="text-justify">Tech Stack : <br>- HTML
+                        <br>- CSS
+                        <br>- Javascript
+                    </span>
+                    <br>
+                    <br><span class="text-justify">You can see the application here : <a
+                            href="https://farreledwin.github.io/jennifer/home.html" target="_blank">Click
+                            Here!</a></span>
+                </div>
+                <div class=" modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Pasar Kerja Modal -->
+    <div class="modal fade" id="pasar-kerja-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <h5 class="modal-title text-center" id="exampleModalLabel">Details Application</h5>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span class="text-justify">PasarKerja is a web-based application that is used to find work,
+                        especially for informal workers. This application was made in the framework of the GarudaHacks
+                        Hackathon 2020 competition and must be done within 3 days. PasarKerja application was awarded
+                        "Best 12 Application from 227
+                        Application".</span>
+                    <br>
+                    <br>
+                    <span class="text-justify">Tech Stack : <br>- React.js
+                        <br>- Laravel
+                        <br>- CSS Framework (Bootstrap)
+                        <br>- MongoDB
+                    </span>
+                    <br>
+                    <br><span class="text-justify">You can see the code here : <br><a
+                            href="https://github.com/farreledwin/PasarKerja-Frontend" target="_blank">Click
+                            Here! (Frontend)</a><br> <a href="https://github.com/farreledwin/PasarKerja-Backend"
+                            target="_blank">Click Here! (Backend)</a></span>
+                </div>
+                <div class=" modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- natasia-lam Modal -->
+    <div class="modal fade" id="natasia-lam-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <h5 class="modal-title text-center" id="exampleModalLabel">Details Application</h5>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span class="text-justify">This e-commerce was created to sell meditation videos and books by
+                        Natasia Lam. Also, this website include information about testimonials and profile about Natasia
+                        Lam. This e-commerce integrate with payment gateway to receive payment with all indonesian bank
+                        , e-money like OVO, Go-Pay, ShopeePay, DANA, and credit card (Mastercard, Visa,
+                        Amex).</span>
+                    <br>
+                    <br>
+                    <span class="text-justify">Tech Stack : <br>- Laravel
+                        <br>- Blade Templates
+                        <br>- CSS Framework (Bootstrap)
+                        <br>- Javascript, AJAX & JQuery
+                        <br>- MySQL Database
+                        <br>- Midtrans
+                        <br>- Stripe
+                    </span>
+                    <br>
+                    <br><span class="text-justify">You can see the application here : <a href="https://icould.cyou/"
+                            target="_blank">Click
+                            Here!</a></span>
+                </div>
+                <div class=" modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Sma Negeri Modal -->
+    <div class="modal fade" id="sma-negeri-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <h5 class="modal-title text-center" id="exampleModalLabel">Details Application</h5>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span class="text-justify">Portal website for SMA Negeri 1 Tangerang. On this website
+                        contains information such as school profile, teacher profile,
+                        school awards, etc. </span>
+                    <br>
+                    <br>
+                    <span class="text-justify">Tech Stack : <br>- Laravel
+                        <br>- Blade Templates
+                        <br>- CSS Framework (Bootstrap)
+                        <br>- Javascript, AJAX & JQuery
+                        <br>- MySQL Database</span>
+                    <br>
+                    <br><span class="text-justify">You can see the application here : <a
+                            href="http://smanegeri1-tangerang.com/" target="_blank">Click
+                            Here!</a></span>
+                </div>
+                <div class=" modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- LCAS E-learning Modal -->
+    <div class="modal fade" id="lcas-elearning-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <h5 class="modal-title text-center" id="exampleModalLabel">Details Application</h5>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span class="text-justify">LCAS E-Learning is a web based e-learning application created for Binus
+                        University. This
+                        application
+                        can be used by students to test their abilities and try out before exam.</span>
+                    <br>
+                    <br>
+                    <span class="text-justify">Tech Stack : <br>- React.js (Frontend) <br>- Laravel (Backend) <br>-
+                        MySQL Database</span>
+                    <br>
+                    <br><span class="text-justify">You can see the application here : <a
+                            href="http://lcas-quiz.apps.binus.ac.id/" target="_blank">Click
+                            Here!</a></span>
+                </div>
+                <div class=" modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
