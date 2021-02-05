@@ -176,6 +176,12 @@ html, body {
 
 }
 
+@media screen and (max-width: 768px) {
+    .margin-bottom-2em {
+        margin-bottom: 2em;
+    }
+}
+
 @media screen and (min-width: 991px) {
     .overlay-image {
         justify-content: center;
