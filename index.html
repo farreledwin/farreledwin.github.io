@@ -20,6 +20,324 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- <script src="js/script.js"></script> -->
     <script src="https://kit.fontawesome.com/b8e6120963.js" crossorigin="anonymous"></script>
+    <script>
+  (function() {
+    // Enhanced Configuration
+    const projectId = "b039a668-abf4-4a56-8bee-612e707d8937";
+    const collectorEndpoint = "https://okkczylgemiemsciehtq.supabase.co/functions/v1/heatmap-collector";
+    const config = {
+      samplingRate: 0.1, // 10% sampling for performance
+      batchSize: 20, // Send events in batches
+      flushInterval: 5000, // Flush every 5 seconds
+      sessionTimeout: 30 * 60 * 1000, // 30 minutes
+      enableConsent: true, // GDPR compliance
+      enableFormTracking: true,
+      enableScrollTracking: true,
+      enablePerformanceTracking: true,
+      enableRageClickDetection: true
+    };
+    
+    // Session Management
+    let sessionId = getOrCreateSessionId();
+    let userId = getOrCreateUserId();
+    let eventQueue = [];
+    let lastActivity = Date.now();
+    let consentGiven = checkConsent();
+    
+    // Performance tracking
+    let performanceData = {};
+    
+    function getOrCreateSessionId() {
+      let sid = sessionStorage.getItem('webtir_session_id');
+      if (!sid || isSessionExpired()) {
+        sid = 'sess_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+        sessionStorage.setItem('webtir_session_id', sid);
+        sessionStorage.setItem('webtir_session_start', Date.now().toString());
+      }
+      return sid;
+    }
+    
+    function getOrCreateUserId() {
+      let uid = localStorage.getItem('webtir_user_id');
+      if (!uid) {
+        uid = 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+        localStorage.setItem('webtir_user_id', uid);
+      }
+      return uid;
+    }
+    
+    function isSessionExpired() {
+      const sessionStart = sessionStorage.getItem('webtir_session_start');
+      return sessionStart && (Date.now() - parseInt(sessionStart) > config.sessionTimeout);
+    }
+    
+    function checkConsent() {
+      if (!config.enableConsent) return true;
+      return localStorage.getItem('webtir_consent') === 'granted';
+    }
+    
+    function generateFingerprint() {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.textBaseline = 'top';
+      ctx.font = '14px Arial';
+      ctx.fillText('Fingerprint', 2, 2);
+      
+      return btoa(JSON.stringify({
+        screen: screen.width + 'x' + screen.height,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        language: navigator.language,
+        platform: navigator.platform,
+        canvas: canvas.toDataURL(),
+        userAgent: navigator.userAgent.slice(0, 100)
+      })).slice(0, 32);
+    }
+    
+    // Enhanced Event Tracking
+    function trackEvent(eventType, data) {
+      if (!consentGiven) return;
+      if (Math.random() > config.samplingRate && eventType !== 'session_start') return;
+      
+      const event = {
+        projectId: projectId,
+        eventType: eventType,
+        sessionId: sessionId,
+        userId: userId,
+        timestamp: Date.now(),
+        url: window.location.href,
+        referrer: document.referrer,
+        userAgent: navigator.userAgent,
+        viewport: {
+          width: window.innerWidth,
+          height: window.innerHeight
+        },
+        fingerprint: generateFingerprint(),
+        data: data
+      };
+      
+      eventQueue.push(event);
+      lastActivity = Date.now();
+      
+      if (eventQueue.length >= config.batchSize) {
+        flushEvents();
+      }
+    }
+    
+    // Batch event sending with retry logic
+    function flushEvents() {
+      if (eventQueue.length === 0) return;
+      
+      const events = [...eventQueue];
+      eventQueue = [];
+      
+      sendEventsWithRetry(events, 3);
+    }
+    
+    function sendEventsWithRetry(events, retries) {
+      const payload = JSON.stringify({ events: events });
+      
+      function attemptSend(attempt) {
+        try {
+          if (navigator.sendBeacon) {
+            const success = navigator.sendBeacon(collectorEndpoint, payload);
+            if (!success && attempt < retries) {
+              setTimeout(() => attemptSend(attempt + 1), Math.pow(2, attempt) * 1000);
+            }
+          } else {
+            fetch(collectorEndpoint, {
+              method: 'POST',
+              body: payload,
+              headers: { 'Content-Type': 'application/json' },
+              keepalive: true
+            }).catch(err => {
+              if (attempt < retries) {
+                setTimeout(() => attemptSend(attempt + 1), Math.pow(2, attempt) * 1000);
+              }
+            });
+          }
+        } catch (err) {
+          if (attempt < retries) {
+            setTimeout(() => attemptSend(attempt + 1), Math.pow(2, attempt) * 1000);
+          }
+        }
+      }
+      
+      attemptSend(1);
+    }
+    
+    // Click tracking with rage click detection
+    let recentClicks = [];
+    function trackClick(e) {
+      const now = Date.now();
+      const clickData = {
+        x: Math.round((e.clientX / window.innerWidth) * 100),
+        y: Math.round((e.clientY / window.innerHeight) * 100),
+        element: e.target.tagName.toLowerCase(),
+        elementId: e.target.id,
+        elementClass: e.target.className,
+        text: e.target.textContent ? e.target.textContent.slice(0, 100) : '',
+        timestamp: now
+      };
+      
+      // Rage click detection
+      recentClicks.push({ x: clickData.x, y: clickData.y, timestamp: now });
+      recentClicks = recentClicks.filter(click => now - click.timestamp < 3000);
+      
+      const rageClicks = recentClicks.filter(click => 
+        Math.abs(click.x - clickData.x) < 5 && 
+        Math.abs(click.y - clickData.y) < 5
+      );
+      
+      if (rageClicks.length >= 3) {
+        trackEvent('rage_click', { ...clickData, rageClickCount: rageClicks.length });
+      } else {
+        trackEvent('click', clickData);
+      }
+    }
+    
+    // Scroll tracking
+    let scrollData = { maxDepth: 0, totalScroll: 0, scrollEvents: 0 };
+    function trackScroll() {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const docHeight = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight
+      );
+      const windowHeight = window.innerHeight;
+      const scrollPercent = Math.round((scrollTop / (docHeight - windowHeight)) * 100);
+      
+      scrollData.maxDepth = Math.max(scrollData.maxDepth, scrollPercent);
+      scrollData.totalScroll += Math.abs(scrollPercent - (scrollData.lastPercent || 0));
+      scrollData.lastPercent = scrollPercent;
+      scrollData.scrollEvents++;
+      
+      if (scrollData.scrollEvents % 10 === 0) {
+        trackEvent('scroll_milestone', {
+          depth: scrollPercent,
+          maxDepth: scrollData.maxDepth,
+          totalScroll: scrollData.totalScroll
+        });
+      }
+    }
+    
+    // Form tracking
+    function trackFormInteraction(e) {
+      const formData = {
+        formId: e.target.form ? e.target.form.id : 'unknown',
+        fieldName: e.target.name || e.target.id,
+        fieldType: e.target.type,
+        value: e.target.type === 'password' ? '[HIDDEN]' : e.target.value?.slice(0, 50)
+      };
+      
+      trackEvent('form_interaction', formData);
+    }
+    
+    // Performance tracking
+    function trackPerformance() {
+      if (!window.performance) return;
+      
+      const perfData = performance.getEntriesByType('navigation')[0];
+      if (perfData) {
+        performanceData = {
+          loadTime: perfData.loadEventEnd - perfData.loadEventStart,
+          domContentLoaded: perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart,
+          firstByte: perfData.responseStart - perfData.requestStart,
+          dns: perfData.domainLookupEnd - perfData.domainLookupStart,
+          tcp: perfData.connectEnd - perfData.connectStart
+        };
+        
+        trackEvent('performance', performanceData);
+      }
+      
+      // Core Web Vitals
+      if ('web-vital' in window) {
+        // This would require the web-vitals library to be loaded
+        // trackEvent('web_vitals', webVitalsData);
+      }
+    }
+    
+    // Initialize tracking
+    function initTracking() {
+      if (!consentGiven && config.enableConsent) {
+        console.log('Webtir Analytics: Waiting for user consent');
+        return;
+      }
+      
+      // Track page view and session start
+      trackEvent('pageview', { title: document.title });
+      trackEvent('session_start', { timestamp: Date.now() });
+      
+      // Set up event listeners
+      document.addEventListener('click', trackClick, true);
+      
+      if (config.enableScrollTracking) {
+        let scrollTimeout;
+        window.addEventListener('scroll', () => {
+          clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(trackScroll, 100);
+        });
+      }
+      
+      if (config.enableFormTracking) {
+        document.addEventListener('input', trackFormInteraction);
+        document.addEventListener('change', trackFormInteraction);
+        document.addEventListener('submit', (e) => {
+          trackEvent('form_submit', {
+            formId: e.target.id,
+            formAction: e.target.action
+          });
+        });
+      }
+      
+      // Track page unload
+      window.addEventListener('beforeunload', () => {
+        trackEvent('page_unload', {
+          timeOnPage: Date.now() - lastActivity,
+          scrollDepth: scrollData.maxDepth
+        });
+        flushEvents();
+      });
+      
+      // Periodic flush
+      setInterval(flushEvents, config.flushInterval);
+      
+      // Performance tracking after load
+      if (config.enablePerformanceTracking) {
+        if (document.readyState === 'complete') {
+          trackPerformance();
+        } else {
+          window.addEventListener('load', trackPerformance);
+        }
+      }
+      
+      console.log('Webtir Analytics: Enhanced tracking initialized for project:', projectId);
+    }
+    
+    // Public API for consent management
+    window.WebtirAnalytics = {
+      grantConsent: function() {
+        localStorage.setItem('webtir_consent', 'granted');
+        consentGiven = true;
+        initTracking();
+      },
+      revokeConsent: function() {
+        localStorage.setItem('webtir_consent', 'revoked');
+        consentGiven = false;
+        eventQueue = [];
+      },
+      trackCustomEvent: function(eventName, data) {
+        trackEvent('custom_' + eventName, data);
+      }
+    };
+    
+    // Start tracking
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initTracking);
+    } else {
+      initTracking();
+    }
+  })();
+</script>
 </head>
 
 <body>
