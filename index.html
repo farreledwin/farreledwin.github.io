@@ -20,7 +20,7 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- <script src="js/script.js"></script> -->
     <script src="https://kit.fontawesome.com/b8e6120963.js" crossorigin="anonymous"></script>
-    <script>
+<script>
   (function() {
     // Enhanced Configuration
     const projectId = "b039a668-abf4-4a56-8bee-612e707d8937";
@@ -34,7 +34,10 @@
       enableFormTracking: true,
       enableScrollTracking: true,
       enablePerformanceTracking: true,
-      enableRageClickDetection: true
+      enableRageClickDetection: true,
+      enableMouseTracking: true, // New: Enable mouse move tracking
+      mouseSamplingRate: 0.05, // Lower sampling rate for mouse moves (5%)
+      mouseThrottleMs: 200 // Throttle mouse moves to every 200ms
     };
     
     // Session Management
@@ -46,6 +49,10 @@
     
     // Performance tracking
     let performanceData = {};
+    
+    // Mouse tracking variables
+    let lastMouseTime = 0;
+    let mouseHeatData = [];
     
     function getOrCreateSessionId() {
       let sid = sessionStorage.getItem('webtir_session_id');
@@ -195,6 +202,29 @@
       }
     }
     
+    // Mouse move tracking with throttling and sampling
+    function trackMouseMove(e) {
+      if (!config.enableMouseTracking) return;
+      
+      const now = Date.now();
+      
+      // Throttle mouse events
+      if (now - lastMouseTime < config.mouseThrottleMs) return;
+      lastMouseTime = now;
+      
+      // Additional sampling for mouse moves
+      if (Math.random() > config.mouseSamplingRate) return;
+      
+      const moveData = {
+        x: Math.round((e.clientX / window.innerWidth) * 100),
+        y: Math.round((e.clientY / window.innerHeight) * 100),
+        timestamp: now,
+        element: e.target.tagName.toLowerCase()
+      };
+      
+      trackEvent('move', moveData);
+    }
+    
     // Scroll tracking
     let scrollData = { maxDepth: 0, totalScroll: 0, scrollEvents: 0 };
     function trackScroll() {
@@ -269,6 +299,11 @@
       
       // Set up event listeners
       document.addEventListener('click', trackClick, true);
+      
+      // Add mouse move tracking
+      if (config.enableMouseTracking) {
+        document.addEventListener('mousemove', trackMouseMove, true);
+      }
       
       if (config.enableScrollTracking) {
         let scrollTimeout;
