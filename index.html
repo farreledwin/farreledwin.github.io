@@ -39,11 +39,12 @@
       mouseSamplingRate: 0.3,
       mouseThrottleMs: 300,
       enableDOMCapture: true,
-      domCaptureInterval: 15000,
+      domCaptureInterval: 10000, // Reduced from 15000 to capture more frequently
       maxPayloadSize: 60000,
       maxDOMSize: 50000,
       debugMode: true,
-      detailedPayloadLogging: true
+      detailedPayloadLogging: true,
+      forceDOMCapture: true // Force DOM capture on every pageview
     };
     
     // Debug logging function
@@ -99,6 +100,8 @@
         
         console.log('📸 DOM Capture Method:', domSnapshot.captureMethod || 'unknown');
         console.log('📸 DOM Timestamp:', new Date(domSnapshot.timestamp).toISOString());
+      } else {
+        console.warn('⚠️ No DOM Snapshot in payload!');
       }
       
       // Show full payload structure (but limit size for readability)
@@ -164,78 +167,106 @@
       return consent;
     }
     
-    // Enhanced DOM Capture with Better Validation
-    function captureDOMSnapshot() {
-      if (!config.enableDOMCapture) {
+    // FIXED: Enhanced DOM Capture with Better Error Handling and Validation
+    function captureDOMSnapshot(forceCapture = false) {
+      if (!config.enableDOMCapture && !forceCapture) {
         debugLog('❌ DOM capture disabled');
         return null;
       }
       
-      debugLog('📸 Starting DOM capture...');
+      debugLog('📸 Starting DOM capture (forced: ' + forceCapture + ')...');
       
       try {
-        // Wait for DOM to be ready
+        // Wait a bit for DOM to settle if needed
         if (document.readyState === 'loading') {
-          debugLog('⏳ DOM still loading, waiting...');
+          debugLog('⏳ DOM still loading, scheduling capture for later...');
+          setTimeout(() => captureDOMSnapshot(forceCapture), 1000);
           return null;
         }
         
         let capturedHTML = '';
+        let captureMethod = 'unknown';
         
-        // Try to get the full document first
-        if (document.documentElement) {
-          const docClone = document.documentElement.cloneNode(true);
-          
-          // Remove potentially problematic elements
-          const elementsToRemove = docClone.querySelectorAll('script, iframe, object, embed, noscript, style[data-styled], style[data-emotion]');
-          elementsToRemove.forEach(el => el.remove());
-          
-          // Get the HTML
-          capturedHTML = '<!DOCTYPE html>' + docClone.outerHTML;
-          
-          debugLog('📄 Full document captured:', {
-            originalLength: capturedHTML.length,
-            hasDoctype: capturedHTML.includes('<!DOCTYPE'),
-            hasHtml: capturedHTML.includes('<html'),
-            hasBody: capturedHTML.includes('<body'),
-            hasHead: capturedHTML.includes('<head')
-          });
+        // Method 1: Try to get the complete document
+        try {
+          if (document.documentElement) {
+            // Clone the entire document
+            const docClone = document.cloneNode(true);
+            
+            // Get the doctype
+            let doctypeString = '';
+            if (document.doctype) {
+              doctypeString = "<!DOCTYPE " + document.doctype.name + ">";
+            }
+            
+            // Get the full HTML
+            capturedHTML = doctypeString + docClone.documentElement.outerHTML;
+            captureMethod = 'full-document';
+            
+            debugLog('📄 Method 1 - Full document captured:', {
+              length: capturedHTML.length,
+              hasDoctype: capturedHTML.includes('<!DOCTYPE'),
+              method: captureMethod
+            });
+          }
+        } catch (error) {
+          debugLog('⚠️ Method 1 failed:', error.message);
         }
         
-        // If full document capture failed or is empty, try body only
+        // Method 2: Fallback to documentElement only
         if (!capturedHTML || capturedHTML.length < 100) {
-          debugLog('⚠️ Full document capture failed, trying body only...');
-          
-          if (document.body) {
-            const bodyClone = document.body.cloneNode(true);
-            const elementsToRemove = bodyClone.querySelectorAll('script, iframe, object, embed, noscript');
-            elementsToRemove.forEach(el => el.remove());
-            
-            capturedHTML = '<html><head><title>' + (document.title || '') + '</title></head><body>' + bodyClone.innerHTML + '</body></html>';
-            debugLog('📄 Body-only capture:', { length: capturedHTML.length });
+          try {
+            if (document.documentElement) {
+              capturedHTML = '<!DOCTYPE html>' + document.documentElement.outerHTML;
+              captureMethod = 'document-element';
+              
+              debugLog('📄 Method 2 - Document element captured:', {
+                length: capturedHTML.length,
+                method: captureMethod
+              });
+            }
+          } catch (error) {
+            debugLog('⚠️ Method 2 failed:', error.message);
           }
         }
         
-        // Final fallback - try to get any visible content
-        if (!capturedHTML || capturedHTML.length < 50) {
-          debugLog('⚠️ Body capture failed, trying fallback method...');
-          
-          const fallbackElements = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, div, span, a, button, nav, header, main, footer, section, article');
-          let fallbackHTML = '<html><head><title>' + (document.title || '') + '</title></head><body>';
-          
-          Array.from(fallbackElements).slice(0, 50).forEach(el => {
-            if (el.textContent && el.textContent.trim().length > 0) {
-              fallbackHTML += el.outerHTML;
-            }
-          });
-          
-          fallbackHTML += '</body></html>';
-          capturedHTML = fallbackHTML;
-          debugLog('📄 Fallback capture:', { length: capturedHTML.length, elementCount: fallbackElements.length });
+        // Method 3: Try innerHTML approach
+        if (!capturedHTML || capturedHTML.length < 100) {
+          try {
+            const headHTML = document.head ? document.head.outerHTML : '<head></head>';
+            const bodyHTML = document.body ? document.body.outerHTML : '<body></body>';
+            capturedHTML = '<!DOCTYPE html><html>' + headHTML + bodyHTML + '</html>';
+            captureMethod = 'inner-html';
+            
+            debugLog('📄 Method 3 - innerHTML captured:', {
+              length: capturedHTML.length,
+              method: captureMethod
+            });
+          } catch (error) {
+            debugLog('⚠️ Method 3 failed:', error.message);
+          }
         }
         
-        // Enhanced content validation
-        const hasValidContent = capturedHTML.length > 100 && (
+        // Method 4: Last resort - serialize what we can
+        if (!capturedHTML || capturedHTML.length < 50) {
+          try {
+            const serializer = new XMLSerializer();
+            if (document.documentElement) {
+              capturedHTML = '<!DOCTYPE html>' + serializer.serializeToString(document.documentElement);
+              captureMethod = 'xml-serializer';
+              
+              debugLog('📄 Method 4 - XML serializer:', {
+                length: capturedHTML.length,
+                method: captureMethod
+              });
+            }
+          } catch (error) {
+            debugLog('⚠️ Method 4 failed:', error.message);
+          }
+        }
+        
+        // Final validation
+        const hasValidContent = capturedHTML && capturedHTML.length > 50 && (
           capturedHTML.includes('<html') || 
           capturedHTML.includes('<body') || 
           capturedHTML.includes('<div') ||
@@ -249,23 +280,21 @@
           capturedHTML.includes('<nav')
         );
         
-        debugLog('🔍 Enhanced content validation:', {
-          htmlLength: capturedHTML.length,
+        debugLog('🔍 Final DOM validation:', {
+          htmlLength: capturedHTML ? capturedHTML.length : 0,
           hasValidContent: hasValidContent,
-          containsHtml: capturedHTML.includes('<html'),
-          containsBody: capturedHTML.includes('<body'),
-          containsDiv: capturedHTML.includes('<div'),
-          preview: capturedHTML.substring(0, 200),
-          tagCounts: {
+          captureMethod: captureMethod,
+          preview: capturedHTML ? capturedHTML.substring(0, 200) : 'No content',
+          tagCounts: capturedHTML ? {
             divs: (capturedHTML.match(/<div/g) || []).length,
             paragraphs: (capturedHTML.match(/<p/g) || []).length,
             spans: (capturedHTML.match(/<span/g) || []).length,
             headers: (capturedHTML.match(/<h[1-6]/g) || []).length
-          }
+          } : {}
         });
         
         if (!hasValidContent) {
-          debugLog('❌ Content validation failed - no meaningful HTML content found');
+          debugLog('❌ DOM validation failed - no meaningful content found');
           return null;
         }
         
@@ -292,7 +321,7 @@
           title: document.title || '',
           timestamp: Date.now(),
           baseUrl: window.location.origin,
-          captureMethod: 'enhanced',
+          captureMethod: captureMethod,
           htmlLength: capturedHTML.length
         };
         
@@ -303,13 +332,15 @@
           htmlLength: capturedHTML.length,
           hasContent: hasValidContent,
           viewport: viewportData,
-          method: 'enhanced'
+          method: captureMethod,
+          preview: capturedHTML.substring(0, 100)
         });
         
         return snapshot;
         
       } catch (error) {
         debugLog('❌ DOM capture failed:', error.message);
+        console.error('DOM capture error:', error);
         return null;
       }
     }
@@ -324,7 +355,10 @@
         maxSize: config.maxPayloadSize,
         isUrgent: isUrgent,
         hasBeacon: !!navigator.sendBeacon,
-        willUseBeacon: navigator.sendBeacon && payloadSize <= config.maxPayloadSize
+        willUseBeacon: navigator.sendBeacon && payloadSize <= config.maxPayloadSize,
+        payloadKeys: Object.keys(payload),
+        hasDOMSnapshot: !!payload.domSnapshot,
+        hasEvents: !!payload.events
       });
       
       // Log detailed payload information BEFORE sending
@@ -340,7 +374,8 @@
               endpoint: collectorEndpoint,
               payloadPreview: payloadString.substring(0, 200) + (payloadString.length > 200 ? '...' : ''),
               hasDOMSnapshot: !!payload.domSnapshot,
-              domSnapshotSize: payload.domSnapshot?.html?.length || 0
+              domSnapshotSize: payload.domSnapshot?.html?.length || 0,
+              fullPayload: payload // Log the complete payload structure
             });
             
             // Additional DOM snapshot confirmation
@@ -349,7 +384,8 @@
                 htmlLength: payload.domSnapshot.html?.length || 0,
                 timestamp: payload.domSnapshot.timestamp,
                 url: payload.domSnapshot.url,
-                captureMethod: payload.domSnapshot.captureMethod
+                captureMethod: payload.domSnapshot.captureMethod,
+                htmlPreview: payload.domSnapshot.html?.substring(0, 200) + '...'
               });
             }
             
@@ -379,7 +415,8 @@
           size: payloadSize,
           payloadPreview: payloadString.substring(0, 200) + (payloadString.length > 200 ? '...' : ''),
           hasDOMSnapshot: !!payload.domSnapshot,
-          domSnapshotSize: payload.domSnapshot?.html?.length || 0
+          domSnapshotSize: payload.domSnapshot?.html?.length || 0,
+          fullPayload: payload // Log the complete payload structure
         });
         
         // Additional DOM snapshot confirmation for fetch
@@ -388,7 +425,8 @@
             htmlLength: payload.domSnapshot.html?.length || 0,
             timestamp: payload.domSnapshot.timestamp,
             url: payload.domSnapshot.url,
-            captureMethod: payload.domSnapshot.captureMethod
+            captureMethod: payload.domSnapshot.captureMethod,
+            htmlPreview: payload.domSnapshot.html?.substring(0, 200) + '...'
           });
         }
         
@@ -399,7 +437,7 @@
       });
     }
     
-    // Enhanced Event Tracking with Separate DOM Handling
+    // FIXED: Enhanced Event Tracking - Always include DOM snapshot with pageview
     function trackEvent(eventType, data, captureDOM = false) {
       if (!consentGiven) {
         debugLog('🚫 Event blocked - no consent:', eventType);
@@ -407,6 +445,12 @@
       }
       
       const now = Date.now();
+      
+      // FORCE DOM capture for pageview events
+      if (eventType === 'pageview' || config.forceDOMCapture) {
+        captureDOM = true;
+        debugLog('🎯 Forcing DOM capture for:', eventType);
+      }
       
       const event = {
         projectId: projectId,
@@ -427,13 +471,48 @@
       eventQueue.push(event);
       lastActivity = now;
       
-      debugLog('📋 Event queued:', eventType, { queueLength: eventQueue.length });
+      debugLog('📋 Event queued:', eventType, { queueLength: eventQueue.length, willCaptureDom: captureDOM });
       
-      // Handle DOM capture separately to avoid large payloads
+      // Handle DOM capture and include in the same payload for pageviews
       if (captureDOM && config.enableDOMCapture) {
-        if (!currentDOMSnapshot || (now - lastDOMCapture > config.domCaptureInterval)) {
-          const snapshot = captureDOMSnapshot();
-          if (snapshot) {
+        debugLog('📸 Attempting DOM capture for event:', eventType);
+        
+        // Force capture if we don't have a recent snapshot
+        const shouldForceCapture = !currentDOMSnapshot || (now - lastDOMCapture > config.domCaptureInterval);
+        const snapshot = captureDOMSnapshot(shouldForceCapture);
+        
+        if (snapshot) {
+          debugLog('📸 DOM snapshot captured, including in payload');
+          
+          // For pageview events, include DOM snapshot directly in the payload
+          if (eventType === 'pageview') {
+            // Send events WITH DOM snapshot in a single payload
+            const combinedPayload = {
+              projectId: projectId,
+              sessionId: sessionId,
+              userId: userId,
+              timestamp: now,
+              events: [...eventQueue], // Include all queued events
+              domSnapshot: snapshot     // Include DOM snapshot
+            };
+            
+            eventQueue = []; // Clear the queue since we're sending everything
+            
+            debugLog('📤 Sending combined payload (events + DOM snapshot):', {
+              eventCount: combinedPayload.events.length,
+              hasDOMSnapshot: !!combinedPayload.domSnapshot,
+              htmlLength: combinedPayload.domSnapshot?.html?.length || 0
+            });
+            
+            sendPayload(combinedPayload).catch(error => {
+              debugLog('❌ Failed to send combined payload:', error.message);
+              // Re-queue some events if failed
+              eventQueue.unshift(...combinedPayload.events.slice(-2));
+            });
+            
+            return; // Exit early since we sent everything
+          } else {
+            // For other events, queue DOM snapshot separately
             domSnapshotQueue.push({
               projectId: projectId,
               sessionId: sessionId,
@@ -446,9 +525,12 @@
               htmlLength: snapshot.html?.length || 0
             });
           }
+        } else {
+          debugLog('⚠️ DOM capture failed for event:', eventType);
         }
       }
       
+      // Send events if batch size reached (for non-pageview events)
       if (eventQueue.length >= config.batchSize) {
         debugLog('🚀 Auto-flushing events due to batch size');
         flushEvents();
@@ -506,25 +588,23 @@
       
       debugLog('🎬 Initializing optimized tracking...');
       
-      // Capture initial DOM after page load
+      // FIXED: Capture initial DOM immediately and send with pageview
       function captureInitialDOM() {
-        debugLog('📸 Attempting initial DOM capture...');
-        const snapshot = captureDOMSnapshot();
-        if (snapshot) {
-          trackEvent('pageview', { 
-            title: document.title, 
-            url: window.location.href 
-          }, true);
-        } else {
-          debugLog('⚠️ Initial DOM capture failed, will retry later');
-        }
+        debugLog('📸 Capturing initial DOM for pageview...');
+        
+        // Track pageview event which will now automatically include DOM snapshot
+        trackEvent('pageview', { 
+          title: document.title, 
+          url: window.location.href 
+        }, true); // Force DOM capture
       }
       
+      // Capture DOM immediately if page is already loaded
       if (document.readyState === 'complete') {
-        setTimeout(captureInitialDOM, 1000);
+        setTimeout(captureInitialDOM, 500); // Small delay to ensure everything is settled
       } else {
         window.addEventListener('load', () => {
-          setTimeout(captureInitialDOM, 1000);
+          setTimeout(captureInitialDOM, 500);
         });
       }
       
@@ -551,13 +631,22 @@
         }
       }, config.flushInterval);
       
-      // Periodic DOM capture
+      // Periodic DOM capture for other pages/interactions
       if (config.enableDOMCapture) {
         setInterval(() => {
           const now = Date.now();
           if (now - lastDOMCapture > config.domCaptureInterval) {
             debugLog('📸 Periodic DOM capture triggered');
-            captureDOMSnapshot();
+            const snapshot = captureDOMSnapshot();
+            if (snapshot) {
+              domSnapshotQueue.push({
+                projectId: projectId,
+                sessionId: sessionId,
+                userId: userId,
+                timestamp: now,
+                domSnapshot: snapshot
+              });
+            }
           }
         }, config.domCaptureInterval);
       }
@@ -588,15 +677,15 @@
       });
       
       debugLog('🎉 Optimized Webtir Analytics initialized successfully!');
-      console.log('%c🚀 Webtir Analytics Active (Enhanced Payload Logging)', 'color: #ff6b35; font-size: 16px; font-weight: bold;');
-      console.log('%cDetailed payload logging enabled - check console for full sendBeacon/fetch details', 'color: #666;');
+      console.log('%c🚀 Webtir Analytics Active (Enhanced DOM Capture)', 'color: #ff6b35; font-size: 16px; font-weight: bold;');
+      console.log('%cDOM snapshots will now be included with pageview events', 'color: #666;');
     }
     
     // Public API
     window.WebtirAnalytics = {
       captureDOMNow: function() {
         debugLog('🎯 Manual DOM capture requested');
-        return captureDOMSnapshot();
+        return captureDOMSnapshot(true);
       },
       flushNow: function() {
         debugLog('🎯 Manual flush requested');
@@ -607,6 +696,10 @@
       },
       getLastSnapshot: function() {
         return currentDOMSnapshot;
+      },
+      forcePageview: function() {
+        debugLog('🎯 Manual pageview with DOM capture');
+        trackEvent('pageview', { title: document.title, url: window.location.href }, true);
       }
     };
     
