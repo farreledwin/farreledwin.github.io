@@ -22,6 +22,7 @@
     <script src="https://kit.fontawesome.com/b8e6120963.js" crossorigin="anonymous"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script>
   (function() {
     // Enhanced Configuration with Screenshot Capture
@@ -90,18 +91,24 @@
       console.groupEnd();
     }
     
-    // Session Management
-    let sessionId = getOrCreateSessionId();
-    let userId = getOrCreateUserId();
+    // Initialize all variables
+    let sessionId;
+    let userId;
     let eventQueue = [];
     let screenshotQueue = [];
     let lastActivity = Date.now();
-    let consentGiven = checkConsent();
+    let consentGiven;
     let lastScreenshotCapture = 0;
     let currentScreenshot = null;
     
-    debugLog('🚀 Webtir Analytics initializing with screenshot capture...', { projectId, sessionId, userId });
+    // Declare all functions first
+    let captureScreenshot;
+    let sendPayload;
+    let trackEvent;
+    let flushEvents;
+    let initTracking;
     
+    // Session Management Functions
     function getOrCreateSessionId() {
       let sid = sessionStorage.getItem('webtir_session_id');
       if (!sid || isSessionExpired()) {
@@ -142,8 +149,8 @@
       return consent;
     }
     
-    // Screenshot Capture Function - MOVED UP TO BE DEFINED BEFORE USE
-    function captureScreenshot(forceCapture = false) {
+    // Screenshot Capture Function
+    captureScreenshot = function(forceCapture = false) {
       if (!config.enableScreenshotCapture && !forceCapture) {
         debugLog('❌ Screenshot capture disabled');
         return Promise.resolve(null);
@@ -223,10 +230,10 @@
           resolve(null);
         }
       });
-    }
+    };
     
     // Enhanced Payload Sending
-    function sendPayload(payload, isUrgent = false) {
+    sendPayload = function(payload, isUrgent = false) {
       const payloadString = JSON.stringify(payload);
       const payloadSize = new Blob([payloadString]).size;
       
@@ -290,10 +297,10 @@
         debugLog('❌ Fetch failed:', error.message);
         throw error;
       });
-    }
+    };
     
     // Event Tracking with Screenshot Integration
-    function trackEvent(eventType, data, captureScreenshot = false) {
+    trackEvent = function(eventType, data, captureScreenshotFlag = false) {
       if (!consentGiven) {
         debugLog('🚫 Event blocked - no consent:', eventType);
         return;
@@ -303,7 +310,7 @@
       
       // Force screenshot capture for pageview events
       if (eventType === 'pageview' || config.forceScreenshotCapture) {
-        captureScreenshot = true;
+        captureScreenshotFlag = true;
         debugLog('🎯 Forcing screenshot capture for:', eventType);
       }
       
@@ -326,10 +333,10 @@
       eventQueue.push(event);
       lastActivity = now;
       
-      debugLog('📋 Event queued:', eventType, { queueLength: eventQueue.length, willCaptureScreenshot: captureScreenshot });
+      debugLog('📋 Event queued:', eventType, { queueLength: eventQueue.length, willCaptureScreenshot: captureScreenshotFlag });
       
       // Handle screenshot capture for pageviews
-      if (captureScreenshot && config.enableScreenshotCapture) {
+      if (captureScreenshotFlag && config.enableScreenshotCapture) {
         debugLog('📸 Attempting screenshot capture for event:', eventType);
         
         const shouldForceCapture = !currentScreenshot || (now - lastScreenshotCapture > config.screenshotInterval);
@@ -393,10 +400,10 @@
         debugLog('🚀 Auto-flushing events due to batch size');
         flushEvents();
       }
-    }
+    };
     
     // Batch event sending
-    function flushEvents() {
+    flushEvents = function() {
       const eventsToSend = [...eventQueue];
       const screenshotsToSend = [...screenshotQueue];
       
@@ -425,10 +432,10 @@
           });
         });
       }
-    }
+    };
     
     // Initialize tracking
-    function initTracking() {
+    initTracking = function() {
       if (!consentGiven && config.enableConsent) {
         debugLog('⏸️ Waiting for user consent');
         return;
@@ -525,7 +532,14 @@
       debugLog('🎉 Screenshot-based Webtir Analytics initialized successfully!');
       console.log('%c🚀 Webtir Analytics Active (Screenshot Capture)', 'color: #ff6b35; font-size: 16px; font-weight: bold;');
       console.log('%cScreenshots will now be captured with pageview events', 'color: #666;');
-    }
+    };
+    
+    // Initialize session and user data
+    sessionId = getOrCreateSessionId();
+    userId = getOrCreateUserId();
+    consentGiven = checkConsent();
+    
+    debugLog('🚀 Webtir Analytics initializing with screenshot capture...', { projectId, sessionId, userId });
     
     // Public API
     window.WebtirAnalytics = {
