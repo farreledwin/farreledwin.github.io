@@ -187,6 +187,7 @@
         };
         
         currentDOMSnapshot = snapshot;
+        lastDOMCapture = Date.now();
         debugLog('DOM capture successful. Size:', serializedDOM.length, 'Styles:', Object.keys(capturedStyles).length);
         return snapshot;
         
@@ -249,12 +250,16 @@
       }
       
       const now = Date.now();
+      let domSnapshotToSend = null;
       
       // Capture DOM snapshot if needed and not captured recently
-      if (includeDOM && config.enableDOMCapture && (now - lastDOMCapture > config.domCaptureInterval)) {
-        const snapshot = captureDOMSnapshot();
-        if (snapshot) {
-          lastDOMCapture = now;
+      if (includeDOM && config.enableDOMCapture) {
+        if (!currentDOMSnapshot || (now - lastDOMCapture > config.domCaptureInterval)) {
+          debugLog('Capturing fresh DOM snapshot for event:', eventType);
+          domSnapshotToSend = captureDOMSnapshot();
+        } else {
+          debugLog('Using existing DOM snapshot for event:', eventType);
+          domSnapshotToSend = currentDOMSnapshot;
         }
       }
       
@@ -273,13 +278,13 @@
         },
         fingerprint: generateFingerprint(),
         data: data,
-        domSnapshot: includeDOM ? currentDOMSnapshot : null
+        domSnapshot: domSnapshotToSend
       };
       
       eventQueue.push(event);
       lastActivity = now;
       
-      debugLog('Event queued:', eventType, 'Queue length:', eventQueue.length, 'Data:', data);
+      debugLog('Event queued:', eventType, 'Queue length:', eventQueue.length, 'Has DOM:', !!domSnapshotToSend);
       
       if (eventQueue.length >= config.batchSize) {
         debugLog('Flushing events due to batch size');
@@ -530,9 +535,11 @@
       
       if (config.enableDOMCapture) {
         setInterval(() => {
-          if (Date.now() - lastDOMCapture > config.domCaptureInterval) {
+          const now = Date.now();
+          if (now - lastDOMCapture > config.domCaptureInterval) {
             debugLog('Periodic DOM capture...');
-            captureDOMSnapshot();
+            const snapshot = captureDOMSnapshot();
+            debugLog('Periodic DOM capture result:', snapshot ? 'Success' : 'Failed');
           }
         }, config.domCaptureInterval);
       }
