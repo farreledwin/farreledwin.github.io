@@ -22,7 +22,7 @@
     <script src="https://kit.fontawesome.com/b8e6120963.js" crossorigin="anonymous"></script>
 <script>
   (function() {
-    // Enhanced Configuration with sendBeacon and Payload Management
+    // Enhanced Configuration with Detailed Payload Logging
     const projectId = "b039a668-abf4-4a56-8bee-612e707d8937";
     const collectorEndpoint = "https://okkczylgemiemsciehtq.supabase.co/functions/v1/heatmap-collector";
     const config = {
@@ -42,7 +42,8 @@
       domCaptureInterval: 15000,
       maxPayloadSize: 60000,
       maxDOMSize: 50000,
-      debugMode: true
+      debugMode: true,
+      detailedPayloadLogging: true
     };
     
     // Debug logging function
@@ -50,6 +51,65 @@
       if (config.debugMode) {
         console.log('[Webtir Debug]', message, data || '');
       }
+    }
+    
+    // Enhanced payload preview function
+    function logPayloadDetails(payload, method = 'unknown') {
+      if (!config.detailedPayloadLogging) return;
+      
+      const payloadString = JSON.stringify(payload);
+      const payloadSize = new Blob([payloadString]).size;
+      
+      console.group('%c📦 Payload Details (' + method + ')', 'color: #ff6b35; font-weight: bold;');
+      
+      // Basic payload info
+      console.log('📊 Payload Size:', payloadSize, 'bytes');
+      console.log('📋 Payload Keys:', Object.keys(payload));
+      
+      // Event details
+      if (payload.events && Array.isArray(payload.events)) {
+        console.log('🎯 Events Count:', payload.events.length);
+        console.log('🎯 Event Types:', payload.events.map(e => e.eventType));
+      }
+      
+      // DOM Snapshot details
+      if (payload.domSnapshot) {
+        const domSnapshot = payload.domSnapshot;
+        console.log('📸 DOM Snapshot Present:', true);
+        console.log('📸 DOM Snapshot Keys:', Object.keys(domSnapshot));
+        
+        if (domSnapshot.html) {
+          console.log('📸 DOM HTML Length:', domSnapshot.html.length);
+          console.log('📸 DOM HTML Preview (first 300 chars):', domSnapshot.html.substring(0, 300) + '...');
+          console.log('📸 DOM HTML Contains:', {
+            hasDoctype: domSnapshot.html.includes('<!DOCTYPE'),
+            hasHtml: domSnapshot.html.includes('<html'),
+            hasBody: domSnapshot.html.includes('<body'),
+            hasHead: domSnapshot.html.includes('<head'),
+            hasDivs: domSnapshot.html.includes('<div'),
+            hasContent: domSnapshot.html.length > 100
+          });
+        } else {
+          console.warn('⚠️ DOM Snapshot has no HTML content!');
+        }
+        
+        if (domSnapshot.viewport) {
+          console.log('📸 Viewport Data:', domSnapshot.viewport);
+        }
+        
+        console.log('📸 DOM Capture Method:', domSnapshot.captureMethod || 'unknown');
+        console.log('📸 DOM Timestamp:', new Date(domSnapshot.timestamp).toISOString());
+      }
+      
+      // Show full payload structure (but limit size for readability)
+      if (payloadSize < 5000) {
+        console.log('📄 Full Payload:', payload);
+      } else {
+        console.log('📄 Payload too large to display fully (', payloadSize, 'bytes)');
+        console.log('📄 Payload Structure Preview:', JSON.stringify(payload, null, 2).substring(0, 1000) + '...');
+      }
+      
+      console.groupEnd();
     }
     
     // Session Management
@@ -62,7 +122,7 @@
     let lastDOMCapture = 0;
     let currentDOMSnapshot = null;
     
-    debugLog('🚀 Webtir Analytics initializing with sendBeacon support...', { projectId, sessionId, userId });
+    debugLog('🚀 Webtir Analytics initializing with enhanced payload logging...', { projectId, sessionId, userId });
     
     function getOrCreateSessionId() {
       let sid = sessionStorage.getItem('webtir_session_id');
@@ -104,7 +164,7 @@
       return consent;
     }
     
-    // Fixed DOM Capture with Better HTML Extraction and Validation
+    // Enhanced DOM Capture with Better Validation
     function captureDOMSnapshot() {
       if (!config.enableDOMCapture) {
         debugLog('❌ DOM capture disabled');
@@ -120,7 +180,6 @@
           return null;
         }
         
-        // Get the full document HTML as base
         let capturedHTML = '';
         
         // Try to get the full document first
@@ -175,13 +234,7 @@
           debugLog('📄 Fallback capture:', { length: capturedHTML.length, elementCount: fallbackElements.length });
         }
         
-        // Validate we have actual HTML content - FIXED VALIDATION
-        if (!capturedHTML || capturedHTML.length < 20) {
-          debugLog('❌ No HTML content could be captured');
-          return null;
-        }
-        
-        // Improved content validation - check for actual meaningful content
+        // Enhanced content validation
         const hasValidContent = capturedHTML.length > 100 && (
           capturedHTML.includes('<html') || 
           capturedHTML.includes('<body') || 
@@ -196,14 +249,25 @@
           capturedHTML.includes('<nav')
         );
         
-        debugLog('🔍 Content validation:', {
+        debugLog('🔍 Enhanced content validation:', {
           htmlLength: capturedHTML.length,
           hasValidContent: hasValidContent,
           containsHtml: capturedHTML.includes('<html'),
           containsBody: capturedHTML.includes('<body'),
           containsDiv: capturedHTML.includes('<div'),
-          preview: capturedHTML.substring(0, 200)
+          preview: capturedHTML.substring(0, 200),
+          tagCounts: {
+            divs: (capturedHTML.match(/<div/g) || []).length,
+            paragraphs: (capturedHTML.match(/<p/g) || []).length,
+            spans: (capturedHTML.match(/<span/g) || []).length,
+            headers: (capturedHTML.match(/<h[1-6]/g) || []).length
+          }
         });
+        
+        if (!hasValidContent) {
+          debugLog('❌ Content validation failed - no meaningful HTML content found');
+          return null;
+        }
         
         // Truncate if too large
         if (capturedHTML.length > config.maxDOMSize) {
@@ -250,7 +314,7 @@
       }
     }
     
-    // Smart Payload Sending with sendBeacon Priority
+    // Enhanced Payload Sending with Detailed Logging
     function sendPayload(payload, isUrgent = false) {
       const payloadString = JSON.stringify(payload);
       const payloadSize = new Blob([payloadString]).size;
@@ -259,15 +323,36 @@
         size: payloadSize,
         maxSize: config.maxPayloadSize,
         isUrgent: isUrgent,
-        hasBeacon: !!navigator.sendBeacon
+        hasBeacon: !!navigator.sendBeacon,
+        willUseBeacon: navigator.sendBeacon && payloadSize <= config.maxPayloadSize
       });
+      
+      // Log detailed payload information BEFORE sending
+      logPayloadDetails(payload, navigator.sendBeacon && payloadSize <= config.maxPayloadSize ? 'sendBeacon' : 'fetch');
       
       // Try sendBeacon first (preferred method)
       if (navigator.sendBeacon && payloadSize <= config.maxPayloadSize) {
         try {
           const success = navigator.sendBeacon(collectorEndpoint, payloadString);
           if (success) {
-            debugLog('✅ sendBeacon successful', { size: payloadSize });
+            debugLog('✅ sendBeacon successful', { 
+              size: payloadSize,
+              endpoint: collectorEndpoint,
+              payloadPreview: payloadString.substring(0, 200) + (payloadString.length > 200 ? '...' : ''),
+              hasDOMSnapshot: !!payload.domSnapshot,
+              domSnapshotSize: payload.domSnapshot?.html?.length || 0
+            });
+            
+            // Additional DOM snapshot confirmation
+            if (payload.domSnapshot) {
+              console.log('%c🎯 DOM Snapshot sent via sendBeacon!', 'color: #00ff00; font-weight: bold;', {
+                htmlLength: payload.domSnapshot.html?.length || 0,
+                timestamp: payload.domSnapshot.timestamp,
+                url: payload.domSnapshot.url,
+                captureMethod: payload.domSnapshot.captureMethod
+              });
+            }
+            
             return Promise.resolve();
           } else {
             debugLog('⚠️ sendBeacon failed, trying fetch fallback');
@@ -291,8 +376,22 @@
       }).then(response => {
         debugLog('✅ Fetch successful:', {
           status: response.status,
-          size: payloadSize
+          size: payloadSize,
+          payloadPreview: payloadString.substring(0, 200) + (payloadString.length > 200 ? '...' : ''),
+          hasDOMSnapshot: !!payload.domSnapshot,
+          domSnapshotSize: payload.domSnapshot?.html?.length || 0
         });
+        
+        // Additional DOM snapshot confirmation for fetch
+        if (payload.domSnapshot) {
+          console.log('%c🎯 DOM Snapshot sent via fetch!', 'color: #00ff00; font-weight: bold;', {
+            htmlLength: payload.domSnapshot.html?.length || 0,
+            timestamp: payload.domSnapshot.timestamp,
+            url: payload.domSnapshot.url,
+            captureMethod: payload.domSnapshot.captureMethod
+          });
+        }
+        
         return response;
       }).catch(error => {
         debugLog('❌ Fetch failed:', error.message);
@@ -342,7 +441,10 @@
               timestamp: now,
               domSnapshot: snapshot
             });
-            debugLog('📸 DOM snapshot queued separately');
+            debugLog('📸 DOM snapshot queued separately', {
+              queueLength: domSnapshotQueue.length,
+              htmlLength: snapshot.html?.length || 0
+            });
           }
         }
       }
@@ -364,6 +466,10 @@
       // Send regular events (small payload)
       if (eventsToSend.length > 0) {
         const eventPayload = { events: eventsToSend };
+        debugLog('📤 Sending events payload:', {
+          eventCount: eventsToSend.length,
+          payloadType: 'events'
+        });
         sendPayload(eventPayload).catch(error => {
           debugLog('❌ Failed to send events:', error.message);
           // Re-queue failed events (optional)
@@ -374,6 +480,11 @@
       // Send DOM snapshots separately (potentially large payload)
       if (domSnapshotsToSend.length > 0) {
         domSnapshotsToSend.forEach(domData => {
+          debugLog('📤 Sending DOM snapshot payload:', {
+            htmlLength: domData.domSnapshot?.html?.length || 0,
+            payloadType: 'domSnapshot',
+            timestamp: domData.timestamp
+          });
           sendPayload(domData).catch(error => {
             debugLog('❌ Failed to send DOM snapshot:', error.message);
           });
@@ -477,8 +588,8 @@
       });
       
       debugLog('🎉 Optimized Webtir Analytics initialized successfully!');
-      console.log('%c🚀 Webtir Analytics Active (sendBeacon + Fetch)', 'color: #ff6b35; font-size: 16px; font-weight: bold;');
-      console.log('%cOptimized for reliability and performance', 'color: #666;');
+      console.log('%c🚀 Webtir Analytics Active (Enhanced Payload Logging)', 'color: #ff6b35; font-size: 16px; font-weight: bold;');
+      console.log('%cDetailed payload logging enabled - check console for full sendBeacon/fetch details', 'color: #666;');
     }
     
     // Public API
