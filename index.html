@@ -41,8 +41,9 @@
       mouseThrottleMs: 300,
       enableScreenshotCapture: true,
       screenshotInterval: 15000,
-      screenshotQuality: 0.8,
-      maxPayloadSize: 60000,
+      screenshotQuality: 0.5, // Reduced quality to handle large pages
+      maxPayloadSize: 4000000, // 4MB limit
+      maxScreenshotSize: 3000000, // 3MB limit for screenshots
       debugMode: true,
       detailedPayloadLogging: true,
       forceScreenshotCapture: true
@@ -81,6 +82,10 @@
           const dataUrlSize = payload.screenshotData.dataUrl.length;
           console.log('📸 Screenshot Data Size:', dataUrlSize, 'characters');
           console.log('📸 Screenshot Format:', payload.screenshotData.dataUrl.substring(0, 30) + '...');
+          
+          if (dataUrlSize > config.maxScreenshotSize) {
+            console.warn('⚠️ Screenshot size exceeds limit:', dataUrlSize, 'vs', config.maxScreenshotSize);
+          }
         }
       } else {
         console.warn('⚠️ No Screenshot in payload!');
@@ -147,7 +152,7 @@
       return consent;
     }
     
-    // Screenshot Capture Function
+    // Enhanced Screenshot Capture Function with size optimization
     captureScreenshot = function(forceCapture = false) {
       if (!config.enableScreenshotCapture && !forceCapture) {
         debugLog('❌ Screenshot capture disabled');
@@ -173,17 +178,36 @@
           const options = {
             allowTaint: true,
             useCORS: true,
-            scale: 1,
+            scale: 0.5, // Reduce scale to decrease file size
             quality: config.screenshotQuality,
             logging: config.debugMode,
-            height: Math.max(document.body.scrollHeight, document.documentElement.scrollHeight),
-            width: Math.max(document.body.scrollWidth, document.documentElement.scrollWidth)
+            height: Math.min(document.body.scrollHeight, 5000), // Limit height
+            width: Math.min(document.body.scrollWidth, 3000), // Limit width
+            backgroundColor: '#ffffff'
           };
           
           html2canvas(document.body, options).then(canvas => {
             try {
-              const dataUrl = canvas.toDataURL('image/jpeg', config.screenshotQuality);
+              let dataUrl = canvas.toDataURL('image/jpeg', config.screenshotQuality);
               const now = Date.now();
+              
+              // Check if screenshot is too large and compress further if needed
+              if (dataUrl.length > config.maxScreenshotSize) {
+                debugLog('⚠️ Screenshot too large, reducing quality...', {
+                  originalSize: dataUrl.length,
+                  maxSize: config.maxScreenshotSize
+                });
+                
+                // Try with lower quality
+                dataUrl = canvas.toDataURL('image/jpeg', 0.3);
+                
+                // If still too large, skip
+                if (dataUrl.length > config.maxScreenshotSize) {
+                  debugLog('❌ Screenshot still too large after compression, skipping');
+                  resolve(null);
+                  return;
+                }
+              }
               
               const screenshot = {
                 dataUrl: dataUrl,
@@ -230,7 +254,7 @@
       });
     };
     
-    // Enhanced Payload Sending
+    // Enhanced Payload Sending with better error handling
     sendPayload = function(payload, isUrgent = false) {
       const payloadString = JSON.stringify(payload);
       const payloadSize = new Blob([payloadString]).size;
@@ -242,6 +266,13 @@
         hasBeacon: !!navigator.sendBeacon,
         willUseBeacon: navigator.sendBeacon && payloadSize <= config.maxPayloadSize
       });
+      
+      // Check if payload is too large
+      if (payloadSize > config.maxPayloadSize) {
+        debugLog('❌ Payload too large, skipping:', payloadSize);
+        console.error('Payload size exceeds limit:', payloadSize, 'bytes');
+        return Promise.reject(new Error('Payload too large'));
+      }
       
       // Log detailed payload information
       logPayloadDetails(payload, navigator.sendBeacon && payloadSize <= config.maxPayloadSize ? 'sendBeacon' : 'fetch');
@@ -270,8 +301,17 @@
         }
       }
       
-      // Fallback to fetch
-      return fetch(collectorEndpoint, {
+      // Fallback to fetch with timeout
+      const fetchWithTimeout = (url, options, timeout = 20000) => {
+        return Promise.race([
+          fetch(url, options),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Fetch timeout')), timeout)
+          )
+        ]);
+      };
+      
+      return fetchWithTimeout(collectorEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -279,7 +319,7 @@
         },
         body: payloadString,
         keepalive: true
-      }).then(response => {
+      }, 20000).then(response => {
         debugLog('✅ Fetch successful:', { status: response.status, size: payloadSize });
         
         if (payload.screenshotData) {
@@ -550,7 +590,7 @@
     userId = getOrCreateUserId();
     consentGiven = checkConsent();
     
-    debugLog('🚀 Webtir Analytics initializing with screenshot capture...', { projectId, sessionId, userId });
+    debugLog('🚀 Webtir Analytics initializing with optimized screenshot capture...', { projectId, sessionId, userId });
     
     // Public API
     window.WebtirAnalytics = {
