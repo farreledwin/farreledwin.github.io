@@ -27,8 +27,8 @@
     const collectorEndpoint = "https://okkczylgemiemsciehtq.supabase.co/functions/v1/heatmap-collector";
     const config = {
       samplingRate: 1.0,
-      batchSize: 5, // Increased batch size for better efficiency
-      flushInterval: 5000, // 5 seconds for regular flush
+      batchSize: 5,
+      flushInterval: 5000,
       sessionTimeout: 30 * 60 * 1000,
       enableConsent: false,
       enableFormTracking: true,
@@ -39,9 +39,9 @@
       mouseSamplingRate: 0.3,
       mouseThrottleMs: 300,
       enableDOMCapture: true,
-      domCaptureInterval: 15000, // Increased to 15 seconds
-      maxPayloadSize: 60000, // 60KB limit for sendBeacon
-      maxDOMSize: 50000, // Reduced DOM size limit
+      domCaptureInterval: 15000,
+      maxPayloadSize: 60000,
+      maxDOMSize: 50000,
       debugMode: true
     };
     
@@ -56,7 +56,7 @@
     let sessionId = getOrCreateSessionId();
     let userId = getOrCreateUserId();
     let eventQueue = [];
-    let domSnapshotQueue = []; // Separate queue for DOM snapshots
+    let domSnapshotQueue = [];
     let lastActivity = Date.now();
     let consentGiven = checkConsent();
     let lastDOMCapture = 0;
@@ -104,76 +104,87 @@
       return consent;
     }
     
-    // Optimized DOM Capture with Size Limits
+    // Fixed DOM Capture with Better HTML Extraction
     function captureDOMSnapshot() {
       if (!config.enableDOMCapture) {
         debugLog('❌ DOM capture disabled');
         return null;
       }
       
-      debugLog('📸 Starting optimized DOM capture...');
+      debugLog('📸 Starting DOM capture...');
       
       try {
+        // Wait for DOM to be ready
         if (document.readyState === 'loading') {
           debugLog('⏳ DOM still loading, waiting...');
           return null;
         }
         
-        // Capture essential elements only
-        const essentialSelectors = [
-          'head title',
-          'meta[name="description"]',
-          'h1, h2, h3',
-          'nav',
-          'main',
-          'header', 
-          'footer',
-          '[data-track]', // Elements specifically marked for tracking
-          'button',
-          'a[href]',
-          'form',
-          'input[type="submit"]'
-        ];
-        
+        // Get the full document HTML as base
         let capturedHTML = '';
-        let elementCount = 0;
         
-        // Add basic document structure
-        capturedHTML += '<!DOCTYPE html><html><head>';
-        capturedHTML += '<title>' + (document.title || '') + '</title>';
-        
-        // Add essential meta information
-        const metaDesc = document.querySelector('meta[name="description"]');
-        if (metaDesc) {
-          capturedHTML += metaDesc.outerHTML;
+        // Try to get the full document first
+        if (document.documentElement) {
+          const docClone = document.documentElement.cloneNode(true);
+          
+          // Remove potentially problematic elements
+          const elementsToRemove = docClone.querySelectorAll('script, iframe, object, embed, noscript, style[data-styled], style[data-emotion]');
+          elementsToRemove.forEach(el => el.remove());
+          
+          // Get the HTML
+          capturedHTML = '<!DOCTYPE html>' + docClone.outerHTML;
+          
+          debugLog('📄 Full document captured:', {
+            originalLength: capturedHTML.length,
+            hasDoctype: capturedHTML.includes('<!DOCTYPE'),
+            hasHtml: capturedHTML.includes('<html'),
+            hasBody: capturedHTML.includes('<body'),
+            hasHead: capturedHTML.includes('<head')
+          });
         }
         
-        capturedHTML += '</head><body>';
-        
-        // Capture essential elements
-        essentialSelectors.forEach(selector => {
-          try {
-            const elements = document.querySelectorAll(selector);
-            Array.from(elements).slice(0, 20).forEach(el => { // Limit elements per selector
-              if (elementCount < 100 && capturedHTML.length < config.maxDOMSize) { // Hard limits
-                const clone = el.cloneNode(true);
-                // Remove scripts and potentially problematic content
-                clone.querySelectorAll('script, iframe, object, embed').forEach(child => child.remove());
-                capturedHTML += clone.outerHTML;
-                elementCount++;
-              }
-            });
-          } catch (e) {
-            debugLog('⚠️ Error capturing selector', selector, e.message);
+        // If full document capture failed or is empty, try body only
+        if (!capturedHTML || capturedHTML.length < 100) {
+          debugLog('⚠️ Full document capture failed, trying body only...');
+          
+          if (document.body) {
+            const bodyClone = document.body.cloneNode(true);
+            const elementsToRemove = bodyClone.querySelectorAll('script, iframe, object, embed, noscript');
+            elementsToRemove.forEach(el => el.remove());
+            
+            capturedHTML = '<html><head><title>' + (document.title || '') + '</title></head><body>' + bodyClone.innerHTML + '</body></html>';
+            debugLog('📄 Body-only capture:', { length: capturedHTML.length });
           }
-        });
+        }
         
-        capturedHTML += '</body></html>';
+        // Final fallback - try to get any visible content
+        if (!capturedHTML || capturedHTML.length < 50) {
+          debugLog('⚠️ Body capture failed, trying fallback method...');
+          
+          const fallbackElements = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, div, span, a, button, nav, header, main, footer, section, article');
+          let fallbackHTML = '<html><head><title>' + (document.title || '') + '</title></head><body>';
+          
+          Array.from(fallbackElements).slice(0, 50).forEach(el => {
+            if (el.textContent && el.textContent.trim().length > 0) {
+              fallbackHTML += el.outerHTML;
+            }
+          });
+          
+          fallbackHTML += '</body></html>';
+          capturedHTML = fallbackHTML;
+          debugLog('📄 Fallback capture:', { length: capturedHTML.length, elementCount: fallbackElements.length });
+        }
         
-        // Truncate if still too large
+        // Validate we have actual HTML content
+        if (!capturedHTML || capturedHTML.length < 20) {
+          debugLog('❌ No HTML content could be captured');
+          return null;
+        }
+        
+        // Truncate if too large
         if (capturedHTML.length > config.maxDOMSize) {
           capturedHTML = capturedHTML.substring(0, config.maxDOMSize);
-          debugLog('✂️ DOM truncated to fit size limit');
+          debugLog('✂️ HTML truncated to fit size limit');
         }
         
         // Get viewport information
@@ -193,17 +204,18 @@
           title: document.title || '',
           timestamp: Date.now(),
           baseUrl: window.location.origin,
-          captureMethod: 'optimized',
-          elementCount: elementCount
+          captureMethod: 'enhanced',
+          htmlLength: capturedHTML.length
         };
         
         currentDOMSnapshot = snapshot;
         lastDOMCapture = Date.now();
         
-        debugLog('✅ Optimized DOM capture successful!', {
+        debugLog('✅ DOM capture successful!', {
           htmlLength: capturedHTML.length,
-          elementCount: elementCount,
-          viewport: viewportData
+          hasContent: capturedHTML.includes('<body>') || capturedHTML.includes('<div>'),
+          viewport: viewportData,
+          method: 'enhanced'
         });
         
         return snapshot;
@@ -368,11 +380,13 @@
             title: document.title, 
             url: window.location.href 
           }, true);
+        } else {
+          debugLog('⚠️ Initial DOM capture failed, will retry later');
         }
       }
       
       if (document.readyState === 'complete') {
-        setTimeout(captureInitialDOM, 1000); // Small delay to ensure everything is loaded
+        setTimeout(captureInitialDOM, 1000);
       } else {
         window.addEventListener('load', () => {
           setTimeout(captureInitialDOM, 1000);
