@@ -104,7 +104,7 @@
       return consent;
     }
     
-    // Fixed DOM Capture with Better HTML Extraction
+    // Fixed DOM Capture with Better HTML Extraction and Validation
     function captureDOMSnapshot() {
       if (!config.enableDOMCapture) {
         debugLog('❌ DOM capture disabled');
@@ -175,11 +175,35 @@
           debugLog('📄 Fallback capture:', { length: capturedHTML.length, elementCount: fallbackElements.length });
         }
         
-        // Validate we have actual HTML content
+        // Validate we have actual HTML content - FIXED VALIDATION
         if (!capturedHTML || capturedHTML.length < 20) {
           debugLog('❌ No HTML content could be captured');
           return null;
         }
+        
+        // Improved content validation - check for actual meaningful content
+        const hasValidContent = capturedHTML.length > 100 && (
+          capturedHTML.includes('<html') || 
+          capturedHTML.includes('<body') || 
+          capturedHTML.includes('<div') ||
+          capturedHTML.includes('<p') ||
+          capturedHTML.includes('<span') ||
+          capturedHTML.includes('<h1') ||
+          capturedHTML.includes('<h2') ||
+          capturedHTML.includes('<section') ||
+          capturedHTML.includes('<article') ||
+          capturedHTML.includes('<main') ||
+          capturedHTML.includes('<nav')
+        );
+        
+        debugLog('🔍 Content validation:', {
+          htmlLength: capturedHTML.length,
+          hasValidContent: hasValidContent,
+          containsHtml: capturedHTML.includes('<html'),
+          containsBody: capturedHTML.includes('<body'),
+          containsDiv: capturedHTML.includes('<div'),
+          preview: capturedHTML.substring(0, 200)
+        });
         
         // Truncate if too large
         if (capturedHTML.length > config.maxDOMSize) {
@@ -213,7 +237,7 @@
         
         debugLog('✅ DOM capture successful!', {
           htmlLength: capturedHTML.length,
-          hasContent: capturedHTML.includes('<body>') || capturedHTML.includes('<div>'),
+          hasContent: hasValidContent,
           viewport: viewportData,
           method: 'enhanced'
         });
