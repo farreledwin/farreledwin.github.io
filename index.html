@@ -22,7 +22,7 @@
     <script src="https://kit.fontawesome.com/b8e6120963.js" crossorigin="anonymous"></script>
 <script>
   (function() {
-    // Enhanced Configuration
+    // Enhanced Configuration with DOM Capture
     const projectId = "b039a668-abf4-4a56-8bee-612e707d8937";
     const collectorEndpoint = "https://okkczylgemiemsciehtq.supabase.co/functions/v1/heatmap-collector";
     const config = {
@@ -35,9 +35,12 @@
       enableScrollTracking: true,
       enablePerformanceTracking: true,
       enableRageClickDetection: true,
-      enableMouseTracking: true, // New: Enable mouse move tracking
+      enableMouseTracking: true,
       mouseSamplingRate: 0.05, // Lower sampling rate for mouse moves (5%)
-      mouseThrottleMs: 200 // Throttle mouse moves to every 200ms
+      mouseThrottleMs: 200, // Throttle mouse moves to every 200ms
+      enableDOMCapture: true, // Enable DOM snapshot capture
+      domCaptureInterval: 30000, // Capture DOM every 30 seconds
+      maxDOMSize: 2000000 // Max DOM size in characters (2MB)
     };
     
     // Session Management
@@ -46,6 +49,8 @@
     let eventQueue = [];
     let lastActivity = Date.now();
     let consentGiven = checkConsent();
+    let lastDOMCapture = 0;
+    let currentDOMSnapshot = null;
     
     // Performance tracking
     let performanceData = {};
@@ -100,17 +105,133 @@
       })).slice(0, 32);
     }
     
-    // Enhanced Event Tracking
-    function trackEvent(eventType, data) {
+    // DOM Capture Functions
+    function captureDOMSnapshot() {
+      if (!config.enableDOMCapture) return null;
+      
+      try {
+        // Clone the document to avoid modifying the original
+        const docClone = document.cloneNode(true);
+        
+        // Remove script tags and other potentially problematic elements
+        const scripts = docClone.querySelectorAll('script, noscript, iframe, object, embed');
+        scripts.forEach(el => el.remove());
+        
+        // Capture computed styles for key elements
+        const capturedStyles = captureComputedStyles();
+        
+        // Get viewport information
+        const viewportData = {
+          width: window.innerWidth,
+          height: window.innerHeight,
+          scrollX: window.pageXOffset || document.documentElement.scrollLeft,
+          scrollY: window.pageYOffset || document.documentElement.scrollTop,
+          documentWidth: Math.max(
+            document.body.scrollWidth,
+            document.documentElement.scrollWidth,
+            document.body.offsetWidth,
+            document.documentElement.offsetWidth,
+            document.body.clientWidth,
+            document.documentElement.clientWidth
+          ),
+          documentHeight: Math.max(
+            document.body.scrollHeight,
+            document.documentElement.scrollHeight,
+            document.body.offsetHeight,
+            document.documentElement.offsetHeight,
+            document.body.clientHeight,
+            document.documentElement.clientHeight
+          )
+        };
+        
+        // Serialize the DOM
+        const serializedDOM = docClone.documentElement.outerHTML;
+        
+        // Check size limit
+        if (serializedDOM.length > config.maxDOMSize) {
+          console.warn('DOM snapshot too large, skipping capture');
+          return null;
+        }
+        
+        const snapshot = {
+          html: serializedDOM,
+          styles: capturedStyles,
+          viewport: viewportData,
+          url: window.location.href,
+          title: document.title,
+          timestamp: Date.now(),
+          baseUrl: window.location.origin
+        };
+        
+        currentDOMSnapshot = snapshot;
+        return snapshot;
+        
+      } catch (error) {
+        console.warn('Failed to capture DOM snapshot:', error);
+        return null;
+      }
+    }
+    
+    function captureComputedStyles() {
+      try {
+        const styles = {};
+        const elements = document.querySelectorAll('*');
+        const maxElements = 500; // Limit to prevent performance issues
+        
+        for (let i = 0; i < Math.min(elements.length, maxElements); i++) {
+          const el = elements[i];
+          const computedStyle = window.getComputedStyle(el);
+          const elementId = el.id || el.className || el.tagName.toLowerCase() + '_' + i;
+          
+          styles[elementId] = {
+            position: computedStyle.position,
+            display: computedStyle.display,
+            width: computedStyle.width,
+            height: computedStyle.height,
+            top: computedStyle.top,
+            left: computedStyle.left,
+            right: computedStyle.right,
+            bottom: computedStyle.bottom,
+            margin: computedStyle.margin,
+            padding: computedStyle.padding,
+            backgroundColor: computedStyle.backgroundColor,
+            color: computedStyle.color,
+            fontSize: computedStyle.fontSize,
+            fontFamily: computedStyle.fontFamily,
+            zIndex: computedStyle.zIndex,
+            opacity: computedStyle.opacity,
+            transform: computedStyle.transform
+          };
+        }
+        
+        return styles;
+      } catch (error) {
+        console.warn('Failed to capture computed styles:', error);
+        return {};
+      }
+    }
+    
+    // Enhanced Event Tracking with DOM Snapshots
+    function trackEvent(eventType, data, includeDOM = false) {
       if (!consentGiven) return;
       if (Math.random() > config.samplingRate && eventType !== 'session_start') return;
+      
+      const now = Date.now();
+      
+      // Capture DOM snapshot if needed and not captured recently
+      if (includeDOM && config.enableDOMCapture && (now - lastDOMCapture > config.domCaptureInterval)) {
+        const snapshot = captureDOMSnapshot();
+        if (snapshot) {
+          lastDOMCapture = now;
+        }
+      }
       
       const event = {
         projectId: projectId,
         eventType: eventType,
         sessionId: sessionId,
         userId: userId,
-        timestamp: Date.now(),
+        timestamp: now,
         url: window.location.href,
         referrer: document.referrer,
         userAgent: navigator.userAgent,
@@ -119,11 +240,12 @@
           height: window.innerHeight
         },
         fingerprint: generateFingerprint(),
-        data: data
+        data: data,
+        domSnapshot: includeDOM ? currentDOMSnapshot : null
       };
       
       eventQueue.push(event);
-      lastActivity = Date.now();
+      lastActivity = now;
       
       if (eventQueue.length >= config.batchSize) {
         flushEvents();
@@ -172,7 +294,7 @@
       attemptSend(1);
     }
     
-    // Click tracking with rage click detection
+    // Click tracking with DOM snapshots and rage click detection
     let recentClicks = [];
     function trackClick(e) {
       const now = Date.now();
@@ -196,9 +318,9 @@
       );
       
       if (rageClicks.length >= 3) {
-        trackEvent('rage_click', { ...clickData, rageClickCount: rageClicks.length });
+        trackEvent('rage_click', { ...clickData, rageClickCount: rageClicks.length }, true);
       } else {
-        trackEvent('click', clickData);
+        trackEvent('click', clickData, true);
       }
     }
     
@@ -208,11 +330,9 @@
       
       const now = Date.now();
       
-      // Throttle mouse events
       if (now - lastMouseTime < config.mouseThrottleMs) return;
       lastMouseTime = now;
       
-      // Additional sampling for mouse moves
       if (Math.random() > config.mouseSamplingRate) return;
       
       const moveData = {
@@ -278,29 +398,29 @@
         
         trackEvent('performance', performanceData);
       }
-      
-      // Core Web Vitals
-      if ('web-vital' in window) {
-        // This would require the web-vitals library to be loaded
-        // trackEvent('web_vitals', webVitalsData);
-      }
     }
     
-    // Initialize tracking
+    // Initialize tracking with DOM capture
     function initTracking() {
       if (!consentGiven && config.enableConsent) {
         console.log('Webtir Analytics: Waiting for user consent');
         return;
       }
       
-      // Track page view and session start
-      trackEvent('pageview', { title: document.title });
-      trackEvent('session_start', { timestamp: Date.now() });
+      // Initial DOM capture
+      if (config.enableDOMCapture) {
+        setTimeout(() => {
+          captureDOMSnapshot();
+        }, 1000); // Wait for page to settle
+      }
+      
+      // Track page view and session start with DOM snapshot
+      trackEvent('pageview', { title: document.title }, true);
+      trackEvent('session_start', { timestamp: Date.now() }, true);
       
       // Set up event listeners
       document.addEventListener('click', trackClick, true);
       
-      // Add mouse move tracking
       if (config.enableMouseTracking) {
         document.addEventListener('mousemove', trackMouseMove, true);
       }
@@ -333,8 +453,16 @@
         flushEvents();
       });
       
-      // Periodic flush
+      // Periodic flush and DOM capture
       setInterval(flushEvents, config.flushInterval);
+      
+      if (config.enableDOMCapture) {
+        setInterval(() => {
+          if (Date.now() - lastDOMCapture > config.domCaptureInterval) {
+            captureDOMSnapshot();
+          }
+        }, config.domCaptureInterval);
+      }
       
       // Performance tracking after load
       if (config.enablePerformanceTracking) {
@@ -345,7 +473,7 @@
         }
       }
       
-      console.log('Webtir Analytics: Enhanced tracking initialized for project:', projectId);
+      console.log('Webtir Analytics: Enhanced DOM capture tracking initialized for project:', projectId);
     }
     
     // Public API for consent management
@@ -362,6 +490,9 @@
       },
       trackCustomEvent: function(eventName, data) {
         trackEvent('custom_' + eventName, data);
+      },
+      captureDOMNow: function() {
+        return captureDOMSnapshot();
       }
     };
     
