@@ -22,13 +22,13 @@
     <script src="https://kit.fontawesome.com/b8e6120963.js" crossorigin="anonymous"></script>
 <script>
   (function() {
-    // Enhanced Configuration with DOM Capture
+    // Enhanced Configuration with DOM Capture and DEBUG MODE
     const projectId = "b039a668-abf4-4a56-8bee-612e707d8937";
     const collectorEndpoint = "https://okkczylgemiemsciehtq.supabase.co/functions/v1/heatmap-collector";
     const config = {
-      samplingRate: 0.1, // 10% sampling for performance
-      batchSize: 20, // Send events in batches
-      flushInterval: 5000, // Flush every 5 seconds
+      samplingRate: 1.0, // 100% sampling for debugging - change back to 0.1 for production
+      batchSize: 5, // Smaller batches for faster debugging
+      flushInterval: 2000, // Flush every 2 seconds for debugging
       sessionTimeout: 30 * 60 * 1000, // 30 minutes
       enableConsent: false, // Disabled consent for always-on tracking
       enableFormTracking: true,
@@ -36,12 +36,20 @@
       enablePerformanceTracking: true,
       enableRageClickDetection: true,
       enableMouseTracking: true,
-      mouseSamplingRate: 0.05, // Lower sampling rate for mouse moves (5%)
+      mouseSamplingRate: 0.2, // Higher sampling rate for debugging
       mouseThrottleMs: 200, // Throttle mouse moves to every 200ms
       enableDOMCapture: true, // Enable DOM snapshot capture
-      domCaptureInterval: 30000, // Capture DOM every 30 seconds
-      maxDOMSize: 2000000 // Max DOM size in characters (2MB)
+      domCaptureInterval: 15000, // Capture DOM every 15 seconds for debugging
+      maxDOMSize: 2000000, // Max DOM size in characters (2MB)
+      debugMode: true // Enable debug logging
     };
+    
+    // Debug logging function
+    function debugLog(message, data = null) {
+      if (config.debugMode) {
+        console.log('[Webtir Debug]', message, data);
+      }
+    }
     
     // Session Management
     let sessionId = getOrCreateSessionId();
@@ -51,6 +59,8 @@
     let consentGiven = checkConsent();
     let lastDOMCapture = 0;
     let currentDOMSnapshot = null;
+    
+    debugLog('Initialization:', { projectId, sessionId, userId, consentGiven });
     
     // Performance tracking
     let performanceData = {};
@@ -65,6 +75,9 @@
         sid = 'sess_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
         sessionStorage.setItem('webtir_session_id', sid);
         sessionStorage.setItem('webtir_session_start', Date.now().toString());
+        debugLog('Created new session:', sid);
+      } else {
+        debugLog('Using existing session:', sid);
       }
       return sid;
     }
@@ -74,6 +87,9 @@
       if (!uid) {
         uid = 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
         localStorage.setItem('webtir_user_id', uid);
+        debugLog('Created new user:', uid);
+      } else {
+        debugLog('Using existing user:', uid);
       }
       return uid;
     }
@@ -84,8 +100,13 @@
     }
     
     function checkConsent() {
-      if (!config.enableConsent) return true;
-      return localStorage.getItem('webtir_consent') === 'granted';
+      if (!config.enableConsent) {
+        debugLog('Consent not required, proceeding');
+        return true;
+      }
+      const consent = localStorage.getItem('webtir_consent') === 'granted';
+      debugLog('Consent check:', consent);
+      return consent;
     }
     
     function generateFingerprint() {
@@ -108,6 +129,8 @@
     // DOM Capture Functions
     function captureDOMSnapshot() {
       if (!config.enableDOMCapture) return null;
+      
+      debugLog('Starting DOM capture...');
       
       try {
         // Clone the document to avoid modifying the original
@@ -149,7 +172,7 @@
         
         // Check size limit
         if (serializedDOM.length > config.maxDOMSize) {
-          console.warn('DOM snapshot too large, skipping capture');
+          debugLog('DOM snapshot too large, skipping capture. Size:', serializedDOM.length);
           return null;
         }
         
@@ -164,10 +187,11 @@
         };
         
         currentDOMSnapshot = snapshot;
+        debugLog('DOM capture successful. Size:', serializedDOM.length, 'Styles:', Object.keys(capturedStyles).length);
         return snapshot;
         
       } catch (error) {
-        console.warn('Failed to capture DOM snapshot:', error);
+        debugLog('Failed to capture DOM snapshot:', error);
         return null;
       }
     }
@@ -206,15 +230,23 @@
         
         return styles;
       } catch (error) {
-        console.warn('Failed to capture computed styles:', error);
+        debugLog('Failed to capture computed styles:', error);
         return {};
       }
     }
     
     // Enhanced Event Tracking with DOM Snapshots
     function trackEvent(eventType, data, includeDOM = false) {
-      if (!consentGiven) return;
-      if (Math.random() > config.samplingRate && eventType !== 'session_start') return;
+      if (!consentGiven) {
+        debugLog('Event blocked - no consent:', eventType);
+        return;
+      }
+      
+      // For debugging, don't use sampling for critical events
+      if (Math.random() > config.samplingRate && !['session_start', 'pageview', 'click'].includes(eventType)) {
+        debugLog('Event sampled out:', eventType);
+        return;
+      }
       
       const now = Date.now();
       
@@ -247,44 +279,70 @@
       eventQueue.push(event);
       lastActivity = now;
       
+      debugLog('Event queued:', eventType, 'Queue length:', eventQueue.length, 'Data:', data);
+      
       if (eventQueue.length >= config.batchSize) {
+        debugLog('Flushing events due to batch size');
         flushEvents();
       }
     }
     
     // Batch event sending with retry logic
     function flushEvents() {
-      if (eventQueue.length === 0) return;
+      if (eventQueue.length === 0) {
+        debugLog('No events to flush');
+        return;
+      }
       
       const events = [...eventQueue];
       eventQueue = [];
       
+      debugLog('Flushing events:', events.length);
       sendEventsWithRetry(events, 3);
     }
     
     function sendEventsWithRetry(events, retries) {
       const payload = JSON.stringify({ events: events });
       
+      debugLog('Sending events to collector:', collectorEndpoint, 'Events:', events.length, 'Payload size:', payload.length);
+      
       function attemptSend(attempt) {
+        debugLog('Attempt', attempt, 'of', retries);
+        
         try {
           if (navigator.sendBeacon) {
+            debugLog('Using sendBeacon...');
             const success = navigator.sendBeacon(collectorEndpoint, payload);
+            debugLog('SendBeacon result:', success);
             if (!success && attempt < retries) {
+              debugLog('SendBeacon failed, retrying in', Math.pow(2, attempt) * 1000, 'ms');
               setTimeout(() => attemptSend(attempt + 1), Math.pow(2, attempt) * 1000);
             }
           } else {
+            debugLog('Using fetch...');
             fetch(collectorEndpoint, {
               method: 'POST',
               body: payload,
               headers: { 'Content-Type': 'application/json' },
               keepalive: true
+            }).then(response => {
+              debugLog('Fetch response:', response.status, response.statusText);
+              if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
+              }
+              return response.text();
+            }).then(data => {
+              debugLog('Fetch success:', data);
             }).catch(err => {
+              debugLog('Fetch error:', err);
               if (attempt < retries) {
+                debugLog('Retrying fetch in', Math.pow(2, attempt) * 1000, 'ms');
                 setTimeout(() => attemptSend(attempt + 1), Math.pow(2, attempt) * 1000);
               }
             });
           }
         } catch (err) {
+          debugLog('Send error:', err);
           if (attempt < retries) {
             setTimeout(() => attemptSend(attempt + 1), Math.pow(2, attempt) * 1000);
           }
@@ -308,6 +366,8 @@
         timestamp: now
       };
       
+      debugLog('Click detected:', clickData);
+      
       // Rage click detection
       recentClicks.push({ x: clickData.x, y: clickData.y, timestamp: now });
       recentClicks = recentClicks.filter(click => now - click.timestamp < 3000);
@@ -318,6 +378,7 @@
       );
       
       if (rageClicks.length >= 3) {
+        debugLog('Rage click detected:', rageClicks.length);
         trackEvent('rage_click', { ...clickData, rageClickCount: rageClicks.length }, true);
       } else {
         trackEvent('click', clickData, true);
@@ -403,13 +464,16 @@
     // Initialize tracking with DOM capture
     function initTracking() {
       if (!consentGiven && config.enableConsent) {
-        console.log('Webtir Analytics: Waiting for user consent');
+        debugLog('Waiting for user consent');
         return;
       }
+      
+      debugLog('Initializing tracking...');
       
       // Initial DOM capture
       if (config.enableDOMCapture) {
         setTimeout(() => {
+          debugLog('Capturing initial DOM snapshot...');
           captureDOMSnapshot();
         }, 1000); // Wait for page to settle
       }
@@ -420,9 +484,11 @@
       
       // Set up event listeners
       document.addEventListener('click', trackClick, true);
+      debugLog('Click listener attached');
       
       if (config.enableMouseTracking) {
         document.addEventListener('mousemove', trackMouseMove, true);
+        debugLog('Mouse tracking enabled');
       }
       
       if (config.enableScrollTracking) {
@@ -431,6 +497,7 @@
           clearTimeout(scrollTimeout);
           scrollTimeout = setTimeout(trackScroll, 100);
         });
+        debugLog('Scroll tracking enabled');
       }
       
       if (config.enableFormTracking) {
@@ -442,10 +509,12 @@
             formAction: e.target.action
           });
         });
+        debugLog('Form tracking enabled');
       }
       
       // Track page unload
       window.addEventListener('beforeunload', () => {
+        debugLog('Page unloading, flushing events...');
         trackEvent('page_unload', {
           timeOnPage: Date.now() - lastActivity,
           scrollDepth: scrollData.maxDepth
@@ -454,11 +523,15 @@
       });
       
       // Periodic flush and DOM capture
-      setInterval(flushEvents, config.flushInterval);
+      setInterval(() => {
+        debugLog('Periodic flush...');
+        flushEvents();
+      }, config.flushInterval);
       
       if (config.enableDOMCapture) {
         setInterval(() => {
           if (Date.now() - lastDOMCapture > config.domCaptureInterval) {
+            debugLog('Periodic DOM capture...');
             captureDOMSnapshot();
           }
         }, config.domCaptureInterval);
@@ -473,7 +546,11 @@
         }
       }
       
-      console.log('Webtir Analytics: Enhanced DOM capture tracking initialized for project:', projectId);
+      debugLog('Webtir Analytics: Enhanced DOM capture tracking initialized for project:', projectId);
+      console.log('%c🔥 Webtir Analytics Debug Mode Active', 'color: #ff6b35; font-size: 14px; font-weight: bold;');
+      console.log('Project ID:', projectId);
+      console.log('Collector Endpoint:', collectorEndpoint);
+      console.log('All debug logs are prefixed with [Webtir Debug]');
     }
     
     // Public API for consent management
@@ -493,6 +570,13 @@
       },
       captureDOMNow: function() {
         return captureDOMSnapshot();
+      },
+      flushNow: function() {
+        debugLog('Manual flush requested');
+        flushEvents();
+      },
+      getQueueLength: function() {
+        return eventQueue.length;
       }
     };
     
