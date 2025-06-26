@@ -22,15 +22,15 @@
     <script src="https://kit.fontawesome.com/b8e6120963.js" crossorigin="anonymous"></script>
 <script>
   (function() {
-    // Enhanced Configuration with DOM Capture and DEBUG MODE
+    // Enhanced Configuration with sendBeacon and Payload Management
     const projectId = "b039a668-abf4-4a56-8bee-612e707d8937";
     const collectorEndpoint = "https://okkczylgemiemsciehtq.supabase.co/functions/v1/heatmap-collector";
     const config = {
-      samplingRate: 1.0, // 100% sampling for debugging
-      batchSize: 3, // Smaller batches for faster debugging
-      flushInterval: 3000, // Flush every 3 seconds for debugging
-      sessionTimeout: 30 * 60 * 1000, // 30 minutes
-      enableConsent: false, // Always-on tracking for debugging
+      samplingRate: 1.0,
+      batchSize: 5, // Increased batch size for better efficiency
+      flushInterval: 5000, // 5 seconds for regular flush
+      sessionTimeout: 30 * 60 * 1000,
+      enableConsent: false,
       enableFormTracking: true,
       enableScrollTracking: true,
       enablePerformanceTracking: true,
@@ -38,10 +38,11 @@
       enableMouseTracking: true,
       mouseSamplingRate: 0.3,
       mouseThrottleMs: 300,
-      enableDOMCapture: true, // Enable DOM snapshot capture
-      domCaptureInterval: 10000, // Capture DOM every 10 seconds
-      maxDOMSize: 5000000, // Max DOM size 5MB
-      debugMode: true // Enable debug logging
+      enableDOMCapture: true,
+      domCaptureInterval: 15000, // Increased to 15 seconds
+      maxPayloadSize: 60000, // 60KB limit for sendBeacon
+      maxDOMSize: 50000, // Reduced DOM size limit
+      debugMode: true
     };
     
     // Debug logging function
@@ -55,12 +56,13 @@
     let sessionId = getOrCreateSessionId();
     let userId = getOrCreateUserId();
     let eventQueue = [];
+    let domSnapshotQueue = []; // Separate queue for DOM snapshots
     let lastActivity = Date.now();
     let consentGiven = checkConsent();
     let lastDOMCapture = 0;
     let currentDOMSnapshot = null;
     
-    debugLog('🚀 Webtir Analytics initializing...', { projectId, sessionId, userId, consentGiven });
+    debugLog('🚀 Webtir Analytics initializing with sendBeacon support...', { projectId, sessionId, userId });
     
     function getOrCreateSessionId() {
       let sid = sessionStorage.getItem('webtir_session_id');
@@ -102,195 +104,174 @@
       return consent;
     }
     
-    // DOM Capture Functions - IMPROVED VERSION
+    // Optimized DOM Capture with Size Limits
     function captureDOMSnapshot() {
       if (!config.enableDOMCapture) {
         debugLog('❌ DOM capture disabled');
         return null;
       }
       
-      debugLog('📸 Starting DOM capture...');
+      debugLog('📸 Starting optimized DOM capture...');
       
       try {
-        // Wait for DOM to be ready
         if (document.readyState === 'loading') {
           debugLog('⏳ DOM still loading, waiting...');
           return null;
         }
         
-        // Get the full HTML including doctype
-        let fullHTML = '';
+        // Capture essential elements only
+        const essentialSelectors = [
+          'head title',
+          'meta[name="description"]',
+          'h1, h2, h3',
+          'nav',
+          'main',
+          'header', 
+          'footer',
+          '[data-track]', // Elements specifically marked for tracking
+          'button',
+          'a[href]',
+          'form',
+          'input[type="submit"]'
+        ];
         
-        // Add doctype if it exists
-        if (document.doctype) {
-          fullHTML += '<!DOCTYPE ' + document.doctype.name;
-          if (document.doctype.publicId) {
-            fullHTML += ' PUBLIC "' + document.doctype.publicId + '"';
-          }
-          if (document.doctype.systemId) {
-            fullHTML += ' "' + document.doctype.systemId + '"';
-          }
-          fullHTML += '>\n';
+        let capturedHTML = '';
+        let elementCount = 0;
+        
+        // Add basic document structure
+        capturedHTML += '<!DOCTYPE html><html><head>';
+        capturedHTML += '<title>' + (document.title || '') + '</title>';
+        
+        // Add essential meta information
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) {
+          capturedHTML += metaDesc.outerHTML;
         }
         
-        // Get the full document HTML
-        fullHTML += document.documentElement.outerHTML;
+        capturedHTML += '</head><body>';
         
-        debugLog('📄 Raw HTML captured, length:', fullHTML.length);
-        
-        if (!fullHTML || fullHTML.trim().length === 0) {
-          debugLog('❌ Captured HTML is empty!');
-          return null;
-        }
-        
-        // Clean the HTML (remove scripts for security)
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = fullHTML;
-        
-        // Remove potentially problematic elements
-        const elementsToRemove = tempDiv.querySelectorAll('script, noscript, iframe[src*="google"], iframe[src*="facebook"], object, embed');
-        elementsToRemove.forEach(el => {
-          debugLog('🧹 Removing element:', el.tagName);
-          el.remove();
+        // Capture essential elements
+        essentialSelectors.forEach(selector => {
+          try {
+            const elements = document.querySelectorAll(selector);
+            Array.from(elements).slice(0, 20).forEach(el => { // Limit elements per selector
+              if (elementCount < 100 && capturedHTML.length < config.maxDOMSize) { // Hard limits
+                const clone = el.cloneNode(true);
+                // Remove scripts and potentially problematic content
+                clone.querySelectorAll('script, iframe, object, embed').forEach(child => child.remove());
+                capturedHTML += clone.outerHTML;
+                elementCount++;
+              }
+            });
+          } catch (e) {
+            debugLog('⚠️ Error capturing selector', selector, e.message);
+          }
         });
         
-        const cleanHTML = tempDiv.innerHTML || fullHTML;
-        debugLog('🧽 Cleaned HTML length:', cleanHTML.length);
+        capturedHTML += '</body></html>';
         
-        // Check size limit
-        if (cleanHTML.length > config.maxDOMSize) {
-          debugLog('⚠️ DOM snapshot too large, truncating. Size:', cleanHTML.length);
-          const truncatedHTML = cleanHTML.substring(0, config.maxDOMSize);
-          debugLog('✂️ Truncated to:', truncatedHTML.length);
+        // Truncate if still too large
+        if (capturedHTML.length > config.maxDOMSize) {
+          capturedHTML = capturedHTML.substring(0, config.maxDOMSize);
+          debugLog('✂️ DOM truncated to fit size limit');
         }
-        
-        // Capture computed styles for key elements
-        const capturedStyles = captureComputedStyles();
         
         // Get viewport information
         const viewportData = {
           width: window.innerWidth || 0,
           height: window.innerHeight || 0,
-          scrollX: window.pageXOffset || document.documentElement.scrollLeft || 0,
-          scrollY: window.pageYOffset || document.documentElement.scrollTop || 0,
-          documentWidth: Math.max(
-            document.body?.scrollWidth || 0,
-            document.documentElement?.scrollWidth || 0,
-            document.body?.offsetWidth || 0,
-            document.documentElement?.offsetWidth || 0,
-            document.body?.clientWidth || 0,
-            document.documentElement?.clientWidth || 0
-          ),
-          documentHeight: Math.max(
-            document.body?.scrollHeight || 0,
-            document.documentElement?.scrollHeight || 0,
-            document.body?.offsetHeight || 0,
-            document.documentElement?.offsetHeight || 0,
-            document.body?.clientHeight || 0,
-            document.documentElement?.clientHeight || 0
-          )
+          scrollX: window.pageXOffset || 0,
+          scrollY: window.pageYOffset || 0,
+          documentWidth: Math.max(document.body?.scrollWidth || 0, document.documentElement?.scrollWidth || 0),
+          documentHeight: Math.max(document.body?.scrollHeight || 0, document.documentElement?.scrollHeight || 0)
         };
         
-        debugLog('📐 Viewport data captured:', viewportData);
-        
-        const finalHTML = cleanHTML.length > config.maxDOMSize ? 
-          cleanHTML.substring(0, config.maxDOMSize) : cleanHTML;
-        
         const snapshot = {
-          html: finalHTML,
-          styles: capturedStyles,
+          html: capturedHTML,
           viewport: viewportData,
           url: window.location.href,
           title: document.title || '',
           timestamp: Date.now(),
           baseUrl: window.location.origin,
-          captureMethod: 'enhanced',
-          userAgent: navigator.userAgent
+          captureMethod: 'optimized',
+          elementCount: elementCount
         };
         
         currentDOMSnapshot = snapshot;
         lastDOMCapture = Date.now();
         
-        debugLog('✅ DOM capture successful!', {
-          htmlLength: finalHTML.length,
-          stylesCount: Object.keys(capturedStyles).length,
-          viewport: viewportData,
-          url: snapshot.url,
-          title: snapshot.title
+        debugLog('✅ Optimized DOM capture successful!', {
+          htmlLength: capturedHTML.length,
+          elementCount: elementCount,
+          viewport: viewportData
         });
         
         return snapshot;
         
       } catch (error) {
-        debugLog('❌ DOM capture failed:', error.message || error);
-        console.error('DOM Capture Error Details:', error);
+        debugLog('❌ DOM capture failed:', error.message);
         return null;
       }
     }
     
-    function captureComputedStyles() {
-      try {
-        const styles = {};
-        const elements = document.querySelectorAll('*');
-        const maxElements = 200; // Reduced to prevent performance issues
-        
-        debugLog('🎨 Capturing styles for', Math.min(elements.length, maxElements), 'elements');
-        
-        for (let i = 0; i < Math.min(elements.length, maxElements); i++) {
-          const el = elements[i];
-          if (!el || el.nodeType !== 1) continue; // Skip non-element nodes
-          
-          try {
-            const computedStyle = window.getComputedStyle(el);
-            const elementId = el.id || el.className || el.tagName.toLowerCase() + '_' + i;
-            
-            styles[elementId] = {
-              position: computedStyle.position,
-              display: computedStyle.display,
-              width: computedStyle.width,
-              height: computedStyle.height,
-              top: computedStyle.top,
-              left: computedStyle.left,
-              backgroundColor: computedStyle.backgroundColor,
-              color: computedStyle.color,
-              fontSize: computedStyle.fontSize,
-              fontFamily: computedStyle.fontFamily,
-              zIndex: computedStyle.zIndex,
-              opacity: computedStyle.opacity
-            };
-          } catch (styleError) {
-            debugLog('⚠️ Failed to capture style for element', i, styleError.message);
+    // Smart Payload Sending with sendBeacon Priority
+    function sendPayload(payload, isUrgent = false) {
+      const payloadString = JSON.stringify(payload);
+      const payloadSize = new Blob([payloadString]).size;
+      
+      debugLog('📡 Preparing to send payload:', {
+        size: payloadSize,
+        maxSize: config.maxPayloadSize,
+        isUrgent: isUrgent,
+        hasBeacon: !!navigator.sendBeacon
+      });
+      
+      // Try sendBeacon first (preferred method)
+      if (navigator.sendBeacon && payloadSize <= config.maxPayloadSize) {
+        try {
+          const success = navigator.sendBeacon(collectorEndpoint, payloadString);
+          if (success) {
+            debugLog('✅ sendBeacon successful', { size: payloadSize });
+            return Promise.resolve();
+          } else {
+            debugLog('⚠️ sendBeacon failed, trying fetch fallback');
           }
+        } catch (error) {
+          debugLog('❌ sendBeacon error:', error.message);
         }
-        
-        debugLog('🎨 Captured', Object.keys(styles).length, 'element styles');
-        return styles;
-      } catch (error) {
-        debugLog('❌ Style capture failed:', error.message);
-        return {};
+      } else if (payloadSize > config.maxPayloadSize) {
+        debugLog('📦 Payload too large for sendBeacon, using fetch');
       }
+      
+      // Fallback to fetch
+      return fetch(collectorEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: payloadString,
+        keepalive: true
+      }).then(response => {
+        debugLog('✅ Fetch successful:', {
+          status: response.status,
+          size: payloadSize
+        });
+        return response;
+      }).catch(error => {
+        debugLog('❌ Fetch failed:', error.message);
+        throw error;
+      });
     }
     
-    // Enhanced Event Tracking with DOM Snapshots
-    function trackEvent(eventType, data, includeDOM = false) {
+    // Enhanced Event Tracking with Separate DOM Handling
+    function trackEvent(eventType, data, captureDOM = false) {
       if (!consentGiven) {
         debugLog('🚫 Event blocked - no consent:', eventType);
         return;
       }
       
       const now = Date.now();
-      let domSnapshotToSend = null;
-      
-      // Capture DOM snapshot if needed
-      if (includeDOM && config.enableDOMCapture) {
-        if (!currentDOMSnapshot || (now - lastDOMCapture > config.domCaptureInterval)) {
-          debugLog('📸 Capturing fresh DOM snapshot for event:', eventType);
-          domSnapshotToSend = captureDOMSnapshot();
-        } else {
-          debugLog('♻️ Using existing DOM snapshot for event:', eventType);
-          domSnapshotToSend = currentDOMSnapshot;
-        }
-      }
       
       const event = {
         projectId: projectId,
@@ -305,18 +286,30 @@
           width: window.innerWidth,
           height: window.innerHeight
         },
-        data: data,
-        domSnapshot: domSnapshotToSend
+        data: data
       };
       
       eventQueue.push(event);
       lastActivity = now;
       
-      debugLog('📋 Event queued:', eventType, {
-        queueLength: eventQueue.length,
-        hasDOMSnapshot: !!domSnapshotToSend,
-        domSnapshotSize: domSnapshotToSend?.html?.length || 0
-      });
+      debugLog('📋 Event queued:', eventType, { queueLength: eventQueue.length });
+      
+      // Handle DOM capture separately to avoid large payloads
+      if (captureDOM && config.enableDOMCapture) {
+        if (!currentDOMSnapshot || (now - lastDOMCapture > config.domCaptureInterval)) {
+          const snapshot = captureDOMSnapshot();
+          if (snapshot) {
+            domSnapshotQueue.push({
+              projectId: projectId,
+              sessionId: sessionId,
+              userId: userId,
+              timestamp: now,
+              domSnapshot: snapshot
+            });
+            debugLog('📸 DOM snapshot queued separately');
+          }
+        }
+      }
       
       if (eventQueue.length >= config.batchSize) {
         debugLog('🚀 Auto-flushing events due to batch size');
@@ -324,130 +317,67 @@
       }
     }
     
-    // Enhanced batch event sending
+    // Enhanced batch event sending with separate DOM handling
     function flushEvents() {
-      if (eventQueue.length === 0) {
-        debugLog('📭 No events to flush');
-        return;
-      }
+      const eventsToSend = [...eventQueue];
+      const domSnapshotsToSend = [...domSnapshotQueue];
       
-      const events = [...eventQueue];
       eventQueue = [];
+      domSnapshotQueue = [];
       
-      debugLog('📤 Flushing events:', {
-        count: events.length,
-        endpoint: collectorEndpoint,
-        eventsWithDOM: events.filter(e => e.domSnapshot).length
-      });
-      
-      sendEventsWithRetry(events, 3);
-    }
-    
-    function sendEventsWithRetry(events, maxRetries) {
-      const payload = JSON.stringify({ events: events });
-      
-      debugLog('📡 Sending to collector:', {
-        eventCount: events.length,
-        payloadSize: payload.length,
-        endpoint: collectorEndpoint
-      });
-      
-      function attemptSend(attempt) {
-        debugLog('🔄 Send attempt', attempt, 'of', maxRetries);
-        
-        const headers = {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        };
-        
-        // Use fetch for better error handling
-        fetch(collectorEndpoint, {
-          method: 'POST',
-          headers: headers,
-          body: payload,
-          keepalive: true
-        }).then(response => {
-          debugLog('📨 Response received:', {
-            status: response.status,
-            statusText: response.statusText,
-            ok: response.ok
-          });
-          
-          if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-          }
-          
-          return response.text();
-        }).then(responseText => {
-          debugLog('✅ Send successful:', responseText);
-          try {
-            const jsonResponse = JSON.parse(responseText);
-            debugLog('📋 Parsed response:', jsonResponse);
-          } catch (e) {
-            debugLog('📄 Response (not JSON):', responseText);
-          }
-        }).catch(error => {
-          debugLog('❌ Send failed:', {
-            attempt: attempt,
-            error: error.message,
-            willRetry: attempt < maxRetries
-          });
-          
-          if (attempt < maxRetries) {
-            const delay = Math.pow(2, attempt) * 1000;
-            debugLog('⏰ Retrying in', delay, 'ms');
-            setTimeout(() => attemptSend(attempt + 1), delay);
-          } else {
-            debugLog('💥 All retry attempts exhausted');
-          }
+      // Send regular events (small payload)
+      if (eventsToSend.length > 0) {
+        const eventPayload = { events: eventsToSend };
+        sendPayload(eventPayload).catch(error => {
+          debugLog('❌ Failed to send events:', error.message);
+          // Re-queue failed events (optional)
+          eventQueue.unshift(...eventsToSend.slice(-5)); // Re-queue last 5 events only
         });
       }
       
-      attemptSend(1);
+      // Send DOM snapshots separately (potentially large payload)
+      if (domSnapshotsToSend.length > 0) {
+        domSnapshotsToSend.forEach(domData => {
+          sendPayload(domData).catch(error => {
+            debugLog('❌ Failed to send DOM snapshot:', error.message);
+          });
+        });
+      }
+      
+      debugLog('📤 Flushed events and DOM snapshots:', {
+        events: eventsToSend.length,
+        domSnapshots: domSnapshotsToSend.length
+      });
     }
     
-    // Initialize tracking with immediate DOM capture
+    // Initialize tracking
     function initTracking() {
       if (!consentGiven && config.enableConsent) {
         debugLog('⏸️ Waiting for user consent');
         return;
       }
       
-      debugLog('🎬 Initializing tracking...', {
-        url: window.location.href,
-        title: document.title,
-        readyState: document.readyState
-      });
+      debugLog('🎬 Initializing optimized tracking...');
       
-      // Capture DOM immediately if ready, otherwise wait
+      // Capture initial DOM after page load
       function captureInitialDOM() {
         debugLog('📸 Attempting initial DOM capture...');
         const snapshot = captureDOMSnapshot();
         if (snapshot) {
-          debugLog('✅ Initial DOM captured successfully');
-        } else {
-          debugLog('❌ Initial DOM capture failed');
+          trackEvent('pageview', { 
+            title: document.title, 
+            url: window.location.href 
+          }, true);
         }
       }
       
       if (document.readyState === 'complete') {
-        captureInitialDOM();
+        setTimeout(captureInitialDOM, 1000); // Small delay to ensure everything is loaded
       } else {
-        window.addEventListener('load', captureInitialDOM);
-        debugLog('⏳ Waiting for page load to capture DOM');
+        window.addEventListener('load', () => {
+          setTimeout(captureInitialDOM, 1000);
+        });
       }
-      
-      // Track initial events with DOM snapshot
-      setTimeout(() => {
-        trackEvent('pageview', { 
-          title: document.title, 
-          url: window.location.href 
-        }, true);
-        trackEvent('session_start', { 
-          timestamp: Date.now(),
-          userAgent: navigator.userAgent 
-        }, true);
-      }, 500); // Small delay to ensure DOM is captured
       
       // Set up event listeners
       document.addEventListener('click', (e) => {
@@ -460,16 +390,19 @@
           text: e.target.textContent ? e.target.textContent.slice(0, 50) : '',
           timestamp: Date.now()
         };
-        trackEvent('click', clickData, true); // Include DOM for clicks
+        trackEvent('click', clickData);
         debugLog('👆 Click tracked:', clickData);
       }, true);
       
-      // Periodic DOM capture and flush
+      // Regular flush interval
       setInterval(() => {
-        debugLog('⏰ Periodic flush triggered');
-        flushEvents();
+        if (eventQueue.length > 0 || domSnapshotQueue.length > 0) {
+          debugLog('⏰ Periodic flush triggered');
+          flushEvents();
+        }
       }, config.flushInterval);
       
+      // Periodic DOM capture
       if (config.enableDOMCapture) {
         setInterval(() => {
           const now = Date.now();
@@ -480,16 +413,34 @@
         }, config.domCaptureInterval);
       }
       
-      // Page unload handling
+      // Critical: Use sendBeacon for page unload (most reliable)
       window.addEventListener('beforeunload', () => {
-        debugLog('👋 Page unloading, final flush...');
-        flushEvents();
+        debugLog('👋 Page unloading, using sendBeacon for critical flush...');
+        
+        // Send any remaining events with sendBeacon (high priority)
+        if (eventQueue.length > 0) {
+          const criticalPayload = { 
+            events: [...eventQueue, {
+              projectId: projectId,
+              eventType: 'page_unload',
+              sessionId: sessionId,
+              userId: userId,
+              timestamp: Date.now(),
+              url: window.location.href
+            }]
+          };
+          
+          const payloadString = JSON.stringify(criticalPayload);
+          if (navigator.sendBeacon && new Blob([payloadString]).size <= config.maxPayloadSize) {
+            navigator.sendBeacon(collectorEndpoint, payloadString);
+            debugLog('📡 Critical events sent via sendBeacon');
+          }
+        }
       });
       
-      debugLog('🎉 Webtir Analytics initialized successfully!');
-      console.log('%c🔥 Webtir Analytics Active (Debug Mode)', 'color: #ff6b35; font-size: 16px; font-weight: bold;');
-      console.log('%cProject:', 'color: #666; font-weight: bold;', projectId);
-      console.log('%cLook for [Webtir Debug] messages above ☝️', 'color: #666;');
+      debugLog('🎉 Optimized Webtir Analytics initialized successfully!');
+      console.log('%c🚀 Webtir Analytics Active (sendBeacon + Fetch)', 'color: #ff6b35; font-size: 16px; font-weight: bold;');
+      console.log('%cOptimized for reliability and performance', 'color: #666;');
     }
     
     // Public API
@@ -503,7 +454,7 @@
         flushEvents();
       },
       getQueueLength: function() {
-        return eventQueue.length;
+        return { events: eventQueue.length, domSnapshots: domSnapshotQueue.length };
       },
       getLastSnapshot: function() {
         return currentDOMSnapshot;
