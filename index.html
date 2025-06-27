@@ -47,19 +47,22 @@
       maxHeightMessages: 20 // Maximum 20 height messages per session to prevent spam
     };
     
-    // Session Management
-    let sessionId = getOrCreateSessionId();
+    // Session Management - Initialize all variables first
+    let sessionId;
     let userId = getOrCreateUserId();
     let eventQueue = [];
     let lastActivity = Date.now();
     let consentGiven = checkConsent();
     
-    // Smart height tracking variables
+    // Smart height tracking variables - Initialize before using in functions
     let lastKnownHeight = 0;
     let lastReportedHeight = 0;
     let heightCheckInterval;
     let lastHeightMessageTime = 0;
     let heightMessageCount = 0;
+    
+    // Now initialize sessionId after heightMessageCount is declared
+    sessionId = getOrCreateSessionId();
     
     function getOrCreateSessionId() {
       let sid = sessionStorage.getItem('webtir_session_id');
