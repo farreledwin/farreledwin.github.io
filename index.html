@@ -20,10 +20,9 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- <script src="js/script.js"></script> -->
     <script src="https://kit.fontawesome.com/b8e6120963.js" crossorigin="anonymous"></script>
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script>
   (function() {
-    // Enhanced Configuration with Smart Height Communication
+    // Enhanced Configuration with One-Time Height Communication
     const projectId = "b039a668-abf4-4a56-8bee-612e707d8937";
     const collectorEndpoint = "https://okkczylgemiemsciehtq.supabase.co/functions/v1/heatmap-collector";
     const config = {
@@ -40,11 +39,7 @@
       mouseSamplingRate: 0.1,
       mouseThrottleMs: 500,
       enableHeightTracking: true,
-      enableHeightMessaging: true,
-      // Smart height detection settings
-      heightChangeThreshold: 50, // Only send updates if height changes by more than 50px
-      heightMessageThrottle: 250, // Minimum 250ms between height messages
-      maxHeightMessages: 20 // Maximum 20 height messages per session to prevent spam
+      enableHeightMessaging: true
     };
     
     // Session Management - Initialize all variables first
@@ -54,14 +49,10 @@
     let lastActivity = Date.now();
     let consentGiven = checkConsent();
     
-    // Smart height tracking variables - Initialize before using in functions
-    let lastKnownHeight = 0;
-    let lastReportedHeight = 0;
-    let heightCheckInterval;
-    let lastHeightMessageTime = 0;
-    let heightMessageCount = 0;
+    // Height tracking variables
+    let heightSent = false; // Flag to track if height has been sent
     
-    // Now initialize sessionId after heightMessageCount is declared
+    // Now initialize sessionId
     sessionId = getOrCreateSessionId();
     
     function getOrCreateSessionId() {
@@ -70,8 +61,6 @@
         sid = 'sess_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
         sessionStorage.setItem('webtir_session_id', sid);
         sessionStorage.setItem('webtir_session_start', Date.now().toString());
-        // Reset height message count for new session
-        heightMessageCount = 0;
       }
       return sid;
     }
@@ -145,32 +134,12 @@
       };
     }
     
-    // Smart height change detection and messaging
-    function sendHeightToParent(dimensions, force = false) {
-      if (!config.enableHeightMessaging) return;
+    // One-time height message to parent
+    function sendHeightToParent() {
+      if (!config.enableHeightMessaging || heightSent) return;
       
-      const now = Date.now();
-      const heightChange = Math.abs(dimensions.height - lastReportedHeight);
-      
-      // Smart filtering conditions
-      const shouldSend = force || (
-        heightChange >= config.heightChangeThreshold && // Significant height change
-        now - lastHeightMessageTime >= config.heightMessageThrottle && // Throttle timing
-        heightMessageCount < config.maxHeightMessages // Prevent spam
-      );
-      
-      if (!shouldSend) {
-        console.log('📏 Height message skipped - no significant change or throttled:', {
-          heightChange,
-          timeSinceLastMessage: now - lastHeightMessageTime,
-          messageCount: heightMessageCount
-        });
-        return;
-      }
-      
-      lastHeightMessageTime = now;
-      heightMessageCount++;
-      lastReportedHeight = dimensions.height;
+      const dimensions = getDocumentDimensions();
+      heightSent = true; // Mark as sent to prevent further calls
       
       try {
         const message = {
@@ -179,19 +148,17 @@
           height: dimensions.height,
           width: dimensions.width,
           dimensions: dimensions,
-          timestamp: now,
+          timestamp: Date.now(),
           url: window.location.href,
-          changeAmount: heightChange,
-          messageNumber: heightMessageCount
+          initialLoad: true
         };
         
         // Send to parent window
         if (window.parent && window.parent !== window) {
           window.parent.postMessage(message, '*');
-          console.log('📏 Smart height update sent to parent:', {
+          console.log('📏 One-time height sent to parent:', {
             height: message.height,
-            change: heightChange,
-            messageNumber: heightMessageCount
+            url: message.url
           });
         }
         
@@ -204,28 +171,24 @@
       }
     }
     
-    // Smart document height tracking
-    function trackDocumentHeight(force = false) {
+    // One-time document height tracking
+    function trackDocumentHeight() {
       if (!config.enableHeightTracking) return;
       
       const dimensions = getDocumentDimensions();
       
-      // Always send height to parent for real-time adjustment (with smart filtering)
-      sendHeightToParent(dimensions, force);
+      // Send height to parent once
+      sendHeightToParent();
       
-      // Only track in analytics if height has changed significantly
-      if (Math.abs(dimensions.height - lastKnownHeight) >= config.heightChangeThreshold) {
-        console.log('📏 Document height changed significantly:', dimensions.height, 'px (was:', lastKnownHeight, 'px)');
-        
-        trackEvent('document_height', {
-          ...dimensions,
-          heightChange: dimensions.height - lastKnownHeight,
-          timestamp: Date.now(),
-          value: 1
-        });
-        
-        lastKnownHeight = dimensions.height;
-      }
+      // Track in analytics once
+      console.log('📏 Document height tracked:', dimensions.height, 'px');
+      
+      trackEvent('document_height', {
+        ...dimensions,
+        initial: true,
+        timestamp: Date.now(),
+        value: 1
+      });
     }
     
     function trackEvent(eventType, data) {
@@ -438,35 +401,26 @@
         return;
       }
       
-      console.log('Webtir Analytics: Initializing smart height tracking for project:', projectId);
-      
-      const initialDimensions = getDocumentDimensions();
-      lastKnownHeight = initialDimensions.height;
-      lastReportedHeight = initialDimensions.height;
-      
-      // Send initial height to parent immediately (forced)
-      sendHeightToParent(initialDimensions, true);
+      console.log('Webtir Analytics: Initializing one-time height tracking for project:', projectId);
       
       trackEvent('pageview', { 
         title: document.title,
         url: window.location.href,
-        timestamp: Date.now(),
-        initialDimensions: initialDimensions
+        timestamp: Date.now()
       });
       
       trackEvent('session_start', { 
         timestamp: Date.now(),
         sessionId: sessionId,
-        userId: userId,
-        initialDimensions: initialDimensions
+        userId: userId
       });
       
-      trackEvent('document_height', {
-        ...initialDimensions,
-        initial: true,
-        timestamp: Date.now(),
-        value: 1
-      });
+      // Send height once after content is loaded
+      if (config.enableHeightTracking) {
+        setTimeout(() => {
+          trackDocumentHeight();
+        }, 100);
+      }
       
       // Set up event listeners
       document.addEventListener('click', trackClick, true);
@@ -494,65 +448,17 @@
         }, { passive: true });
       }
       
-      // Smart height tracking with reduced frequency
-      if (config.enableHeightTracking) {
-        // Reduced frequency: Check every 2 seconds instead of every second
-        heightCheckInterval = setInterval(() => {
-          trackDocumentHeight();
-        }, 2000);
-        
-        // Smart mutation observer with debouncing
-        if (window.MutationObserver) {
-          let mutationTimeout;
-          const observer = new MutationObserver(() => {
-            clearTimeout(mutationTimeout);
-            // Debounce mutations to 500ms to reduce noise
-            mutationTimeout = setTimeout(() => trackDocumentHeight(), 500);
-          });
-          
-          observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-            attributes: true,
-            attributeFilter: ['style', 'class']
-          });
-        }
-        
-        // Immediate height check on resize (most important)
-        window.addEventListener('resize', () => {
-          setTimeout(() => trackDocumentHeight(true), 50); // Force update on resize
-        }, { passive: true });
-        
-        // Height check on load events
-        window.addEventListener('load', () => {
-          setTimeout(() => trackDocumentHeight(true), 100);
-        });
-        
-        document.addEventListener('DOMContentLoaded', () => {
-          setTimeout(() => trackDocumentHeight(true), 100);
-        });
-      }
-      
       window.addEventListener('beforeunload', () => {
         trackEvent('page_unload', {
           timeOnPage: Date.now() - lastActivity,
-          scrollDepth: scrollData.maxDepth,
-          finalDimensions: getDocumentDimensions(),
-          heightMessagesCount: heightMessageCount
+          scrollDepth: scrollData.maxDepth
         });
         flushEvents();
-        
-        if (heightCheckInterval) {
-          clearInterval(heightCheckInterval);
-        }
       });
       
       document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
           flushEvents();
-        } else {
-          // Check height when page becomes visible again
-          setTimeout(() => trackDocumentHeight(), 100);
         }
       });
       
@@ -566,7 +472,7 @@
         }
       }
       
-      console.log('Webtir Analytics: Smart height tracking initialized with throttling and change detection');
+      console.log('Webtir Analytics: One-time height tracking initialized');
     }
     
     // Public API
@@ -580,9 +486,6 @@
         localStorage.setItem('webtir_consent', 'revoked');
         consentGiven = false;
         eventQueue = [];
-        if (heightCheckInterval) {
-          clearInterval(heightCheckInterval);
-        }
       },
       trackCustomEvent: function(eventName, data) {
         trackEvent('custom_' + eventName, data);
@@ -594,15 +497,9 @@
         return getDocumentDimensions().height;
       },
       sendHeightUpdate: function() {
-        trackDocumentHeight(true); // Force update
-      },
-      getHeightStats: function() {
-        return {
-          lastKnownHeight: lastKnownHeight,
-          lastReportedHeight: lastReportedHeight,
-          messageCount: heightMessageCount,
-          maxMessages: config.maxHeightMessages
-        };
+        if (!heightSent) {
+          sendHeightToParent();
+        }
       }
     };
     
