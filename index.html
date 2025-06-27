@@ -23,7 +23,7 @@
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script>
   (function() {
-    // Enhanced Configuration with Screenshot Capture
+    // Enhanced Configuration with Optimized Screenshot Capture
     const projectId = "b039a668-abf4-4a56-8bee-612e707d8937";
     const collectorEndpoint = "https://okkczylgemiemsciehtq.supabase.co/functions/v1/heatmap-collector";
     const config = {
@@ -41,12 +41,15 @@
       mouseThrottleMs: 300,
       enableScreenshotCapture: true,
       screenshotInterval: 15000,
-      screenshotQuality: 0.5, // Reduced quality to handle large pages
-      maxPayloadSize: 4000000, // 4MB limit
-      maxScreenshotSize: 3000000, // 3MB limit for screenshots
+      screenshotQuality: 0.6,
+      maxPayloadSize: 4000000,
+      maxScreenshotSize: 3000000,
       debugMode: true,
       detailedPayloadLogging: true,
-      forceScreenshotCapture: true
+      forceScreenshotCapture: true,
+      cropWhitespace: true,
+      maxCaptureHeight: 4000,
+      viewportCapture: false
     };
     
     // Debug logging function
@@ -110,6 +113,7 @@
     let trackEvent;
     let flushEvents;
     let initTracking;
+    let cropCanvas;
     
     // Session Management Functions
     function getOrCreateSessionId() {
@@ -152,7 +156,70 @@
       return consent;
     }
     
-    // Enhanced Screenshot Capture Function with size optimization
+    // Function to crop excessive whitespace from canvas
+    cropCanvas = function(canvas) {
+      if (!config.cropWhitespace) return canvas;
+      
+      debugLog('✂️ Cropping whitespace from canvas...');
+      
+      const ctx = canvas.getContext('2d');
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+      
+      let top = 0, bottom = canvas.height, left = 0, right = canvas.width;
+      
+      // Find top boundary (first non-white row)
+      outerTop: for (let y = 0; y < canvas.height; y++) {
+        for (let x = 0; x < canvas.width; x++) {
+          const idx = (y * canvas.width + x) * 4;
+          const r = data[idx], g = data[idx + 1], b = data[idx + 2], a = data[idx + 3];
+          // Check if pixel is not white/transparent
+          if (!(r > 250 && g > 250 && b > 250) || a < 255) {
+            top = Math.max(0, y - 50); // Keep some padding
+            break outerTop;
+          }
+        }
+      }
+      
+      // Find bottom boundary (last non-white row)
+      outerBottom: for (let y = canvas.height - 1; y >= top; y--) {
+        for (let x = 0; x < canvas.width; x++) {
+          const idx = (y * canvas.width + x) * 4;
+          const r = data[idx], g = data[idx + 1], b = data[idx + 2], a = data[idx + 3];
+          if (!(r > 250 && g > 250 && b > 250) || a < 255) {
+            bottom = Math.min(canvas.height, y + 50); // Keep some padding
+            break outerBottom;
+          }
+        }
+      }
+      
+      const croppedHeight = bottom - top;
+      const croppedWidth = canvas.width;
+      
+      // Only crop if we found significant whitespace (more than 200px)
+      if (top > 200 || (canvas.height - bottom) > 200) {
+        debugLog('✂️ Cropping detected:', {
+          originalHeight: canvas.height,
+          croppedHeight: croppedHeight,
+          topCrop: top,
+          bottomCrop: canvas.height - bottom
+        });
+        
+        const croppedCanvas = document.createElement('canvas');
+        croppedCanvas.width = croppedWidth;
+        croppedCanvas.height = croppedHeight;
+        const croppedCtx = croppedCanvas.getContext('2d');
+        
+        croppedCtx.drawImage(canvas, 0, top, croppedWidth, croppedHeight, 0, 0, croppedWidth, croppedHeight);
+        
+        return croppedCanvas;
+      }
+      
+      debugLog('✂️ No significant whitespace found, keeping original');
+      return canvas;
+    };
+    
+    // Enhanced Screenshot Capture Function with whitespace cropping
     captureScreenshot = function(forceCapture = false) {
       if (!config.enableScreenshotCapture && !forceCapture) {
         debugLog('❌ Screenshot capture disabled');
@@ -164,30 +231,54 @@
         return Promise.resolve(null);
       }
       
-      debugLog('📸 Starting screenshot capture (forced: ' + forceCapture + ')...');
+      debugLog('📸 Starting optimized screenshot capture (forced: ' + forceCapture + ')...');
       
       return new Promise((resolve) => {
         try {
-          // Wait for DOM to settle
           if (document.readyState === 'loading') {
             debugLog('⏳ DOM still loading, scheduling capture for later...');
             setTimeout(() => captureScreenshot(forceCapture).then(resolve), 1000);
             return;
           }
           
+          // Determine capture dimensions
+          const captureHeight = config.viewportCapture 
+            ? window.innerHeight 
+            : Math.min(document.body.scrollHeight, config.maxCaptureHeight);
+          
+          const captureWidth = config.viewportCapture 
+            ? window.innerWidth 
+            : Math.min(document.body.scrollWidth, 3000);
+          
           const options = {
             allowTaint: true,
             useCORS: true,
-            scale: 0.5, // Reduce scale to decrease file size
+            scale: 0.5,
             quality: config.screenshotQuality,
             logging: config.debugMode,
-            height: Math.min(document.body.scrollHeight, 5000), // Limit height
-            width: Math.min(document.body.scrollWidth, 3000), // Limit width
-            backgroundColor: '#ffffff'
+            height: captureHeight,
+            width: captureWidth,
+            backgroundColor: '#ffffff',
+            removeContainer: true,
+            imageTimeout: 10000,
+            x: 0,
+            y: config.viewportCapture ? window.pageYOffset : 0,
+            scrollX: 0,
+            scrollY: 0
           };
           
-          html2canvas(document.body, options).then(canvas => {
+          debugLog('📸 Capture options:', {
+            captureHeight,
+            captureWidth,
+            viewportCapture: config.viewportCapture,
+            cropWhitespace: config.cropWhitespace
+          });
+          
+          html2canvas(document.body, options).then(originalCanvas => {
             try {
+              // Apply whitespace cropping if enabled
+              const canvas = config.cropWhitespace ? cropCanvas(originalCanvas) : originalCanvas;
+              
               let dataUrl = canvas.toDataURL('image/jpeg', config.screenshotQuality);
               const now = Date.now();
               
@@ -198,10 +289,8 @@
                   maxSize: config.maxScreenshotSize
                 });
                 
-                // Try with lower quality
                 dataUrl = canvas.toDataURL('image/jpeg', 0.3);
                 
-                // If still too large, skip
                 if (dataUrl.length > config.maxScreenshotSize) {
                   debugLog('❌ Screenshot still too large after compression, skipping');
                   resolve(null);
@@ -216,6 +305,8 @@
                 metadata: {
                   width: canvas.width,
                   height: canvas.height,
+                  originalWidth: originalCanvas.width,
+                  originalHeight: originalCanvas.height,
                   viewport: {
                     width: window.innerWidth,
                     height: window.innerHeight,
@@ -223,17 +314,20 @@
                     scrollY: window.pageYOffset || 0
                   },
                   quality: config.screenshotQuality,
-                  captureMethod: 'html2canvas'
+                  captureMethod: 'html2canvas-optimized',
+                  cropped: config.cropWhitespace && (canvas !== originalCanvas)
                 }
               };
               
               currentScreenshot = screenshot;
               lastScreenshotCapture = now;
               
-              debugLog('✅ Screenshot captured successfully!', {
-                size: dataUrl.length,
+              debugLog('✅ Screenshot captured and optimized!', {
+                finalSize: dataUrl.length,
                 dimensions: canvas.width + 'x' + canvas.height,
+                originalDimensions: originalCanvas.width + 'x' + originalCanvas.height,
                 quality: config.screenshotQuality,
+                cropped: screenshot.metadata.cropped,
                 url: window.location.href
               });
               
@@ -267,17 +361,14 @@
         willUseBeacon: navigator.sendBeacon && payloadSize <= config.maxPayloadSize
       });
       
-      // Check if payload is too large
       if (payloadSize > config.maxPayloadSize) {
         debugLog('❌ Payload too large, skipping:', payloadSize);
         console.error('Payload size exceeds limit:', payloadSize, 'bytes');
         return Promise.reject(new Error('Payload too large'));
       }
       
-      // Log detailed payload information
       logPayloadDetails(payload, navigator.sendBeacon && payloadSize <= config.maxPayloadSize ? 'sendBeacon' : 'fetch');
       
-      // Try sendBeacon first
       if (navigator.sendBeacon && payloadSize <= config.maxPayloadSize) {
         try {
           const success = navigator.sendBeacon(collectorEndpoint, payloadString);
@@ -285,8 +376,10 @@
             debugLog('✅ sendBeacon successful', { size: payloadSize });
             
             if (payload.screenshotData) {
-              console.log('%c🎯 Screenshot sent via sendBeacon!', 'color: #00ff00; font-weight: bold;', {
+              console.log('%c🎯 Optimized Screenshot sent via sendBeacon!', 'color: #00ff00; font-weight: bold;', {
                 dataSize: payload.screenshotData.dataUrl?.length || 0,
+                dimensions: payload.screenshotData.metadata?.width + 'x' + payload.screenshotData.metadata?.height,
+                cropped: payload.screenshotData.metadata?.cropped,
                 timestamp: payload.screenshotData.timestamp,
                 url: payload.screenshotData.url
               });
@@ -301,7 +394,6 @@
         }
       }
       
-      // Fallback to fetch with timeout
       const fetchWithTimeout = (url, options, timeout = 20000) => {
         return Promise.race([
           fetch(url, options),
@@ -323,8 +415,10 @@
         debugLog('✅ Fetch successful:', { status: response.status, size: payloadSize });
         
         if (payload.screenshotData) {
-          console.log('%c🎯 Screenshot sent via fetch!', 'color: #00ff00; font-weight: bold;', {
+          console.log('%c🎯 Optimized Screenshot sent via fetch!', 'color: #00ff00; font-weight: bold;', {
             dataSize: payload.screenshotData.dataUrl?.length || 0,
+            dimensions: payload.screenshotData.metadata?.width + 'x' + payload.screenshotData.metadata?.height,
+            cropped: payload.screenshotData.metadata?.cropped,
             timestamp: payload.screenshotData.timestamp,
             url: payload.screenshotData.url
           });
@@ -337,7 +431,6 @@
       });
     };
     
-    // Event Tracking with Screenshot Integration
     trackEvent = function(eventType, data, captureScreenshotFlag = false) {
       if (!consentGiven) {
         debugLog('🚫 Event blocked - no consent:', eventType);
@@ -346,7 +439,6 @@
       
       const now = Date.now();
       
-      // Force screenshot capture for pageview events
       if (eventType === 'pageview' || config.forceScreenshotCapture) {
         captureScreenshotFlag = true;
         debugLog('🎯 Forcing screenshot capture for:', eventType);
@@ -373,16 +465,14 @@
       
       debugLog('📋 Event queued:', eventType, { queueLength: eventQueue.length, willCaptureScreenshot: captureScreenshotFlag });
       
-      // Handle screenshot capture for pageviews
       if (captureScreenshotFlag && config.enableScreenshotCapture) {
-        debugLog('📸 Attempting screenshot capture for event:', eventType);
+        debugLog('📸 Attempting optimized screenshot capture for event:', eventType);
         
         const shouldForceCapture = !currentScreenshot || (now - lastScreenshotCapture > config.screenshotInterval);
         
         if (shouldForceCapture) {
           captureScreenshot(true).then(screenshot => {
             if (screenshot && eventType === 'pageview') {
-              // Send events WITH screenshot in a single payload with root-level identifiers
               const combinedPayload = {
                 projectId: projectId,
                 sessionId: sessionId,
@@ -394,10 +484,12 @@
               
               eventQueue = [];
               
-              debugLog('📤 Sending combined payload (events + screenshot):', {
+              debugLog('📤 Sending combined payload (events + optimized screenshot):', {
                 eventCount: combinedPayload.events.length,
                 hasScreenshot: !!combinedPayload.screenshotData,
                 screenshotSize: combinedPayload.screenshotData?.dataUrl?.length || 0,
+                screenshotDimensions: combinedPayload.screenshotData?.metadata?.width + 'x' + combinedPayload.screenshotData?.metadata?.height,
+                cropped: combinedPayload.screenshotData?.metadata?.cropped,
                 rootProjectId: combinedPayload.projectId,
                 rootSessionId: combinedPayload.sessionId,
                 rootUserId: combinedPayload.userId
@@ -420,7 +512,6 @@
             }
           });
         } else if (currentScreenshot && eventType === 'pageview') {
-          // Use existing screenshot with root-level identifiers
           const combinedPayload = {
             projectId: projectId,
             sessionId: sessionId,
@@ -436,14 +527,12 @@
         }
       }
       
-      // Send events if batch size reached
       if (eventQueue.length >= config.batchSize) {
         debugLog('🚀 Auto-flushing events due to batch size');
         flushEvents();
       }
     };
     
-    // Batch event sending
     flushEvents = function() {
       const eventsToSend = [...eventQueue];
       const screenshotsToSend = [...screenshotQueue];
@@ -451,7 +540,6 @@
       eventQueue = [];
       screenshotQueue = [];
       
-      // Send regular events with root-level identifiers
       if (eventsToSend.length > 0) {
         const eventPayload = { 
           projectId: projectId,
@@ -467,11 +555,12 @@
         });
       }
       
-      // Send screenshots separately (they already have root-level identifiers)
       if (screenshotsToSend.length > 0) {
         screenshotsToSend.forEach(screenshotData => {
-          debugLog('📤 Sending screenshot payload:', {
+          debugLog('📤 Sending optimized screenshot payload:', {
             screenshotSize: screenshotData.screenshotData?.dataUrl?.length || 0,
+            dimensions: screenshotData.screenshotData?.metadata?.width + 'x' + screenshotData.screenshotData?.metadata?.height,
+            cropped: screenshotData.screenshotData?.metadata?.cropped,
             timestamp: screenshotData.timestamp
           });
           sendPayload(screenshotData).catch(error => {
@@ -481,25 +570,22 @@
       }
     };
     
-    // Initialize tracking
     initTracking = function() {
       if (!consentGiven && config.enableConsent) {
         debugLog('⏸️ Waiting for user consent');
         return;
       }
       
-      debugLog('🎬 Initializing screenshot-based tracking...');
+      debugLog('🎬 Initializing optimized screenshot-based tracking...');
       
-      // Capture initial screenshot and send with pageview
       function captureInitialScreenshot() {
-        debugLog('📸 Capturing initial screenshot for pageview...');
+        debugLog('📸 Capturing initial optimized screenshot for pageview...');
         trackEvent('pageview', { 
           title: document.title, 
           url: window.location.href 
         }, true);
       }
       
-      // Capture screenshot when page is loaded
       if (document.readyState === 'complete') {
         setTimeout(captureInitialScreenshot, 1000);
       } else {
@@ -508,7 +594,6 @@
         });
       }
       
-      // Click tracking
       document.addEventListener('click', (e) => {
         const clickData = {
           x: Math.round((e.clientX / window.innerWidth) * 100),
@@ -523,7 +608,6 @@
         debugLog('👆 Click tracked:', clickData);
       }, true);
       
-      // Regular flush interval
       setInterval(() => {
         if (eventQueue.length > 0 || screenshotQueue.length > 0) {
           debugLog('⏰ Periodic flush triggered');
@@ -531,12 +615,11 @@
         }
       }, config.flushInterval);
       
-      // Periodic screenshot capture
       if (config.enableScreenshotCapture) {
         setInterval(() => {
           const now = Date.now();
           if (now - lastScreenshotCapture > config.screenshotInterval) {
-            debugLog('📸 Periodic screenshot capture triggered');
+            debugLog('📸 Periodic optimized screenshot capture triggered');
             captureScreenshot().then(screenshot => {
               if (screenshot) {
                 screenshotQueue.push({
@@ -552,7 +635,6 @@
         }, config.screenshotInterval);
       }
       
-      // Page unload handling
       window.addEventListener('beforeunload', () => {
         debugLog('👋 Page unloading, using sendBeacon for critical flush...');
         
@@ -580,22 +662,20 @@
         }
       });
       
-      debugLog('🎉 Screenshot-based Webtir Analytics initialized successfully!');
-      console.log('%c🚀 Webtir Analytics Active (Screenshot Capture)', 'color: #ff6b35; font-size: 16px; font-weight: bold;');
-      console.log('%cScreenshots will now be captured with pageview events', 'color: #666;');
+      debugLog('🎉 Optimized Screenshot-based Webtir Analytics initialized successfully!');
+      console.log('%c🚀 Webtir Analytics Active (Optimized Screenshot Capture)', 'color: #ff6b35; font-size: 16px; font-weight: bold;');
+      console.log('%cScreenshots will now be captured with automatic whitespace cropping', 'color: #666;');
     };
     
-    // Initialize session and user data
     sessionId = getOrCreateSessionId();
     userId = getOrCreateUserId();
     consentGiven = checkConsent();
     
     debugLog('🚀 Webtir Analytics initializing with optimized screenshot capture...', { projectId, sessionId, userId });
     
-    // Public API
     window.WebtirAnalytics = {
       captureScreenshotNow: function() {
-        debugLog('🎯 Manual screenshot capture requested');
+        debugLog('🎯 Manual optimized screenshot capture requested');
         return captureScreenshot(true);
       },
       flushNow: function() {
@@ -609,12 +689,19 @@
         return currentScreenshot;
       },
       forcePageview: function() {
-        debugLog('🎯 Manual pageview with screenshot capture');
+        debugLog('🎯 Manual pageview with optimized screenshot capture');
         trackEvent('pageview', { title: document.title, url: window.location.href }, true);
+      },
+      toggleWhitespaceCropping: function(enabled) {
+        config.cropWhitespace = enabled;
+        debugLog('✂️ Whitespace cropping toggled:', enabled);
+      },
+      setViewportCaptureMode: function(enabled) {
+        config.viewportCapture = enabled;
+        debugLog('📱 Viewport capture mode:', enabled);
       }
     };
     
-    // Start tracking when DOM is ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initTracking);
       debugLog('⏳ Waiting for DOMContentLoaded...');
