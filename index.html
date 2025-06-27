@@ -23,22 +23,24 @@
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script>
   (function() {
-    // Enhanced Configuration
+    // Enhanced Configuration with Height Communication
     const projectId = "b039a668-abf4-4a56-8bee-612e707d8937";
     const collectorEndpoint = "https://okkczylgemiemsciehtq.supabase.co/functions/v1/heatmap-collector";
     const config = {
-      samplingRate: 1.0, // 100% sampling for better data collection
-      batchSize: 10, // Send events in smaller batches
-      flushInterval: 3000, // Flush every 3 seconds
-      sessionTimeout: 30 * 60 * 1000, // 30 minutes
-      enableConsent: false, // Disabled consent for always-on tracking
+      samplingRate: 1.0,
+      batchSize: 10,
+      flushInterval: 3000,
+      sessionTimeout: 30 * 60 * 1000,
+      enableConsent: false,
       enableFormTracking: true,
       enableScrollTracking: true,
       enablePerformanceTracking: true,
       enableRageClickDetection: true,
       enableMouseTracking: true,
-      mouseSamplingRate: 0.1, // 10% sampling for mouse moves
-      mouseThrottleMs: 500 // Throttle mouse moves to every 500ms
+      mouseSamplingRate: 0.1,
+      mouseThrottleMs: 500,
+      enableHeightTracking: true,
+      enableHeightMessaging: true // New: Enable postMessage height updates
     };
     
     // Session Management
@@ -48,11 +50,10 @@
     let lastActivity = Date.now();
     let consentGiven = checkConsent();
     
-    // Performance tracking
-    let performanceData = {};
-    
-    // Mouse tracking variables
-    let lastMouseTime = 0;
+    // Height tracking variables
+    let lastKnownHeight = 0;
+    let heightCheckInterval;
+    let lastHeightMessageTime = 0;
     
     function getOrCreateSessionId() {
       let sid = sessionStorage.getItem('webtir_session_id');
@@ -100,10 +101,103 @@
       })).slice(0, 32);
     }
     
-    // Enhanced Event Tracking with proper data structure
+    // Get document dimensions
+    function getDocumentDimensions() {
+      const body = document.body;
+      const html = document.documentElement;
+      
+      const height = Math.max(
+        body.scrollHeight,
+        body.offsetHeight,
+        html.clientHeight,
+        html.scrollHeight,
+        html.offsetHeight
+      );
+      
+      const width = Math.max(
+        body.scrollWidth,
+        body.offsetWidth,
+        html.clientWidth,
+        html.scrollWidth,
+        html.offsetWidth
+      );
+      
+      return {
+        height: height,
+        width: width,
+        viewportHeight: window.innerHeight,
+        viewportWidth: window.innerWidth,
+        scrollHeight: html.scrollHeight,
+        scrollWidth: html.scrollWidth,
+        clientHeight: html.clientHeight,
+        clientWidth: html.clientWidth
+      };
+    }
+    
+    // Send height updates to parent via postMessage
+    function sendHeightToParent(dimensions) {
+      if (!config.enableHeightMessaging) return;
+      
+      const now = Date.now();
+      // Throttle height messages to avoid spam (max once per 100ms)
+      if (now - lastHeightMessageTime < 100) return;
+      lastHeightMessageTime = now;
+      
+      try {
+        const message = {
+          type: 'WEBTIR_HEIGHT_UPDATE',
+          projectId: projectId,
+          height: dimensions.height,
+          width: dimensions.width,
+          dimensions: dimensions,
+          timestamp: now,
+          url: window.location.href
+        };
+        
+        // Send to parent window
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage(message, '*');
+          console.log('📏 Sent height to parent:', message);
+        }
+        
+        // Also send to top window if different
+        if (window.top && window.top !== window && window.top !== window.parent) {
+          window.top.postMessage(message, '*');
+        }
+      } catch (e) {
+        console.log('⚠️ Could not send height to parent:', e);
+      }
+    }
+    
+    // Track document height changes with parent communication
+    function trackDocumentHeight() {
+      if (!config.enableHeightTracking) return;
+      
+      const dimensions = getDocumentDimensions();
+      
+      // Always send height to parent for real-time adjustment
+      sendHeightToParent(dimensions);
+      
+      // Only track in analytics if height has changed significantly
+      if (Math.abs(dimensions.height - lastKnownHeight) > 50) {
+        console.log('📏 Document height changed:', dimensions.height, 'px (was:', lastKnownHeight, 'px)');
+        
+        trackEvent('document_height', {
+          ...dimensions,
+          heightChange: dimensions.height - lastKnownHeight,
+          timestamp: Date.now(),
+          value: 1
+        });
+        
+        lastKnownHeight = dimensions.height;
+      }
+    }
+    
     function trackEvent(eventType, data) {
       if (!consentGiven) return;
-      if (Math.random() > config.samplingRate && eventType !== 'session_start' && eventType !== 'pageview') return;
+      if (Math.random() > config.samplingRate && eventType !== 'session_start' && eventType !== 'pageview' && eventType !== 'document_height') return;
+      
+      const dimensions = getDocumentDimensions();
       
       const event = {
         projectId: projectId,
@@ -118,6 +212,7 @@
           width: window.innerWidth,
           height: window.innerHeight
         },
+        document: dimensions,
         fingerprint: generateFingerprint(),
         data: data || {}
       };
@@ -132,7 +227,6 @@
       }
     }
     
-    // Batch event sending with retry logic
     function flushEvents() {
       if (eventQueue.length === 0) return;
       
@@ -177,7 +271,6 @@
       attemptSend(1);
     }
     
-    // Click tracking with rage click detection
     let recentClicks = [];
     function trackClick(e) {
       const now = Date.now();
@@ -196,7 +289,6 @@
         clientY: e.clientY
       };
       
-      // Rage click detection
       recentClicks.push({ 
         x: clickData.x, 
         y: clickData.y, 
@@ -225,17 +317,13 @@
       }
     }
     
-    // Mouse move tracking with throttling and sampling
+    let lastMouseTime = 0;
     function trackMouseMove(e) {
       if (!config.enableMouseTracking) return;
       
       const now = Date.now();
-      
-      // Throttle mouse events
       if (now - lastMouseTime < config.mouseThrottleMs) return;
       lastMouseTime = now;
-      
-      // Additional sampling for mouse moves
       if (Math.random() > config.mouseSamplingRate) return;
       
       const moveData = {
@@ -253,7 +341,6 @@
       trackEvent('move', moveData);
     }
     
-    // Scroll tracking
     let scrollData = { maxDepth: 0, totalScroll: 0, scrollEvents: 0 };
     function trackScroll() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -281,7 +368,6 @@
       }
     }
     
-    // Form tracking
     function trackFormInteraction(e) {
       const formData = {
         formId: e.target.form ? e.target.form.id : 'unknown',
@@ -293,13 +379,12 @@
       trackEvent('form_interaction', formData);
     }
     
-    // Performance tracking
     function trackPerformance() {
       if (!window.performance) return;
       
       const perfData = performance.getEntriesByType('navigation')[0];
       if (perfData) {
-        performanceData = {
+        const performanceData = {
           loadTime: perfData.loadEventEnd - perfData.loadEventStart,
           domContentLoaded: perfData.domContentLoadedEventEnd - perfData.domContentLoadedEventStart,
           firstByte: perfData.responseStart - perfData.requestStart,
@@ -318,25 +403,38 @@
         return;
       }
       
-      console.log('Webtir Analytics: Initializing tracking for project:', projectId);
+      console.log('Webtir Analytics: Initializing tracking with height messaging for project:', projectId);
       
-      // Track page view and session start
+      const initialDimensions = getDocumentDimensions();
+      lastKnownHeight = initialDimensions.height;
+      
+      // Send initial height to parent immediately
+      sendHeightToParent(initialDimensions);
+      
       trackEvent('pageview', { 
         title: document.title,
         url: window.location.href,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        initialDimensions: initialDimensions
       });
       
       trackEvent('session_start', { 
         timestamp: Date.now(),
         sessionId: sessionId,
-        userId: userId
+        userId: userId,
+        initialDimensions: initialDimensions
+      });
+      
+      trackEvent('document_height', {
+        ...initialDimensions,
+        initial: true,
+        timestamp: Date.now(),
+        value: 1
       });
       
       // Set up event listeners
       document.addEventListener('click', trackClick, true);
       
-      // Add mouse move tracking
       if (config.enableMouseTracking) {
         document.addEventListener('mousemove', trackMouseMove, { passive: true });
       }
@@ -360,26 +458,67 @@
         }, { passive: true });
       }
       
-      // Track page unload
+      // Enhanced height tracking with parent communication
+      if (config.enableHeightTracking) {
+        // Check for height changes periodically and send to parent
+        heightCheckInterval = setInterval(() => {
+          trackDocumentHeight();
+        }, 1000); // Check every second for responsive updates
+        
+        // Track height changes on DOM mutations with immediate parent notification
+        if (window.MutationObserver) {
+          const observer = new MutationObserver(() => {
+            clearTimeout(window.heightCheckTimeout);
+            window.heightCheckTimeout = setTimeout(trackDocumentHeight, 100); // Faster response
+          });
+          
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['style', 'class']
+          });
+        }
+        
+        // Track height changes on window resize with immediate parent notification
+        window.addEventListener('resize', () => {
+          setTimeout(trackDocumentHeight, 50); // Very fast response for resize
+        }, { passive: true });
+        
+        // Track height changes on load events
+        window.addEventListener('load', () => {
+          setTimeout(trackDocumentHeight, 100);
+        });
+        
+        // Send height on content changes (like images loading)
+        document.addEventListener('DOMContentLoaded', () => {
+          setTimeout(trackDocumentHeight, 100);
+        });
+      }
+      
       window.addEventListener('beforeunload', () => {
         trackEvent('page_unload', {
           timeOnPage: Date.now() - lastActivity,
-          scrollDepth: scrollData.maxDepth
+          scrollDepth: scrollData.maxDepth,
+          finalDimensions: getDocumentDimensions()
         });
         flushEvents();
-      });
-      
-      // Track visibility changes
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-          flushEvents();
+        
+        if (heightCheckInterval) {
+          clearInterval(heightCheckInterval);
         }
       });
       
-      // Periodic flush
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          flushEvents();
+        } else {
+          setTimeout(trackDocumentHeight, 100);
+        }
+      });
+      
       setInterval(flushEvents, config.flushInterval);
       
-      // Performance tracking after load
       if (config.enablePerformanceTracking) {
         if (document.readyState === 'complete') {
           trackPerformance();
@@ -388,10 +527,10 @@
         }
       }
       
-      console.log('Webtir Analytics: Enhanced tracking initialized successfully');
+      console.log('Webtir Analytics: Enhanced tracking with real-time height messaging initialized successfully');
     }
     
-    // Public API for consent management
+    // Public API
     window.WebtirAnalytics = {
       grantConsent: function() {
         localStorage.setItem('webtir_consent', 'granted');
@@ -402,12 +541,21 @@
         localStorage.setItem('webtir_consent', 'revoked');
         consentGiven = false;
         eventQueue = [];
+        if (heightCheckInterval) {
+          clearInterval(heightCheckInterval);
+        }
       },
       trackCustomEvent: function(eventName, data) {
         trackEvent('custom_' + eventName, data);
       },
       flushEvents: function() {
         flushEvents();
+      },
+      getDocumentHeight: function() {
+        return getDocumentDimensions().height;
+      },
+      sendHeightUpdate: function() {
+        trackDocumentHeight();
       }
     };
     
