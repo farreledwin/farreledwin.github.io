@@ -20,6 +20,65 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- <script src="js/script.js"></script> -->
     <script src="https://kit.fontawesome.com/b8e6120963.js" crossorigin="anonymous"></script>
+    <!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TFGRQTESKB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-TFGRQTESKB', {
+    // Enhanced tracking for comprehensive analytics
+    enhanced_conversions: true,
+    allow_google_signals: true,
+    send_page_view: true,
+    
+    // Custom dimensions for detailed tracking
+    custom_map: {
+      'custom_dimension_1': 'user_type',
+      'custom_dimension_2': 'content_category'
+    }
+  });
+
+  // Enhanced eCommerce tracking
+  gtag('config', 'G-TFGRQTESKB', {
+    linker: {
+      domains: [window.location.hostname]
+    }
+  });
+
+  // Track additional events for comprehensive data
+  gtag('event', 'page_view', {
+    page_title: document.title,
+    page_location: window.location.href,
+    content_group1: 'Analytics Page'
+  });
+
+  // Track user engagement
+  let engagementStartTime = Date.now();
+  window.addEventListener('beforeunload', function() {
+    const engagementTime = Date.now() - engagementStartTime;
+    gtag('event', 'user_engagement', {
+      engagement_time_msec: engagementTime
+    });
+  });
+
+  // Track scroll depth
+  let maxScroll = 0;
+  window.addEventListener('scroll', function() {
+    const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+    if (scrollPercent > maxScroll) {
+      maxScroll = scrollPercent;
+      if (scrollPercent >= 25 && scrollPercent < 50) {
+        gtag('event', 'scroll', { percent_scrolled: 25 });
+      } else if (scrollPercent >= 50 && scrollPercent < 75) {
+        gtag('event', 'scroll', { percent_scrolled: 50 });
+      } else if (scrollPercent >= 75) {
+        gtag('event', 'scroll', { percent_scrolled: 75 });
+      }
+    }
+  });
+</script>
 <script>
   (function() {
     // Enhanced Configuration with One-Time Height Communication
