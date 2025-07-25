@@ -21,62 +21,70 @@
     <!-- <script src="js/script.js"></script> -->
     <script src="https://kit.fontawesome.com/b8e6120963.js" crossorigin="anonymous"></script>
     <!-- Google Analytics 4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TFGRQTESKB"></script>
+<!-- Google Analytics 4 Tracking Code for Test aja -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NH84JSK0GP"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-TFGRQTESKB', {
-    // Enhanced tracking for comprehensive analytics
-    enhanced_conversions: true,
-    allow_google_signals: true,
-    send_page_view: true,
-    
-    // Custom dimensions for detailed tracking
-    custom_map: {
-      'custom_dimension_1': 'user_type',
-      'custom_dimension_2': 'content_category'
-    }
-  });
-
-  // Enhanced eCommerce tracking
-  gtag('config', 'G-TFGRQTESKB', {
-    linker: {
-      domains: [window.location.hostname]
-    }
-  });
-
-  // Track additional events for comprehensive data
-  gtag('event', 'page_view', {
+  // Configure GA4 with enhanced tracking
+  gtag('config', 'G-NH84JSK0GP', {
+    // Enhanced tracking settings
     page_title: document.title,
     page_location: window.location.href,
-    content_group1: 'Analytics Page'
+    
+    // Enhanced ecommerce (if applicable)
+    send_page_view: true,
+    
+    // User engagement tracking
+    enhanced_measurement: {
+      scrolls: true,
+      outbound_clicks: true,
+      site_search: true,
+      video_engagement: true,
+      file_downloads: true
+    },
+    
+    // Custom dimensions for project tracking
+    custom_map: {
+      'dimension1': 'project_id',
+      'dimension2': 'page_category'
+    }
   });
-
-  // Track user engagement
+  
+  // Track custom events
+  gtag('event', 'page_view', {
+    project_id: '0f237382-69de-4aa7-b1c9-23c381a3b684',
+    page_category: 'website_page'
+  });
+  
+  // Enhanced scroll tracking
+  let scrollDepths = [25, 50, 75, 100];
+  let trackedDepths = new Set();
+  
+  window.addEventListener('scroll', () => {
+    const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+    
+    scrollDepths.forEach(depth => {
+      if (scrollPercent >= depth && !trackedDepths.has(depth)) {
+        gtag('event', 'scroll', {
+          event_category: 'engagement',
+          event_label: depth + '%',
+          value: depth
+        });
+        trackedDepths.add(depth);
+      }
+    });
+  });
+  
+  // Track user engagement time
   let engagementStartTime = Date.now();
-  window.addEventListener('beforeunload', function() {
+  window.addEventListener('beforeunload', () => {
     const engagementTime = Date.now() - engagementStartTime;
     gtag('event', 'user_engagement', {
       engagement_time_msec: engagementTime
     });
-  });
-
-  // Track scroll depth
-  let maxScroll = 0;
-  window.addEventListener('scroll', function() {
-    const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-    if (scrollPercent > maxScroll) {
-      maxScroll = scrollPercent;
-      if (scrollPercent >= 25 && scrollPercent < 50) {
-        gtag('event', 'scroll', { percent_scrolled: 25 });
-      } else if (scrollPercent >= 50 && scrollPercent < 75) {
-        gtag('event', 'scroll', { percent_scrolled: 50 });
-      } else if (scrollPercent >= 75) {
-        gtag('event', 'scroll', { percent_scrolled: 75 });
-      }
-    }
   });
 </script>
 <script>
