@@ -223,7 +223,7 @@
         // Send to parent window
         if (window.parent && window.parent !== window) {
           window.parent.postMessage(message, '*');
-          console.log('ð One-time height sent to parent:', {
+          console.log('Ã°ÂÂÂ One-time height sent to parent:', {
             height: message.height,
             url: message.url
           });
@@ -234,7 +234,7 @@
           window.top.postMessage(message, '*');
         }
       } catch (e) {
-        console.log('â ï¸ Could not send height to parent:', e);
+        console.log('Ã¢ÂÂ Ã¯Â¸Â Could not send height to parent:', e);
       }
     }
     
@@ -248,7 +248,7 @@
       sendHeightToParent();
       
       // Track in analytics once
-      console.log('ð Document height tracked:', dimensions.height, 'px');
+      console.log('Ã°ÂÂÂ Document height tracked:', dimensions.height, 'px');
       
       trackEvent('document_height', {
         ...dimensions,
