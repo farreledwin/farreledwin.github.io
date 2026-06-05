@@ -410,7 +410,7 @@
 
     .hero-stats {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
       margin-top: 24px;
       padding-top: 24px;
@@ -1448,7 +1448,6 @@
       .hero-section { padding: 48px 0 80px; }
       .hero-copy h1 { font-size: clamp(2.2rem, 9vw, 3.2rem); }
       .hero-stats { grid-template-columns: 1fr 1fr; }
-      .hero-stats .stat:last-child { grid-column: span 2; }
       .floating-badge { display: none; }
       .client-logos { gap: 28px; }
       .client-logo { font-size: 1rem; }
@@ -1521,10 +1520,6 @@
             <div class="stat">
               <h3>4+</h3>
               <span>Countries Served</span>
-            </div>
-            <div class="stat">
-              <h3>Multi-year</h3>
-              <span>Engagements</span>
             </div>
           </div>
         </div>
@@ -2008,9 +2003,6 @@
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M10 14 20 4"/><path d="M20 14v6h-6"/><path d="M14 20 4 10"/></svg>
                 askellie.org
               </a>
-              <span class="case-link" style="color: var(--accent-warm); border-color: rgba(251,191,36,0.35); cursor: default;">
-                🏆 Insurer AI of the Year
-              </span>
             </div>
             <span class="case-section-label">Challenge</span>
             <p>Employers, brokers, and HR teams had no scalable way to educate employees on Medicare and retirement benefits — leaving workers confused at critical enrollment moments, without increasing HR burden.</p>
